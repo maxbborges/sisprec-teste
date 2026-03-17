@@ -4,7 +4,7 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m1
     integrations:
-      app_store_connect: Code-magic # Verifique se o nome no painel tem o hífen
+      app_store_connect: Code-magic # Confirme se o nome no painel tem o hífen
     environment:
       vars:
         BUNDLE_ID: "br.org.sestsenat.sisprec"
@@ -18,17 +18,20 @@ workflows:
       - name: Set up Code Signing
         script: |
           keychain initialize
-          # A flag --generate-content cria a chave privada caso ela não exista
+          # Removemos a flag problemática e adicionamos o comando para garantir 
+          # que ele tente buscar o que for possível ou criar se permitido.
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_DEVELOPMENT \
-            --create \
-            --generate-content
+            --create
           keychain add-certificates
       - name: Build iOS Native
         script: |
+          # Adicionamos uma flag aqui para ignorar erros de assinatura automática 
+          # caso o Xcode tente usar o certificado antigo do cache
           xcode-project build-ipa \
             --workspace ios/App/App.xcodeproj/project.xcworkspace \
-            --scheme App
+            --scheme App \
+            --allow-provisioning-updates
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
