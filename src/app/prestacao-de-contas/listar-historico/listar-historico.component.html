@@ -1,0 +1,64 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white"> Histórico da Prestação de Contas</h3>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-0"><strong>Federação:</strong> {{ lstHistorico[0].federacao}}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-3"><strong>Exercício:</strong> {{mes}}/{{ano}}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class=" mb-3">          
+          <button (click)="voltar()" class="btn btn-light me-2">Voltar</button>  
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <table class="table table-bordered table-hover table-striped table-sm">
+          <thead>
+            <tr>
+              <th rowspan="2" class="align-middle text-center" scope="col">Data Registro</th>
+              <th rowspan="2" class="align-middle text-center" scope="col">Ano</th>
+              <th rowspan="2" class="align-middle text-center" scope="col">Mês</th>
+              <th rowspan="2" class="align-middle text-center" scope="col">Status da Prestação de Contas</th>
+              <th rowspan="2" class="align-middle text-center" scope="col">Versão</th>
+              <th rowspan="2" class="align-middle text-center" scope="col">Federação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="lstHistorico.length > 0; else listaVazia">
+              <ng-container *ngFor="let item of lstHistorico; index as i">
+
+                <tr *ngIf="item?.analise === 'Retornado para Ajustes'" style="background-color:yellow;">
+                <tr *ngIf="item?.analise !== 'Retornado para Ajustes'">
+                  <td class="align-middle text-center">{{item?.dataCadastro |date:'shortDate'}}</td>
+                  <td class="align-middle text-center">{{item?.ano}}</td>
+                  <td class="align-middle text-center">{{item?.mes}}</td>
+                  <td class="align-middle text-center">{{item?.status}}</td>
+                  <td class="align-middle text-center">{{item?.versao}}</td>
+                  <td class="align-middle text-center">{{item?.federacao}}</td>
+                </tr>
+              </ng-container>
+            </ng-container>
+            <ng-template #listaVazia>
+              <tr>
+                <td colspan="8">
+                  <div class="alert alert-info"></div>
+                <td colspan="4">
+                  <!-- <div class="alert alert-info">{{msg}}</div> -->
+                  <div class="alert alert-info"></div>
+                </td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

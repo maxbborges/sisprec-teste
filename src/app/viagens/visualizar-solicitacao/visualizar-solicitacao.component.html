@@ -1,0 +1,181 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white">
+    Visualizar Solicitação de Diária
+  </h3>
+  <div class="card-body">
+    <form [formGroup]="formCadastro">
+      <!-- campos do formulário -->
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-3 form-group">
+          <label for="nomeDoViajante">Nome do Viajante</label>
+          <input 
+            formControlName="nomeDoViajante" 
+            type="text" 
+            id="nomeDoViajante"
+            class="form-control"
+            [class.is-invalid]="(submited || f.nomeDoViajante.touched) && f.nomeDoViajante.invalid"
+          >
+        </div>
+        <div class="col-12 col-md-6 col-lg-3 form-group">
+          <label for="emailDoViajante">E-mail do Viajante</label>
+          <input 
+            formControlName="emailDoViajante" 
+            type="text" 
+            id="emailDoViajante"
+            class="form-control"
+            [class.is-invalid]="(submited || f.emailDoViajante.touched) && f.emailDoViajante.invalid"
+          >
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 form-group">
+          <label for="finalidade">Finalidade da Viagem</label>
+          <textarea 
+            formControlName="finalidade" 
+            id="finalidade" 
+            class="form-control"
+            [class.is-invalid]="(submited || f.finalidade.touched) && f.finalidade.invalid"
+            ></textarea>
+        </div>
+      </div>
+
+      <!-- array de formulário -->
+      <h4>Trechos da Viagem</h4>
+      <div formArrayName="trechos" style="margin-bottom: 13px;">
+        <div *ngFor="let trecho of formTrecho.controls; let i = index" style="margin-top: 20px;">
+          <div [formGroup]="$any(trecho)">
+            <div class="row">
+              <div class="col-12 col-md-6 col-lg-3">
+                  <label for="origem{{i}}">Origem</label>
+                  <input formControlName="origem" 
+                      type="text" 
+                      id="origem{{i}}"
+                      class="form-control">
+              </div>
+              <div class="col-12 col-md-6 col-lg-3">
+                  <label for="destino{{i}}">Destino</label>
+                  <input formControlName="destino" 
+                      type="text" 
+                      id="destino{{i}}"
+                      class="form-control">
+              </div>
+              <div class="col-12 col-md-6 col-lg-3 form-group">
+                  <label for="dataInicial{{i}}">Data Inicial</label>
+                  <input 
+                      formControlName="dataInicial" 
+                      type="date" 
+                      id="dataInicial{{i}}"
+                      class="form-control"
+                  >
+              </div>
+              <div class="col-12 col-md-6 col-lg-3 form-group">
+                  <label for="dataFinal{{i}}">Data Final</label>
+                  <input 
+                      formControlName="dataFinal" 
+                      type="date" 
+                      id="dataFinal{{i}}"
+                      class="form-control"
+                  >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- outros dados formulário -->
+      <h4>Informações da Viagem</h4>
+
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-3 form-group">
+          <label for="distanciaKm">Distância em KM</label>
+          <input 
+            formControlName="distanciaKm" 
+            type="number" 
+            pattern="\d*"
+            id="distanciaKm"
+            class="form-control"
+            [class.is-invalid]="(submited || f.distanciaKm.touched) && f.distanciaKm.invalid"
+          >
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3 form-group">
+            <label for="numeroDiarias">Número Total de Diárias</label>
+            <input 
+              formControlName="numeroDiarias" 
+              type="number" 
+              id="numeroDiarias"
+              class="form-control"
+              [class.is-invalid]="(submited || f.numeroDiarias.touched) && f.numeroDiarias.invalid"
+            >
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3 form-group">
+            <label for="valorUnitarioDiaria">Valor Unitário da Diária</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">R$</span>
+              </div>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="valorUnitarioDiaria" 
+                formControlName="valorUnitarioDiaria" 
+                currencyMask
+                [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, align:'right' }"
+                maxlength="14" 
+                tabindex="4"
+                [class.is-invalid]="(submited || f.valorUnitarioDiaria.touched) && f.valorUnitarioDiaria.invalid"
+              >
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3 form-group">
+            <label for="nomeDoViajante">Valor Total a Pagar</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">R$</span>
+              </div>
+              <input 
+                formControlName="valorTotal" 
+                type="text" 
+                id="valorTotal"
+                class="form-control"
+                currencyMask
+                [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, align:'right' }"
+                [disabled]="true"
+              >
+            </div> 
+        </div>
+      </div>
+
+      <!-- termo -->
+      <hr>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="form-check">
+              <input 
+                formControlName="termo" 
+                class="form-check-input" 
+                type="checkbox" 
+                id="termo"
+                checked="true"
+              >
+              <label class="form-check-label" for="termo">
+                Declaro que as informações prestadas neste documento são verdadeiras e de minha inteira responsabilidade.
+              </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- botões -->
+
+      <div style="text-align: right; margin-top: 13px;">
+        <app-botao-voltar textoBotao='Voltar' [confirmacao]="false"></app-botao-voltar>
+      </div>
+
+    </form>
+    
+  </div>
+</div>

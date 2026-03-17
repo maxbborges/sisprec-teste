@@ -1,0 +1,47 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Fornecedores</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <a class="btn btn-block btn-success w-100" routerLink="/gestaoFinanceira/fornecedor/cadastrar"><i
+                        class="fas fa-plus"></i>&nbsp;Cadastrar novo fornecedor</a>
+            </div>
+        </div>
+        <app-barra-espacamento></app-barra-espacamento>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Documento</th>
+                            <th scope="col">Nome/Razão social</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let fornecedor of lstFornecedores">
+                            <tr>
+                                <td>{{ fornecedor?.tipoFornecedor }}</td>
+                                <td *ngIf="fornecedor.idTipoFornecedor == 1013">
+                                    {{ fornecedor?.numeroDocumento | mask:'00.000.000/0000-00' }}</td>
+                                <td *ngIf="fornecedor.idTipoFornecedor == 1012">
+                                    {{ fornecedor?.numeroDocumento | mask:'000.000.000-00' }}</td>
+                                <td>{{ fornecedor?.nome }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a [routerLink]="['/gestaoFinanceira/fornecedor/editar/', fornecedor.idFornecedor]"
+                                            class="btn btn-warning btn-sm" placement="top"
+                                            ngbTooltip="Editar fornecedor"><i class="fas fa-edit"></i></a>
+                                        <button type="button" [disabled]="acaoBloqueada" class="btn btn-danger btn-sm" placement="top" (click)="excluir(fornecedor.idFornecedor)"
+                                            ngbTooltip="Desativar fornecedor"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

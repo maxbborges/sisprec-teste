@@ -1,0 +1,83 @@
+<div class="modal-content">
+  <div class="modal-header">
+      <h5 class="modal-title">Pesquisa de Relatórios de Viagens</h5>
+      <button type="button" class="close" (click)="cancelar()" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="formPesquisa" (submit)="pesquisarRelatorio()">
+      <div class="row">
+        <div class="col-12 col-lg-8">
+          <div class="form-group">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" id="nome" formControlName="nome" class="form-control">
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="form-group">
+            <label for="email" class="form-label">E-mail</label>
+            <input type="email" id="email" formControlName="email" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-lg-4">
+          <div class="form-group">
+            <label for="dataInicio">Data Inicial</label>
+            <input type="date" name="dataInicio" id="dataInicio" formControlName="dataInicio" class="form-control">
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="form-group">
+            <label for="dataFim">Data Final</label>
+            <input type="date" name="dataFim" id="dataFim" formControlName="dataFim" class="form-control">
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <label for="">&nbsp;</label>
+          <button type="submit" class="btn btn-primary" style="width: 100%">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table table-hover table-striped table-sm">
+            <thead>
+              <tr>
+                <th scope="col">Data de Início</th>
+                <th scope="col">Data de Fim</th>
+                <th scope="col">Nome</th>
+                <th scope="col">E-mail</th>
+                <th scope="col">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let relatorio of lstRelatorioViagens">
+              <tr>
+                <td>{{ relatorio?.dataInicio | date: 'dd/MM/yyyy'}}</td>
+                <td>{{ relatorio?.dataFim | date: 'dd/MM/yyyy'}}</td>
+                <td>{{ relatorio?.nome }}</td>
+                <td>{{ relatorio?.email }}</td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <a type="button" class="btn btn-info btn-sm" placement="top" [routerLink]="['/viagens/visualizar-relatorio/'+ relatorio.idRelatorioViagens]" target="_blank"
+                      ngbTooltip="Visualizar relatório"><i class="fas fa-eye"></i></a>
+                    <button type="button" class="btn btn-primary btn-sm" placement="top" (click)="selecionarRelatorio(relatorio)"
+                      ngbTooltip="Selecionar relatório"><i class="fas fa-arrow-right"></i></button>
+                  </div>
+                </td>
+              </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+  </div>
+  <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+  </div>
+</div>

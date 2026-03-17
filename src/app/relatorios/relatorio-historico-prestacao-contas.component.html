@@ -1,0 +1,245 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white">
+    Relatório de Histórico de Prestação de Contas
+  </h3>
+  <div class="card-body">
+    <form
+      [formGroup]="relatorioHistoricoPrestacaoContasForm"
+      (submit)="pesquisar()"
+    >
+      <div class="row">
+        <div class="col d-flex">
+          <div class="mt-auto mb-4">
+            <div class="custom-control custom-radio">
+              <input
+                type="radio"
+                id="idDocumentacao"
+                formControlName="documentacaoOuDespesa"
+                class="custom-control-input"
+                value="documentacao"
+                (ngModelChange)="mudancaTipo($event)"
+              />
+              <label class="custom-control-label" for="idDocumentacao"
+                >Documentação</label
+              >
+            </div>
+            <div class="custom-control custom-radio">
+              <input
+                type="radio"
+                id="idDespesa"
+                formControlName="documentacaoOuDespesa"
+                class="custom-control-input"
+                value="despesa"
+                (ngModelChange)="mudancaTipo($event)"
+              />
+              <label class="custom-control-label" for="idDespesa"
+                >Despesa</label
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="idFederacao" class="required">Federação</label>
+            <select
+              formControlName="idFederacao"
+              class="form-control"
+              id="idFederacao"
+            >
+              <option
+                *ngFor="let federacao of federacoes"
+                [value]="federacao.idIndicador"
+              >
+                {{ federacao.sigla }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="idAnoExercicio" class="required">Ano</label>
+            <select
+              formControlName="anoExercicio"
+              class="form-control"
+              id="anoExercicio"
+              (ngModelChange)="anoChange($event)"
+            >
+              <option
+                *ngFor="let anoExercicio of anosExercicio"
+                [value]="anoExercicio"
+              >
+                {{ anoExercicio }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="idMesExercicio" class="required">Mês</label>
+            <select
+              formControlName="mesExercicio"
+              class="form-control"
+              id="idMesExercicio"
+            >
+              <option
+                *ngFor="let mesExercicio of mesesExercicio"
+                [value]="mesExercicio.idMes"
+              >
+                {{ mesExercicio.idMes + " - " + mesExercicio.nome }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <div [hidden]="!isDocumentacao">
+              <label for="idNomeDocumento">Nome do Documento</label>
+              <select
+                formControlName="nomeDocumento"
+                class="form-control"
+                id="idNomeDocumento"
+              >
+                <option value>Selecione</option>
+                <option
+                  *ngFor="let nomeDocumento of nomesDocumento"
+                  [ngValue]="nomeDocumento?.idNomeDocumento"
+                >
+                  {{ nomeDocumento?.nome }}
+                </option>
+              </select>
+            </div>
+            <div [hidden]="isDocumentacao">
+              <label for="idCategoria">Categoria</label>
+              <select
+                formControlName="categoria"
+                class="form-control"
+                id="idCategoria"
+              >
+                <option value>Selecione</option>
+                <option
+                  *ngFor="let categoria of categorias"
+                  [ngValue]="[categoria.codigoItem, categoria.codigoSubitem]"
+                >
+                  {{ categoria?.item }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button
+            [disabled]="relatorioHistoricoPrestacaoContasForm.disabled"
+            type="submit"
+            class="btn btn-primary btn-block w-100" style="margin: 1% 0;"
+          >
+            <i
+              [ngClass]="
+                relatorioHistoricoPrestacaoContasForm.disabled
+                  ? 'fa-spinner fa-pulse'
+                  : 'fa-search'
+              "
+              class="fas"
+            ></i>
+            {{
+              relatorioHistoricoPrestacaoContasForm.disabled
+                ? "Pesquisando"
+                : "Pesquisar"
+            }}
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button
+            (click)="baixarExcel()"
+            [disabled]="listagem.length === 0"
+            type="button"
+            class="btn btn-outline-success btn-block w-100"
+          >
+            <i class="far fa-file-excel"></i>
+            Baixar em Excel
+          </button>
+        </div>
+        <div class="col">
+          <button
+            (click)="baixarPdf()"
+            [disabled]="listagem.length === 0"
+            type="button"
+            class="btn btn-outline-danger btn-block w-100"
+          >
+            <i class="far fa-file-pdf"></i>
+            Baixar em PDF
+          </button>
+        </div>
+      </div>
+    </form>
+    <div [hidden]="listagem.length === 0" class="col">
+      <h4>Histórico</h4>
+      <div class="row">
+        <table
+          class="table table-bordered table-hover table-striped table-sm"
+          id="table-historico"
+        >
+          <thead>
+            <tr>
+              <th scope="col" class="col-1 text-center">N</th>
+              <th scope="col" class="col-1 text-center">Data</th>
+              <th scope="col" class="col-3 text-center">Usuário (e-mail)</th>
+              <th scope="col" *ngIf="isDocumentacao" class="col-3 text-center">
+                Item
+              </th>
+              <th scope="col" *ngIf="!isDocumentacao" class="col-2 text-center">
+                Categoria Item
+              </th>
+              <th scope="col" *ngIf="!isDocumentacao" class="col-1 text-center">
+                Valor
+              </th>
+              <th scope="col" class="col-3 text-center">Análise</th>
+              <th scope="col" class="col-1 text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let lst of listagem">
+              <td scope="row" class="col-1 text-center">{{ lst.n }}</td>
+              <td scope="row" class="col-1 text-center">
+                {{ lst.data | date : "short" }}
+              </td>
+
+              <td scope="row" class="col-3 text-center">{{ lst.email }}</td>
+              <td scope="row" *ngIf="isDocumentacao" class="col-3 text-center">
+                {{ lst.nomeDocumento }}
+              </td>
+              <td scope="row" *ngIf="!isDocumentacao" class="col-2 text-center">
+                {{ lst.item }}
+              </td>
+              <td scope="row" *ngIf="!isDocumentacao" class="col-1 text-center">
+                {{ lst.valorTotal | currency : "BRL" }}
+              </td>
+              <td scope="row" class="col-3 text-center">
+                {{ lst.status }} {{ lst.motivo !== null ? "-" : "" }}
+                {{ lst.motivo }}
+              </td>
+              <td scope="row" class="col-1 text-center">
+                <a
+                  *ngIf="lst?.idArquivo !== null"
+                  [href]="urlDownload + lst?.idArquivo"
+                  download
+                  class="btn btn-primary btn-sm"
+                  ngbTooltip="Baixar Arquivo"
+                  placement="bottom"
+                  ><i class="fas fa-download"></i
+                ></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <h2 *ngIf="resultadoNaoEncontrado" class="text-center my-5">
+      Resultado não encontrado.
+      <i class="far fa-frown"></i>
+    </h2>
+  </div>
+</div>

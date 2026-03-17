@@ -1,0 +1,122 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">
+        <i class="fas fa-plus"></i>
+        Cadastrar Item / Subitem
+    </h3>
+    <div class="card-body">
+        <form
+            [formGroup]="form"
+            (submit)="salvar()"
+            class="mb-3">
+            <div class="row">
+                <div class="form-group col-12">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input
+                            (change)="resetForm('item')"
+                            type="radio"
+                            id="idRadioItem"
+                            formControlName="radioItemSubitem"
+                            class="custom-control-input"
+                            value="item">
+                        <label
+                            class="custom-control-label"
+                            for="idRadioItem">
+                            Item
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input
+                            (change)="resetForm('subitem')"
+                            type="radio"
+                            id="idRadioSubitem"
+                            formControlName="radioItemSubitem"
+                            class="custom-control-input"
+                            value="subitem">
+                        <label
+                            class="custom-control-label"
+                            for="idRadioSubitem">
+                            Subitem
+                        </label>
+                    </div>
+                </div>
+                <div
+                    *ngIf="c.radioItemSubitem.value === 'subitem'"
+                    class="form-group col-12">
+                    <label for="idItem">
+                        Selecione o item ao qual deseja que este subitem pertença
+                    </label>
+                    <select
+                        [ngClass]="{ 'is-invalid': enviando && c.codigoItem.errors }"
+                        (change)="selecionarItem()"
+                        formControlName="codigoItem"
+                        class="form-control"
+                        id="idItem">
+                        <option value>Selecione</option>
+                        <option *ngFor="let item of itens" [value]="item.codigoItem">{{ item.codigoItem + ' ' + item.nome }}</option>
+                    </select>
+                </div>
+                <div
+                    *ngIf="c.radioItemSubitem.value === 'item'"
+                    class="form-group col">
+                    <label for="idCodigoItem">Código</label>
+                    <input
+                        [ngClass]="{ 'is-invalid': enviando && c.codigoItem.errors }"
+                        formControlName="codigoItem"
+                        type="number"
+                        class="form-control"
+                        id="idCodigoItem">
+                </div>
+                <div
+                    *ngIf="c.radioItemSubitem.value === 'subitem'"
+                    class="form-group col">
+                    <label for="idCodigoSubitem">Código (Inserir apenas o número do subitem)</label>
+                    <input
+                        [ngClass]="{ 'is-invalid': enviando && c.codigoSubitem.errors }"
+                        formControlName="codigoSubitem"
+                        type="number"
+                        class="form-control"
+                        id="idCodigoSubitem">
+                </div>
+                <div class="form-group col">
+                    <label for="idNome">Nome</label>
+                    <input
+                        [ngClass]="{ 'is-invalid': enviando && c.nome.errors }"
+                        formControlName="nome"
+                        type="text"
+                        class="form-control"
+                        id="idNome">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button
+                        type="submit"
+                        [disabled]="acaoBloqueada"
+                        class="btn btn-success btn-block">
+                        <i class="fas fa-save"></i>
+                        Salvar
+                    </button>
+                </div>
+                <div class="col">
+                    <button
+                        [routerLink]="['/estimativaDeCusto/manter', anoExercicio, 'listar']"
+                        class="btn btn-danger btn-block">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </form>
+        <ng-template [ngIf]="c.radioItemSubitem.value === 'item' ? itens?.length > 0 : subitens.length > 0">
+          <h5>
+              <i class="fas fa-list-ol"></i>
+          {{ c.radioItemSubitem.value === 'item' ? 'Itens' : 'Subitens' }} Cadastrados
+          </h5>
+          <ul
+              class="pl-0"
+              [style.listStyle]="'none'">
+              <li *ngFor="let itemOuSubitem of c.radioItemSubitem.value === 'item' ? itens : subitens">{{ itemOuSubitem.codigoSubitem ? itemOuSubitem.codigoItem + '.' + itemOuSubitem.codigoSubitem + ' ' + itemOuSubitem.nome : itemOuSubitem.codigoItem + ' ' + itemOuSubitem.nome }}</li>
+          </ul>
+        </ng-template>
+    </div>
+</div>

@@ -1,0 +1,122 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Visualizar relatórios de visitas técnicas</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <a *ngIf="podeEditar" class="btn btn-block btn-success w-100"
+                    routerLink="/visitaTecnica/cadastrarRelatorioVisitaTecnica"><i
+                        class="fas fa-receipt"></i>&nbsp;Cadastrar nova visita</a>
+            </div>
+        </div>
+        <app-barra-espacamento></app-barra-espacamento>
+        <div class="row mb-3">
+            <div class="form-group col-md-6">
+                <label for="federacaoUsuario">Federação</label>
+                <select id="federacaoUsuario" class="form-control form-control-sm" [(ngModel)]="filtroIdFederacao">
+                    <option selected value="0" >Selecione...</option>
+                    <ng-container *ngFor="let federacao of lstFederacoes">
+                        <option [value]="federacao.idIndicador">{{federacao?.sigla}}</option>
+                    </ng-container>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="lblPorAno">Ano</label>
+                <select class="form-control form-control-sm" id="lblPorAno" [(ngModel)]="filtroAno">
+                    <option selected disabled value="0">Ano</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="lblPorMes">Mês</label>
+                <div class="input-group">
+                    <select class="form-control form-control-sm" id="lblPorMes" tabindex="4" [(ngModel)]="filtroMes">
+                        <option selected disabled value="0">Mês</option>
+                        <option value="1">1 - Janeiro</option>
+                        <option value="2">2 - Fevereiro</option>
+                        <option value="3">3 - Março</option>
+                        <option value="4">4 - Abril</option>
+                        <option value="5">5 - Maio</option>
+                        <option value="6">6 - Junho</option>
+                        <option value="7">7 - Julho</option>
+                        <option value="8">8 - Agosto</option>
+                        <option value="9">9 - Setembro</option>
+                        <option value="10">10 - Outubro</option>
+                        <option value="11">11 - Novembro</option>
+                        <option value="12">12 - Dezembro</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-primary w-100" [disabled]="filtroIdFederacao == 0 || filtroAno == 0" placement="top" ngbTooltip="Filtrar"
+                            (click)="carregarVisitas()">
+                            <i class="fas fa-search"></i>
+                        </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-bordered table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Mês</th>
+                            <th scope="col">Ano</th>
+                            <th scope="col">Federação</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="!loading">
+                            <ng-container *ngFor="let visita of this.lstVisitas">
+                                <tr>
+                                    <td>{{visita.mesExercicio}}</td>
+                                    <td>{{visita.anoExercicio}}</td>
+                                    <td>{{visita.federacao }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a *ngIf="podeEditar"
+                                                [routerLink]="['/visitaTecnica/editarRelatorioVisitaTecnica/', visita.idVisita]"
+                                                class="btn btn-warning btn-sm" placement="top"
+                                                ngbTooltip="Alterar visita"><i class="fas fa-edit"></i></a>
+                                            <a *ngIf="visita?.idArquivo"
+                                                [href]="urlDownload + visita?.idArquivo" class="btn btn-info btn-sm"
+                                                placement="top" [ngbTooltip]="'Baixar arquivo'">
+                                                <i class="fas fa-file-download"></i>
+                                            </a>
+                                            <button *ngIf="podeEditar" [disabled]="acaoBloqueada" type="button"
+                                                class="btn btn-danger btn-sm" placement="top"
+                                                ngbTooltip="Excluir visita"
+                                                (click)="excluirVisita(visita.idVisita)"><i
+                                                    class="fas fa-trash-alt"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="loading">
+                            <tr>
+                                <td colspan="6">
+                                    <div class="mt-2">
+                                        <app-loading-div mensagem="Carregando visitas..."></app-loading-div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <ng-container *ngIf="msg">
+                            <tr>
+                                <td colspan="6">
+                                    <div class="alert alert-info">{{msg}}</div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

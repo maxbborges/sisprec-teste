@@ -1,0 +1,60 @@
+nav.navbar {
+  background-color: #104274 !important;
+  padding: 0.5% 2%;
+  
+  // Estilo para a marca (navbar-brand)
+  .navbar-brand {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: #ffffff !important;
+    
+    &:hover {
+      color: #e0e0e0;
+    }
+  }
+
+  // Estilo para os links de navegação
+  .navbar-nav {
+    .nav-link {
+      color: #ffffff !important;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+      
+      &:hover {
+        color: #e0e0e0;
+      }
+      
+      &.active {
+        color: #ffffff;
+        font-weight: 500;
+      }
+    }
+  }
+
+  // Estilo para o texto da barra (versão)
+  .navbar-text {
+    color: #ffffff !important;
+    font-size: 0.85rem;
+  }
+
+  // Estilo para o ícone do toggle (menu mobile)
+  .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+    
+    &:focus {
+      box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+    }
+  }
+}
+
+// Estilo para card-header - aplicado globalmente com ::ng-deep
+::ng-deep .card-header {
+  background-color: #104274 !important;
+  border-color: #0d3155 !important;
+  color: #ffffff !important;
+  font-weight: 500;
+  
+  &:focus {
+    background-color: #0d3155;
+  }
+}

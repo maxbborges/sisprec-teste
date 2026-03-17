@@ -1,0 +1,79 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white"> Visualizar Despesas / Receitas do Lançamento de Extrato</h3>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-0"><strong>Lançamento do Extrato:</strong> {{lancamento?.valor|currency:'BRL' }}</h5>
+      </div>
+    </div>
+    <!-- <div class="row">
+      <div class="col">
+        <h5 class="mb-0"><strong>Lançamento das Despesas e Devoluções:</strong> 2.000,00</h5>
+      </div>
+    </div> -->
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-3"><strong>Saldo deste Lançamento:</strong> {{saldoLancamento | currency:'BRL'}}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class=" mb-3">
+          <button (click)="voltar()" class="btn btn-light me-2">Voltar</button>
+         <button class="btn btn-dark" (click)="exportarExcel()">Gerar Excel</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <table class="table table-bordered table-hover table-striped table-sm">
+          <thead>
+            <tr>
+              <th class="align-middle text-center" scope="col">N</th>
+              <th class="align-middle text-center" scope="col">Data</th>
+              <th class="align-middle text-center" scope="col">Categoria</th>
+              <th class="align-middle text-center" scope="col">Item Categoria</th>
+              <th class="align-middle text-center" scope="col">Valor</th>
+              <th class="align-middle text-center" scope="col">Resultado Analise</th>
+              <th class="align-middle text-center" scope="col">Motivo</th>
+              <th class="align-middle text-center" scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="lstDespesas.length > 0; else listaVazia">
+              <ng-container *ngFor="let item of lstDespesas; index as i">
+                <tr [style.background-color]="item.analise == 'Retornado para Ajustes' ? '#ffff00' : ''">
+                  <td class="align-middle text-center">{{i + 1 }}</td>
+                  <td class="align-middle text-center">{{item?.dataEvento | date:'shortDate'}}</td>
+                  <td class="align-middle text-center">{{item?.categoria}}</td>
+                  <td class="align-middle text-center">{{item?.codigoItem}} - {{item?.item}}</td>
+                  <td class="align-middle text-center">{{item?.valor | currency:'BRL'}}</td>
+                  <td class="align-middle text-center">{{item?.analise}}</td>
+                  <td class="align-middle text-center">{{item?.motivo}}</td>
+                  <td class="align-middle text-center">
+                    <app-download-arquivo [despesaArquivo]="item" ></app-download-arquivo>
+                    <app-ficha-auxiliar *ngIf="item?.analise === 'Retornado para Ajustes'" motivo="{{item?.motivo}}" observacao="{{item?.observacao}}"></app-ficha-auxiliar>
+                    <a *ngIf="item.idRelatorioViagens !== null" class="btn btn-info btn-sm" target="_blank" [routerLink]="['/viagens/visualizar-relatorio/'+ item.idRelatorioViagens]">
+                      <i class="fas fa-plane"></i>
+                    </a>
+                  </td>
+                  <!-- <td class="align-middle text-center" style="width: 60px;">
+                    <a *ngIf="item?.idArquivo !== '00000000-0000-0000-0000-000000000000'" [href]="urlDownload + item?.idArquivo" class="btn btn-warning btn-sm" placement="top" [ngbTooltip]="'Baixar arquivo'"><i class="fas fa-file-download"></i></a>
+                    <ng-container *ngIf="item?.idArquivo === '00000000-0000-0000-0000-000000000000'"> Sem arquivo cadastrado</ng-container>
+                  </td> -->
+                </tr>
+              </ng-container>
+            </ng-container>
+            <ng-template #listaVazia>
+              <tr>
+                <td colspan="8">
+                  <div class="alert alert-info">{{msg}}</div>
+                </td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

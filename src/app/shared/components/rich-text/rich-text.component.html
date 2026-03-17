@@ -1,0 +1,52 @@
+<div #toolbar class="ql-toolbar ql-snow" [class.error-ql-top]="control.invalid">
+  <span class="ql-formats">
+    <select class="ql-size">
+      <ng-container *ngFor="let i of tamanhosTexto; index as id">
+        <option [value]="i" [defaultSelected]="i == '12px'">{{i}}</option>
+      </ng-container>
+    </select>
+    <select class="ql-header">
+      <option default selected></option>
+      <ng-container *ngFor="let i of [1,2,3,4,5,6]">
+        <option [value]="i">Título {{i}}</option>
+      </ng-container>
+    </select>
+  </span>
+  <span class="ql-formats">
+    <select class="ql-font"></select>
+    <select class="ql-color"></select>
+  </span>
+  <span class="ql-formats">
+    <button class="ql-bold"></button>
+    <button class="ql-italic"></button>
+    <button class="ql-underline"></button>
+    <button class="ql-strike"></button>
+    <button class="ql-script" value="sub"></button>
+    <button class="ql-script" value="super"></button>
+  </span>
+  <span class="ql-formats">
+    <button class="ql-align" value=""></button>
+    <button class="ql-align" value="center"></button>
+    <button class="ql-align" value="right"></button>
+    <button class="ql-align" value="justify"></button>
+  </span>
+  <span class="ql-formats">
+    <button class="ql-list" value="ordered"></button>
+    <button class="ql-list" value="bullet"></button>
+  </span>
+  <span class="ql-formats">
+    <button class="ql-image"></button>
+    <button class="ql-link"></button>
+    
+  </span>
+</div>
+ 
+<!-- Container do editor -->
+<div #editor class="ql-container ql-snow" style="min-height: 180px; max-height: 350px; overflow-y:scroll;" [class.error-ql]="control.invalid">
+  <div class="ql-editor"></div>
+</div>
+
+<div *ngIf="control.getError('noText')" class="invalid-feedback d-block">
+  <span>É necessária a inserção de conteúdo textual.</span>
+</div>
+

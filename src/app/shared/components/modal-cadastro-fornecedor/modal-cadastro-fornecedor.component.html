@@ -1,0 +1,85 @@
+<div class="modal-content">
+  <div class="modal-header">
+        <i class="fas fa-chevron-left" style="font-size: 24px; margin-top: 3px; cursor: pointer;" (click)="voltar()"></i>
+        &nbsp;
+        &nbsp;
+        <h5 class="modal-title">Cadastrar Fornecedor</h5>
+        <button type="button" class="close" (click)="cancelar()" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="formFornecedor">
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="idTipoFornecedor" id="rndTipo1"
+                                formControlName="idTipoFornecedor" value="1013" (change)="mudaTipoFornecedor($event)">
+                            <label class="form-check-label" for="rndTipo1">Pessoa Jurídica</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="idTipoFornecedor" id="rndTipo2"
+                                formControlName="idTipoFornecedor" value="1012" (change)="mudaTipoFornecedor($event)">
+                            <label class="form-check-label" for="rndTipo2">Pessoa Física</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <ng-container *ngIf="ehPessoaJuridica">
+                        <div class="form-group col-md-6">
+                            <label for="txtCnpj">CNPJ:</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="txtCnpj" 
+                                formControlName="numeroDocumento" 
+                                [class.is-invalid]="formFornecedor.controls.numeroDocumento.invalid && enviado"
+                            >
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="txtRazaoSocial">Razão social:</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="txtRazaoSocial" 
+                                formControlName="nome"
+                                [class.is-invalid]="formFornecedor.controls.nome.invalid && enviado"
+                            >
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="!ehPessoaJuridica">
+                        <div class="form-group col-md-6">
+                            <label for="txtCpf">CPF:</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="txtCpf" 
+                                formControlName="numeroDocumento" 
+                                [class.is-invalid]="formFornecedor.controls.numeroDocumento.invalid && enviado"
+                            >
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="txtNomeFornecedor">Nome:</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="txtNomeFornecedor" 
+                                formControlName="nome" 
+                                [class.is-invalid]="formFornecedor.controls.nome.invalid && enviado"
+                            >
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="text-align: right;">
+            <div class="col-12">
+                <button type="button" class="btn btn-success" (click)="salvarFornecedor()" style="min-width: 49.5%;">Confirmar Cadastro</button>
+            </div>
+        </div>
+    </form>
+  </div>
+</div>

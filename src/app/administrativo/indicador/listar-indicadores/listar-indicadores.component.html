@@ -1,0 +1,59 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white"><i class="fas fa-th-list"></i>&nbsp;&nbsp;Indicadores somente desenvolvedor</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-block btn-success w-100" routerLink="/administrativo/indicadores/cadastrar"><i
+                        class="fas fa-plus"></i>&nbsp;Cadastrar novo indicador</a>
+            </div>
+        </div>
+        <app-barra-espacamento></app-barra-espacamento>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="slcTipoIndicador">Filtrar por tipo</label>
+                    <select class="form-control" id="slcTipoIndicador" [(ngModel)]="idIndicadorTipoFiltro"
+                        (change)="onChangeFiltrarIndicadoresPorTipo()">
+                        <option value="0">Todos</option>
+                        <ng-container *ngFor="let indicadorTipo of lstIndicadoresTipo">
+                            <option [value]="indicadorTipo.idIndicadorTipo">{{indicadorTipo.nome}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Sigla</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let indicador of lstIndicadoresFiltrado">
+                            <tr>
+                                <td>{{indicador?.idIndicador}}</td>
+                                <td>{{indicador?.indicadorTipo}}</td>
+                                <td>{{indicador?.nome}}</td>
+                                <td>{{indicador?.sigla}}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a [routerLink]="['/administrativo/indicadores/editar/', indicador.idIndicador]" class="btn btn-warning btn-sm" placement="top"
+                                            ngbTooltip="Editar indicador"><i class="fas fa-edit"></i></a>
+                                        <!-- <button type="button" class="btn btn-danger btn-sm" placement="top"
+                                            ngbTooltip="Desativar indicador"><i class="fas fa-trash-alt"></i></button> -->
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

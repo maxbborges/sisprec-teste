@@ -1,0 +1,57 @@
+<div class="form-group">
+    <label>Enviar arquivo</label>
+    <div>
+        <p-fileUpload
+            name="myfile"
+            auto="auto"
+            maxFileSize="1073741824"
+            (onUpload)="onUpload($event)"
+            (onError)="onError($event)"
+            invalidFileSizeMessageDetail="Tamanho máximo para upload é de {0}"
+            accept="application/pdf"
+            url="{{urlUploadArquivo}}"
+            chooseLabel="Selecionar arquivo"
+            [mode]="mode"
+        >
+            <!-- ANTIGO BOTÃO DE DOWNLOAD
+                <ng-template pTemplate="toolbar">
+                <div class="float-right">
+                    <a
+                        *ngIf="uploadComSucesso"
+                        href="{{apiUrl + 'arquivo/porId/' + idArquivo}}"
+                        class="btn btn-primary btn-sm"
+                        placement="top"
+                        ngbTooltip="Baixar arquivo"
+                    >
+                        <i class="fas fa-download"></i>
+                    </a>
+                </div>
+            </ng-template>
+            -->
+            <ng-template pTemplate="content">
+                <div class="row">
+                    <div class="col-12">
+                        <div
+                            class="alert alert-info"
+                            *ngIf="!uploadComSucesso"
+                        >
+                            Selecione um arquivo para enviar.
+                        </div>
+                        <div
+                            class="alert alert-success"
+                            *ngIf="uploadComSucesso"
+                        >
+                            Arquivo anexado com sucesso.
+                        </div>
+                        <div
+                            class="alert alert-danger"
+                            *ngIf="uploadComFalha"
+                        >
+                            Erro ao anexar documento. Verifique o arquivo. Ou tente envia-lo no formato pdf.
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </p-fileUpload>
+    </div>
+</div>

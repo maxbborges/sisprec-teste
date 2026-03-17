@@ -1,0 +1,105 @@
+<div class="card  shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Relatório de Despesas</h3>
+    <div class="card-body">
+        <form
+            [formGroup]="f"
+            class="mb-3">
+            <div class="row">
+                <div
+                    *ngIf="federacoes$ | async as federacoes"
+                    class="col">
+                    <select
+                        formControlName="idFederacao"
+                        class="form-control">
+                        <option value>Federação</option>
+                        <option value="0">Todas</option>
+                        <option
+                            *ngFor="let federacao of federacoes"
+                            [value]="federacao.idIndicador">
+                            {{ federacao.sigla }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col">
+                    <select
+                        formControlName="ano"
+                        class="form-control">
+                        <option value>Ano</option>
+                        <option
+                            *ngFor="let ano of anos"
+                            [value]="ano">
+                            {{ ano }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col">
+                    <button
+                        [disabled]="f.invalid"
+                        (click)="clicarPesquisar()"
+                        class="btn btn-primary btn-block">
+                        <i class="fas fa-search"></i>
+                        Pesquisar
+                    </button>
+                </div>
+            </div>
+        </form>
+        <table
+            *ngIf="relatorioDespesa$ | async as relatorioDespesa"
+            class="table table-striped table-hover table-sm">
+            <thead>
+                <tr>
+                    <th [style.width.px]="450"></th>
+                    <th scope="col">Janeiro</th>
+                    <th scope="col">Fevereiro</th>
+                    <th scope="col">Março</th>
+                    <th scope="col">Abril</th>
+                    <th scope="col">Maio</th>
+                    <th scope="col">Junho</th>
+                    <th scope="col">Julho</th>
+                    <th scope="col">Agosto</th>
+                    <th scope="col">Setembro</th>
+                    <th scope="col">Outubro</th>
+                    <th scope="col">Novembro</th>
+                    <th scope="col">Dezembro</th>
+                    <th scope="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let rd of relatorioDespesa">
+                    <ng-container *ngIf="!rd.item; else categoriaItem">
+                        <th scope="row">{{ rd.categoria }}</th>
+                        <th>{{ rd.janeiro | currency:'BRL' }}</th>
+                        <th>{{ rd.fevereiro | currency:'BRL' }}</th>
+                        <th>{{ rd.marco | currency:'BRL' }}</th>
+                        <th>{{ rd.abril | currency:'BRL' }}</th>
+                        <th>{{ rd.maio | currency:'BRL' }}</th>
+                        <th>{{ rd.junho | currency:'BRL' }}</th>
+                        <th>{{ rd.julho | currency:'BRL' }}</th>
+                        <th>{{ rd.agosto | currency:'BRL' }}</th>
+                        <th>{{ rd.setembro | currency:'BRL' }}</th>
+                        <th>{{ rd.outubro | currency:'BRL' }}</th>
+                        <th>{{ rd.novembro | currency:'BRL' }}</th>
+                        <th>{{ rd.dezembro | currency:'BRL' }}</th>
+                        <th>{{ rd.totalAnual | currency:'BRL' }}</th>
+                    </ng-container>
+                    <ng-template #categoriaItem>
+                        <td scope="row">{{ rd.item }}</td>
+                        <td>{{ rd.janeiro | currency:'BRL' }}</td>
+                        <td>{{ rd.fevereiro | currency:'BRL' }}</td>
+                        <td>{{ rd.marco | currency:'BRL' }}</td>
+                        <td>{{ rd.abril | currency:'BRL' }}</td>
+                        <td>{{ rd.maio | currency:'BRL' }}</td>
+                        <td>{{ rd.junho | currency:'BRL' }}</td>
+                        <td>{{ rd.julho | currency:'BRL' }}</td>
+                        <td>{{ rd.agosto | currency:'BRL' }}</td>
+                        <td>{{ rd.setembro | currency:'BRL' }}</td>
+                        <td>{{ rd.outubro | currency:'BRL' }}</td>
+                        <td>{{ rd.novembro | currency:'BRL' }}</td>
+                        <td>{{ rd.dezembro | currency:'BRL' }}</td>
+                        <td>{{ rd.totalAnual | currency:'BRL' }}</td>
+                    </ng-template>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

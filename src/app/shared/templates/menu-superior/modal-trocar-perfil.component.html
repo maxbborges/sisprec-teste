@@ -1,0 +1,28 @@
+<div class="modal-body">
+  <form [formGroup]="formTrocarPerfil">
+    <div class="form-group">
+      <label for="idTipoUsuario">Tipo de usuário</label>
+      <select
+        class="form-control"
+        id="sIdTipoUsuario"
+        formControlName="idTipoUsuario"
+      >
+        <option *ngIf="usuario?.idTipoUsuario === 35" [value]="35">
+          Desenvolvedor
+        </option>
+        <option [value]="6">Conferência da Documentação</option>
+        <option [value]="5">Gestor Fiscal</option>
+      </select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button (click)="cancelar()" type="button" class="btn btn-danger">
+    <i class="fas fa-times"></i>
+    Cancelar
+  </button>
+  <button (click)="trocarPerfil()" [disabled]="acaoBloqueada" type="button" class="btn btn-success">
+    <i class="fas fa-people-arrows"></i>
+    Trocar Perfil
+  </button>
+</div>

@@ -1,0 +1,187 @@
+<form [formGroup]="formCadastro" (submit)="salvar()">
+    <div class="card shadow mb-3">
+        <h3 class="card-header bg-primary text-white">Cadastrar colaborador</h3>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="idTipoColaborador" id="rndTipo1"
+                                    formControlName="idTipoColaborador" value="1013" (change)="mudaTipoColaborador($event)" autocomplete="off">
+                                <label class="form-check-label" for="rndTipo1">Pessoa Jurídica</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="idTipoColaborador" id="rndTipo2"
+                                    formControlName="idTipoColaborador" value="1012" (change)="mudaTipoColaborador($event)" autocomplete="off">
+                                <label class="form-check-label" for="rndTipo2">Pessoa Física</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-12">
+                          <label for="slcPorFederacao">Federação</label>
+                          <select class="form-control form-control-sm" id="slcPorFederacao" [(ngModel)]="filtroFederacao"
+                          formControlName="idFederacao">
+                              <option [selected]="this.usuarioLogado.idFiliacao === federacao.idIndicador" *ngFor="let federacao of lstFederacoes" [value]="federacao.idIndicador">{{federacao?.sigla}}</option>
+                          </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <ng-container *ngIf="ehPessoaJuridica">
+                            <div class="form-group col-md-4">
+                                <label for="txtCnpj">CNPJ:</label>
+                                <input type="text" class="form-control" id="txtCnpj" formControlName="numeroDocumento" mask="00.000.000/0000-00"
+                                [class.is-invalid]="!formCadastro.controls.numeroDocumento.valid"
+                                [class.is-valid]="formCadastro.controls.numeroDocumento.valid">
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label for="txtRazaoSocial">Razão social:</label>
+                                <input type="text" class="form-control" id="txtRazaoSocial" formControlName="nome"
+                                [class.is-invalid]="!formCadastro.controls.nome.valid"
+                                [class.is-valid]="formCadastro.controls.nome.valid">
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="!ehPessoaJuridica">
+                            <div class="form-group col-md-4">
+                                <label for="txtCpf">CPF:</label>
+                                <input type="text" class="form-control" id="txtCpf" formControlName="numeroDocumento" mask="000.000.000-00"
+                                [class.is-invalid]="!formCadastro.controls.numeroDocumento.valid"
+                                [class.is-valid]="formCadastro.controls.numeroDocumento.valid">
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label for="txtNomeColaborador">Nome:</label>
+                                <input type="text" class="form-control" id="txtNomeColaborador" formControlName="nome" 
+                                [class.is-invalid]="!formCadastro.controls.nome.valid"
+                                [class.is-valid]="formCadastro.controls.nome.valid">
+                            </div>
+                        </ng-container>
+                        <div class="form-group col-md-4">
+                          <label for="txtTelefoneNomeColaborador">Telefone:</label>
+                          <input type="text" class="form-control" id="txtTelefoneColaborador" formControlName="telefone" mask="(00)00000-0000"
+                          [class.is-invalid]="!formCadastro.controls.telefone.valid"
+                                [class.is-valid]="formCadastro.controls.telefone.valid">
+                        </div>
+                        <div class="form-group col-md-8">
+                          <label for="txtNomeColaborador">Email:</label>
+                          <input type="email" class="form-control" id="txtEmailColaborador" formControlName="email" 
+                          [class.is-invalid]="!formCadastro.controls.email.valid"
+                                [class.is-valid]="formCadastro.controls.email.valid">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label for="dataNascimento">Nascimento:</label>
+                            <input type="date" class="form-control" id="dataNascimento" formControlName="dataNascimento" 
+                            [class.is-invalid]="!formCadastro.controls.dataNascimento.valid"
+                                [class.is-valid]="formCadastro.controls.dataNascimento.valid">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="rg">RG:</label>
+                            <input type="text" class="form-control" id="Rg" formControlName="rg" >
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="placaVeiculo">Placa do Veículo que dirige:</label>
+                            <input type="text" class="form-control" id="placaVeiculo" formControlName="placaVeiculo" 
+                            [class.is-invalid]="!formCadastro.controls.placaVeiculo.valid"
+                                [class.is-valid]="formCadastro.controls.placaVeiculo.valid">
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="enderecoLocacao">Endereço da base onde trabalha:</label>
+                            <input type="text" class="form-control" id="enderecoLocacao" formControlName="enderecoLocacao" 
+                            [class.is-invalid]="!formCadastro.controls.enderecoLocacao.valid"
+                                [class.is-valid]="formCadastro.controls.enderecoLocacao.valid">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col">
+                            <label for="dataAdmissao">Data da Admissão:</label>
+                            <input type="date" class="form-control" id="dataAdmissao" formControlName="dataAdmissao" 
+                            [class.is-invalid]="!formCadastro.controls.dataAdmissao.valid"
+                                [class.is-valid]="formCadastro.controls.dataAdmissao.valid">
+                        </div>
+                        <div class="form-group col">
+                            <label for="dataDesligamento">Data do Desligamento:</label>
+                            <input type="date" class="form-control" id="dataDesligamento" formControlName="dataDesligamento" >
+                        </div>  
+                        <div class="form-group col">
+                            <label class="row font-weight-bold" for="isExclusividade">Colaborador Exclusivo:</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="isExclusividade" id="rndExcl1"
+                                    formControlName="isExclusividade" value="true" (change)="mudaExclusividadeColaborador($event)" autocomplete="off">
+                                <label class="form-check-label" for="rndExcl1">Sim</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="isExclusividade" id="rndExcl2"
+                                    formControlName="isExclusividade" value="false" (change)="mudaExclusividadeColaborador($event)" autocomplete="off">
+                                <label class="form-check-label" for="rndExcl2">Não</label>
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="row">
+                        <h5 for="banco">Dados Bancários</h5>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label for="banco">Banco:</label>
+                            <select class="form-control" id="banco" [(ngModel)]="filtroBanco"
+                                formControlName="idBanco"
+                                [class.is-invalid]="!formCadastro.controls.idBanco.valid"
+                                [class.is-valid]="formCadastro.controls.idBanco.valid">
+                              <option *ngFor="let banco of lstBancos" [value]="banco.idBanco">{{banco?.titulo}}</option>
+                          </select>
+                        </div>
+                        <div class="form-group col-md-1">
+                            <label for="agencia">Agência:</label>
+                            <input type="text" class="form-control" id="agencia" formControlName="agencia" 
+                            [class.is-invalid]="!formCadastro.controls.agencia.valid"
+                                [class.is-valid]="formCadastro.controls.agencia.valid">
+                        </div>
+                        <div class="form-group col-md-2 text-start">
+                            <label for="agenciaDigito">Digito:</label>
+                            <select class="form-control text-start" id="agenciaDigito" [(ngModel)]="filtroAgenciaDigito"
+                                formControlName="agenciaDigito"
+                                [class.is-invalid]="!formCadastro.controls.agenciaDigito.valid"
+                                [class.is-valid]="formCadastro.controls.agenciaDigito.valid">
+                              <option *ngFor="let digito of lstDigitos" [value]="digito">{{digito}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="conta">Conta:</label>
+                            <input type="text" class="form-control" id="conta" formControlName="conta" 
+                            [class.is-invalid]="!formCadastro.controls.conta.valid"
+                                [class.is-valid]="formCadastro.controls.conta.valid">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="contaDigito">Digito:</label>
+                            <select class="form-control text-start" id="contaDigito" [(ngModel)]="filtroContaDigito"
+                                formControlName="contaDigito"
+                                [class.is-invalid]="!formCadastro.controls.contaDigito.valid"
+                                [class.is-valid]="formCadastro.controls.contaDigito.valid">
+                              <option *ngFor="let digito of lstDigitos" [value]="digito">{{digito}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="tipoConta">Tipo de Conta:</label>
+                            <select class="form-control" id="tipoConta"
+                                formControlName="tipoConta"
+                                [class.is-invalid]="!formCadastro.controls.tipoConta.valid"
+                                [class.is-valid]="formCadastro.controls.tipoConta.valid">
+                              <option *ngFor="let tipo of lstTipoConta" [value]="tipo">{{tipo}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-1">
+                            <label for="variacaoConta">Variação:</label>
+                            <input type="text" class="form-control" id="variacaoConta" formControlName="variacaoConta" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            <div class="float-end">
+                <app-botao-voltar textoBotao='Cancelar'></app-botao-voltar>&nbsp;
+                <button type="submit" [disabled]="acaoBloqueada" class="btn btn-success"><i class="fas fa-save"></i>&nbsp;Cadastrar
+                    colaborador</button>
+            </div>
+        </div>
+    </div>
+</form>

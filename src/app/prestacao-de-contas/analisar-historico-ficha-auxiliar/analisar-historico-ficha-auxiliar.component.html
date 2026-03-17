@@ -1,0 +1,137 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white"> Histórico da Ficha Auxiliar da {{tipoLancamento}}</h3>
+  <div class="card-body">
+    <div class="row">
+        <ng-container *ngIf="tipoDocumento == 'documentacao'">
+            <div class="col-2">
+                <h5 class="mb-3"><strong>Data:</strong> {{this.objeto?.dataCadastro | date: 'dd/MM/yyyy HH:mm'}}</h5>
+            </div>
+            <div class="col-4">
+              <h5 class="mb-0"><strong>Nome Documento:</strong> {{this.objeto?.nomeDocumento}}</h5>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="tipoDocumento == 'contaCorrente'">
+            <div class="col-2">
+                <h5 class="mb-3"><strong>Data:</strong> {{this.objeto?.dataEvento | date: 'dd/MM/yyyy'}}</h5>
+            </div>
+            <div class="col-2">
+              <h5 class="mb-0"><strong>Tipo Lançamento:</strong> {{this.objeto?.tipoLancamento}}</h5>
+            </div>
+            <div class="col-2">
+                <h5 class="mb-3"><strong>Item:</strong> {{this.objeto?.itemLancamento}}</h5>
+            </div>
+        </ng-container>
+      <div class="col-3">
+        <h5 class="mb-3"><strong>Exercício:</strong> {{mesExerciocio}}/{{anoExercicio}}</h5>
+      </div>
+      <div class="col-3">
+        <h5 class="mb-3"><strong>Análise:</strong> {{this.objeto?.analise == null ? 'Não Analisado' : getStatus(this.objeto?.analise) }}</h5>
+      </div>
+      <div class="col-3">
+       <!--        <ng-container *ngIf="tipoDocumento == 'documentacao'">
+            <h5 class="mb-3"><strong>Motivo:</strong> {{this.objeto?.nomeMotivo}}</h5>
+        </ng-container>
+        <ng-container *ngIf="tipoDocumento == 'contaCorrente'">
+            <h5 class="mb-3"><strong>Motivo:</strong> {{this.objeto?.motivo}}</h5>
+        </ng-container> -->
+        <h5 class="mb-3"><strong>Federação:</strong> {{this.objeto?.siglaFederacao}}</h5>
+        <ng-container *ngIf="tipoDocumento == 'contaCorrente'">
+          <h5 class="mb-3"><strong>Valor:</strong> {{this.objeto?.valor  | currency: 'BRL'}}</h5>
+          <h5><strong>Sub Item</strong></h5>
+          <div class="d-flex mb-3">
+            <ng-multiselect-dropdown
+                id="dropdownSubitens"
+                [placeholder]="'Selecione o sub item'"
+                [settings]="{ singleSelection: false }"
+                [data]="this.subitens"
+                [(ngModel)]="subitensSelecionados"
+                class="flex-grow-1"
+            >
+            </ng-multiselect-dropdown>
+            <button type="button" class="btn btn-primary" (click)="filtrarHistorico()">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <!-- <div class="row">
+      <div class="col">
+        <h5 class="mb-3"><strong>Observação:</strong> {{this.objeto?.observacao}}</h5>
+      </div>
+    </div> -->
+    <div class="row">
+      <div class="col">
+        <div class=" mb-3">          
+          <button (click)="voltar()" class="btn btn-outline-dark me-2">Voltar</button>&nbsp;
+          <button class="btn btn-dark" (click)="baixarPdf()" >Gerar PDF</button>
+        </div>
+      </div>
+    </div>
+    <h4 class="mb-3 fw-bold text-primary"> Ficha Auxiliar Histórico</h4>
+    <div class="row">
+        <div class="col-12" style="max-height: 500px; overflow-y: auto;">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover table-striped align-middle">
+                <thead style="background-color: #003366; color: white;">
+                  <ng-container *ngIf="tipoDocumento == 'documentacao'">
+                    <tr>
+                      <th class="text-nowrap">Data</th>
+                      <th>Mês/Ano</th>
+                      <th>Federação</th>
+                      <th>Nome</th>
+                      <th>Análise</th>
+                      <th>Motivo</th>
+                      <th>Ficha Auxiliar</th>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="tipoDocumento == 'contaCorrente'">
+                    <th class="text-nowrap">Data</th>
+                    <th>Categoria</th>
+                    <th>Item</th>
+                    <th>Valor</th>
+                    <th>Análise</th>
+                    <th>Ficha Auxiliar</th>
+                  </ng-container>
+                </thead>
+                <tbody>
+                  <ng-container *ngIf="tipoDocumento == 'documentacao'">
+                    <ng-container *ngFor="let ficha of lstFichaAuxiliarLog; let i = index">
+                      <tr>
+                        <td class="text-nowrap">{{ficha?.data | date: 'dd/MM/yyyy HH:mm'}}</td>
+                        <td>{{ mesExerciocio }}/{{ anoExercicio }}</td>
+                        <td>{{ ficha.objeto?.Federacao }}</td>
+                        <td>{{ ficha.objeto?.NomeDocumento }}</td>
+                        <td>{{ getStatus(ficha.objeto?.Analise) }}</td>
+                        <td>{{ ficha.objeto?.NomeMotivo }}</td>
+                        <td>{{ ficha.objeto?.Observacao }}</td>
+                      </tr>
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngIf="tipoDocumento == 'contaCorrente'">
+                    <ng-container *ngFor="let ficha of lstFichaAuxiliarLogFiltrada; let i = index">
+                      <tr>
+                        <td class="text-nowrap">{{ficha?.data | date: 'dd/MM/yyyy HH:mm'}}</td>
+                        <td>{{ ficha.objeto?.Tipo }}</td>
+                        <td>{{ ficha.objeto?.Item }}</td>
+                        <td>{{ ficha.objeto?.Valor  | currency: 'BRL' }}</td>
+                        <td>
+                          <span>{{ getStatus(ficha.objeto?.Analise) }}</span><br />
+                          <span *ngIf="ficha.objeto?.Analise === 'RetornadoAjustes'">
+                            <b>Motivo: </b> {{ getMotivo(ficha.objeto)?.join(', ') }}
+                          </span>
+                        </td>
+                        <td>
+                          <span *ngIf="ficha.objeto?.Analise === 'RetornadoAjustes'">
+                            {{ ficha.objeto?.Observacao }}
+                          </span>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </div>
+</div>

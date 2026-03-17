@@ -1,0 +1,96 @@
+<div class="row" [formGroup]="trecho">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-10">
+                <h5>{{posicao + 1}}º Trecho</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-7">
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <div class="row">
+                    <div class="col-12">
+                        <h6 style="color: gray;">Origem</h6>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4 form-group-select">
+                        <label for="origemUf">UF</label>
+                        <select formControlName="origemUf" 
+                            type="text" 
+                            id="origemUf{{posicao}}"
+                            class="form-control"
+                            [class.is-invalid]="(submited || trecho.controls.origemUf.touched) && trecho.controls.origemUf.invalid">
+                            <option *ngFor="let uf of ufs" [value]="uf.uf">{{uf.uf}}</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-8 col-lg-8 form-group">
+                        <label for="origemCidade{{posicao}}" style="display: block;">Cidade</label>
+                        <p-select id="origemCidade{{posicao}}" [options]="cidadesOrigem" formControlName="origemCidade" optionLabel="name"
+                        optionValue="value" [virtualScroll]="true" [virtualScrollItemSize]="38" [filter]="true" [style]="{ 'margin-top': '2px', 'min-width': '100%', 'max-width': '100%' }" placeholder="Selecione"></p-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="row">
+                    <div class="col-12">
+                        <h6 style="color: gray;">Destino</h6>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4 form-group-select">
+                        <label for="destinoUf{{posicao}}">UF</label>
+                        <select formControlName="destinoUf" 
+                            type="text" 
+                            id="destinoUf{{posicao}}"
+                            class="form-control"
+                            [class.is-invalid]="(submited || trecho.controls.destinoUf.touched) && trecho.controls.destinoUf.invalid">
+                            <option *ngFor="let uf of ufs" [value]="uf.uf">{{uf.uf}}</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-8 col-lg-8 form-group">
+                        <label for="destinoCidade{{posicao}}" style="display: block;">Cidade</label>
+                        <p-select id="destinoCidade{{posicao}}" [options]="cidadesDestino" formControlName="destinoCidade" optionLabel="name"
+                        optionValue="value" [virtualScroll]="true" [virtualScrollItemSize]="38" [filter]="true" [style]="{ 'margin-top': '2px', 'min-width': '100%', 'max-width': '100%' }" placeholder="Selecione" ></p-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+        <div class="row">
+            <div class="col-12">
+                <h6 style="color: gray;">Duração</h6>
+            </div>
+            <div class="col-12 col-md-6 col-lg-5 form-group">
+                <label for="dataInicial{{posicao}}">Data Inicial</label>
+                <input 
+                    formControlName="dataInicial" 
+                    type="date" 
+                    id="dataInicial{{posicao}}"
+                    class="form-control"
+                    [class.is-invalid]="(submited || trecho.controls.dataInicial.touched) && trecho.controls.dataInicial.invalid"
+                >
+                <div class="invalid-feedback">
+                    <span *ngIf="trecho.controls.dataInicial.getError('maiorDataFinal')">Data inicial maior do que data final.</span>
+                    <span *ngIf="trecho.controls.dataInicial.getError('menorDataAnterior')"> Data inicial maior do que data final anterior.</span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-5 form-group">
+                <label for="dataFinal{{posicao}}">Data Final</label>
+                <input 
+                    formControlName="dataFinal" 
+                    type="date" 
+                    id="dataFinal{{posicao}}"
+                    class="form-control"
+                    [class.is-invalid]="(submited || trecho.controls.dataFinal.touched) && trecho.controls.dataFinal.invalid"
+                >
+                <div class="invalid-feedback">
+                    <span *ngIf="trecho.controls.dataFinal.getError('menorDataInicial')">Data final menor do que data inicial.</span>
+                    <span *ngIf="trecho.controls.dataFinal.getError('maiorDataPosterior')"> Data final menor do que data inicial posterior.</span>
+                </div>
+            </div>
+            <div class="col-12 col-lg-2"  style="justify-content: center; align-items: center; display: flex;">
+                <button *ngIf="podeExcluir" style="margin-top: 15px;" type="button" (click)="excluirItem()" class="btn btn-danger btn-sm" placement="top" ngbTooltip="Excluir {{posicao + 1}}º trecho"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </div>
+    </div>
+</div>

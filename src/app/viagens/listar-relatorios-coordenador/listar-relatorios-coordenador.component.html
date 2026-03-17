@@ -1,0 +1,193 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white">
+    Gerenciar Viagens
+  </h3>
+  <div class="card-body">
+    <form [formGroup]="formPesquisa" (submit)="pesquisar()">
+      <!-- campos do formulário -->
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-6">
+          <div class="form-group">
+            <label for="nome">Nome</label>
+            <input formControlName="nome" type="text" name="nome" id="nome"class="form-control">
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input formControlName="email" type="email" name="email" id="email"class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select formControlName="status" name="status" id="status" class="form-control">
+              <option default value="">Todos</option>
+              <option *ngFor="let s of statusSelecao" value="{{s.idIndicador}}">{{s.nome}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-2">
+          <div class="form-group">
+            <label for="id">ID</label>
+            <input formControlName="id" type="number" name="id" id="id" min="0" class="form-control">
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3 form-group">
+          <label for="origem" style="display: block;">Origem</label>
+          <p-select id="origem" [options]="localizacoes" formControlName="origem" optionLabel="label"
+          optionValue="value" [virtualScroll]="true" [virtualScrollItemSize]="38" [filter]="true" [style]="{ 'margin-top': '2px', 'min-width': '100%', 'max-width': '100%' }" placeholder="Selecione"></p-select>
+        </div>
+        <!-- destino -->
+        <div class="col-12 col-md-6 col-lg-3 form-group">
+          <label for="destino" style="display: block;">Destino</label>
+          <p-select id="destino" [options]="localizacoes" formControlName="destino" optionLabel="label"
+          optionValue="value" [virtualScroll]="true" [virtualScrollItemSize]="38" [filter]="true" [style]="{ 'margin-top': '2px', 'min-width': '100%', 'max-width': '100%' }" placeholder="Selecione"></p-select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="dataInicial">Data Inicial</label>
+            <input formControlName="dataInicial" type="date" name="dataInicial" id="dataInicial" class="form-control" [class.is-invalid]=" f.dataInicial.touched && f.dataInicial.invalid">
+          </div>  
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="dataFinal">Data Final</label>
+            <input formControlName="dataFinal" type="date" name="dataFinal" id="dataFinal" class="form-control" [class.is-invalid]=" f.dataFinal.touched && f.dataFinal.invalid">
+          </div>
+        </div>
+        <div class="col">
+          <div class="row" style="justify-content: right;">
+            <div *ngIf="!ehPresidente" class="col" style="justify-content: right;">
+              <label for="id">&nbsp;</label>
+              <button type="button" class="btn btn-success" style="height: 38px; width: 100%" (click)="irPaginaCriarSolicitacao()">Solicitar diária</button>
+            </div>
+
+            <div class="col" style="justify-content: right;">
+              <label for="id">&nbsp;</label>
+              <button type="submit" class="btn btn-primary" style="height: 38px; width: 100%" [disabled]="formPesquisa.invalid"><i class="fas fa-search"></i></button>
+            </div>
+          </div>
+        </div>
+        
+        
+      </div>
+    </form>
+
+    <div class="row">
+      <div class="col-12">
+        <p-table
+            tableStyleClass="table table-bordered table-hover table-striped mt-3"
+            [value]="resultadoPesquisa"
+            [paginator]="true"
+            [rows]="10"
+            [showCurrentPageReport]="true"
+            [resizableColumns]="true" [autoLayout]="true"
+            currentPageReportTemplate="{currentPage} de {totalPages}"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col" pSortableColumn="idNumericoSolicitacao">
+                ID <p-sortIcon field="idNumericoSolicitacao"></p-sortIcon>
+              </th>
+              <th scope="col" pSortableColumn="nomeViajante">
+                Nome <p-sortIcon field="nomeViajante"></p-sortIcon>
+              </th>
+              <th scope="col" pSortableColumn="origemCidade">
+                Origem 
+                <p-sortIcon field="origemCidade"></p-sortIcon>
+              </th>
+              <th scope="col" pSortableColumn="destinoCidade">
+                Destino 
+                <p-sortIcon field="destinoCidade"></p-sortIcon>
+              </th>
+              <th scope="col" pSortableColumn="dataInicio">
+                Data Inicial - Final 
+                <p-sortIcon field="dataInicio"></p-sortIcon>
+              </th>
+              <th scope="col" pSortableColumn="emailViajante">
+                E-mail 
+                <p-sortIcon field="emailViajante"></p-sortIcon>
+              </th>
+              <th scope="col" pSortableColumn="statusSolicitacaoAnalise">
+                Status 
+                <p-sortIcon field="statusSolicitacaoAnalise"></p-sortIcon>
+              </th>
+              <th scope="col" style="text-align: center;">Ações</th>
+            </tr>
+          </ng-template>
+          <ng-template
+              pTemplate="body"
+              let-rp
+          >
+            <tr>
+              <td>{{rp.idNumericoSolicitacao}}</td>
+              <td>{{rp.nomeViajante}}</td>
+              <td>{{rp.origemCidade}}/{{rp.origemUf}}</td>
+              <td>{{rp.destinoCidade}}/{{rp.destinoUf}}</td>
+              <td>{{rp.dataInicio | date:'dd/MM/yyyy'}} {{rp.dataFim | date:'dd/MM/yyyy'}}</td>
+              <td>{{rp.emailViajante}}</td>
+              <td [class]="recuperarCor(rp.statusSolicitacaoAnalise)">{{rp.statusSolicitacaoAnalise}}</td>
+              <td style="text-align: center;">
+                <div class="btn-group" role="group">
+                  <a data-container="body" (click)="realizarDownload(rp)" class="btn btn-warning btn-sm" placement="top" ngbTooltip="Realizar download do PDF">
+                    <i class="fas fa-file-download"></i>
+                  </a>
+                  <a class="btn btn-primary btn-sm" data-container="body" placement="top" ngbTooltip="Visualizar Solicitação" [routerLink]="['/viagens/solicitar-diaria/visualizar/'+ rp.idSolicitacaoDiaria]"><i class="fas fa-eye"></i></a>
+                  <a 
+                    *ngIf="ehPresidente"
+                    class="btn btn-sm btn-info" 
+                    data-container="body"
+                    placement="top" ngbTooltip="Analisar Solicitação"
+                    (click)="analisarSolicitacao(rp.idSolicitacaoDiaria)"
+                  >
+                    <i class="fas fa-search"></i>
+                  </a>
+                  <a *ngIf="!ehPresidente" [routerLink]="['/viagens/solicitar-diaria/editar/'+ rp.idSolicitacaoDiaria]" class="btn btn-info btn-sm"  data-container="body" placement="top" ngbTooltip="Alterar solicitação"><i class="fas fa-edit"></i></a>
+                  <a 
+                    *ngIf="rp.idRelatorioViagens !== null"
+                    class="btn btn-sm" 
+                    [class.btn-info]="!analisado(rp.avaliacao)" 
+                    [class.btn-success]="analisado(rp.avaliacao)" 
+                    data-container="body"
+                    placement="top" ngbTooltip="Analisar Relatório" (click)="analisar(rp.idRelatorioViagens)"
+                  >
+                    <i class="fas fa-search"></i>
+                  </a>
+                  <!-- <a 
+                    *ngIf="rp.idRelatorioViagens !== null"
+                    class="btn btn-primary btn-sm" 
+                    placement="top" ngbTooltip="Histórico" [routerLink]="['/viagens/historico-relatorio/'+ rp.idRelatorioViagens]"
+                  >
+                    <i class="fas fa-history"></i>
+                  </a>  -->
+                  <a
+                    class="btn btn-primary btn-sm" 
+                    data-container="body"
+                    placement="top" ngbTooltip="Histórico" [routerLink]="['/viagens/historico-solicitacao/'+ rp.idSolicitacaoDiaria]"
+                  >
+                    <i class="fas fa-history"></i>
+                  </a> 
+                  <a *ngIf="!ehPresidente" (click)="excluir(rp.idSolicitacaoDiaria)" class="btn btn-danger btn-sm"  data-container="body" placement="top" ngbTooltip="Excluir solicitação">
+                    <i class="fas fa-trash"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td colspan="8">
+                    <div class="alert alert-info">Nenhuma solicitação encontrada</div>
+                </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>

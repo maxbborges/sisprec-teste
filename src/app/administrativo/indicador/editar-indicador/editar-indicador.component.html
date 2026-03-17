@@ -1,0 +1,52 @@
+<form [formGroup]="formCadastro" (submit)="salvar()">
+    <div class="card shadow mb-3">
+        <h3 class="card-header bg-primary text-white">Alterar indicador</h3>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label for="txtId">ID do Indicador:</label>
+                            <input type="text" class="form-control" id="txtId" formControlName="idIndicador" readonly>
+                        </div>
+                    </div>
+                    <app-barra-espacamento></app-barra-espacamento>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="nomeIndicador">Nome:</label>
+                            <input type="text" class="form-control" id="nomeIndicador" placeholder="Nome do indicador"
+                                formControlName="nome" >
+                        </div>
+                        <div *ngIf="!this.selectedMotivo" class="form-group col-md-6">
+                            <label for="siglaIndicador">Sigla:</label>
+                            <input type="text" class="form-control" id="siglaIndicador" placeholder="Sigla do indicador"
+                                formControlName="sigla" >
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="tipoIndicador">Tipo:</label>
+                            <select id="tipoIndicador" class="form-control" formControlName="idIndicadorTipo" (change)="verificaTipo($event);">
+                                <option selected>Selecione...</option>
+                                <ng-container *ngFor="let indicadorTipo of lstIndicadorTipo">
+                                    <option [value]="indicadorTipo.idIndicadorTipo">{{indicadorTipo.nome}}</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                        <div *ngIf="!this.selectedMotivo" class="form-group col-md-6">
+                            <label for="valorIndicador">Valor:</label>
+                            <input type="text" class="form-control" id="valorIndicador" placeholder="Valor do indicador"
+                                formControlName="valor" maxlength="20">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            <div class="float-end">
+                <app-botao-voltar textoBotao='Cancelar'></app-botao-voltar>&nbsp;
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>&nbsp;Alterar indicador</button>
+            </div>
+        </div>
+    </div>
+</form>

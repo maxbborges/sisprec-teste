@@ -1,0 +1,42 @@
+<div class="offset-md-2 col-md-8">
+    <div class="card shadow-lg">
+        <h3 class="card-header bg-danger text-white">
+            <i class="fas fa-sign-out-alt"></i>
+            &nbsp;&nbsp;Sair
+        </h3>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        Tem certeza de que deseja sair do
+                        <strong>{{nomeSistema}}</strong>
+                        ?
+                    </div>
+                </div>
+            </div>
+            <!-- Linha divisória - Início -->
+            <app-barra-espacamento></app-barra-espacamento>
+            <!-- Linha divisória - Fim -->
+            <div class="row">
+                <div class="col">
+                    <button
+                        type="button"
+                        class="btn btn-success btn-block w-100"
+                        (click)="cancelar()">
+                        <i class="fas fa-times"></i>
+                        &nbsp;Cancelar
+                    </button>
+                </div>
+                <div class="col">
+                    <button
+                        type="button"
+                        class="btn btn-danger btn-block w-100"
+                        (click)="sair()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        &nbsp;Sair
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,190 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Visualizar Prestação de Contas</h3>
+    <div class="card-body">
+        <form [formGroup]="f">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="idFederacao">Federação</label>
+                        <select
+                            formControlName="idFederacao"
+                            class="form-control"
+                            id="idFederacao"
+                            [disabled]="ehPresidente()"
+                        >
+                            <option value="0">Todas</option>
+                            <option
+                                *ngFor="let federacao of federacoes | async"
+                                [value]="federacao.idIndicador"
+                            >
+                                {{ federacao.sigla }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="idExercicio">Ano do Exercício</label>
+                        <select
+                            formControlName="exercicio"
+                            class="form-control"
+                            id="idExercicio"
+                        >
+                            <option value="0">Todos</option>
+                            <option
+                                *ngFor="let exercicio of lstExercicios"
+                                [value]="exercicio"
+                            >
+                                {{ exercicio }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="idExercicio">Mês do Exercício</label>
+                        <select
+                            formControlName="exercicioMes"
+                            class="form-control"
+                            id="idExercicio"
+                        >
+                            <option value="0">Todos</option>
+                            <option
+                                *ngFor="let exerciciomes of lstExerciciosMes"
+                                [value]="exerciciomes"
+                            >
+                                {{ exerciciomes }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="idStatus">Status</label>
+                        <select
+                            formControlName="idStatusAtualPrestacaoContas"
+                            class="form-control"
+                            id="idStatus"
+                        >
+                            <option value="0">Todos</option>
+                            <option
+                                *ngFor="let status of status | async"
+                                [value]="status.idIndicador"
+                            >
+                                {{ status.nome }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col d-flex">
+                    <button
+                        (click)="pesquisar()"
+                        class="btn btn-primary btn-block mt-auto mb-3 w-100"
+                    >
+                        <i class="fas fa-search"></i>
+                        Pesquisar
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div *ngIf="true">
+            <div class="row">
+                <div class="col">
+                    <h5>{{ prestacoesContas.length }} item(ns)</h5>
+                </div>
+            </div>
+            <p-table
+                tableStyleClass="table table-bordered table-hover table-striped mt-3"
+                [value]="prestacoesContas"
+                [(selection)]="prestacoesContasSelecionadas"
+                dataKey="idPrestacaoContas"
+                [paginator]="true"
+                [rows]="10"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="{currentPage}/{totalPages}"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th
+                            class="align-middle text-center"
+                            scope="col"
+                        >
+                            Federação
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col"
+                        >
+                            Exercício
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col"
+                        >
+                            Status
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col"
+                            [style.width.px]="240"
+                        >
+                            Ações
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template
+                    pTemplate="body"
+                    let-prestacaoContas
+                >
+                    <tr>
+                        <td class="align-middle text-center">{{ prestacaoContas.federacao }}</td>
+                        <td class="align-middle text-center">
+                            {{ prestacaoContas.mesExercicio + '/' + prestacaoContas.anoExercicio }}
+                        </td>
+                        <td class="align-middle text-center">
+                            {{ prestacaoContas.versao ? prestacaoContas.statusAtualPrestacaoContas + ' - ' + prestacaoContas.versao : prestacaoContas.statusAtualPrestacaoContas }}
+                        </td>
+                        <td class="align-middle text-center">
+                            <button
+                                [routerLink]="['/prestacaoDeContas/pesquisar/documentacao/', prestacaoContas.idFederacao, prestacaoContas.mesExercicio, prestacaoContas.anoExercicio, prestacaoContas.idPrestacaoContas]"
+                                type="button"
+                                class="btn btn-primary btn-sm"
+                                ngbTooltip="Prestação de Contas da Documentação"
+                                placement="bottom"
+                            >
+                                <i class="fas fa-file-alt"></i>
+                            </button>
+                            <button
+                                [routerLink]="['/prestacaoDeContas/pesquisar/contaCorrente/', prestacaoContas?.idFederacao, prestacaoContas?.mesExercicio, prestacaoContas?.anoExercicio, 'TipoContaCorrente', prestacaoContas?.statusAtualPrestacaoContas]"
+                                type="button"
+                                class="btn btn-primary btn-sm ms-1"
+                                ngbTooltip="Prestação de Contas da Conta Corrente"
+                                placement="bottom"
+                            >
+                                <i class="fas fa-balance-scale"></i>
+                            </button>
+                            <button
+                                [routerLink]="['/prestacaoDeContas/pesquisar/contaInvestimento/', prestacaoContas?.idFederacao, prestacaoContas?.mesExercicio, prestacaoContas?.anoExercicio, 'TipoContaInvestimento', prestacaoContas?.statusAtualPrestacaoContas]"
+                                type="button"
+                                class="btn btn-primary btn-sm ms-1"
+                                ngbTooltip="Prestação de Contas da Conta Investimento"
+                                placement="bottom"
+                            >
+                                <i class="fas fa-chart-line"></i>
+                            </button>
+                            <button
+                                [routerLink]="['/prestacaoDeContas/pesquisar/historico/', prestacaoContas.idFederacao, prestacaoContas.mesExercicio, prestacaoContas.anoExercicio, prestacaoContas.idPrestacaoContas ? prestacaoContas.idPrestacaoContas : 'semIdPrestacaoContas']"
+                                type="button"
+                                class="btn btn-primary btn-sm ms-1"
+                                ngbTooltip="Histórico da Prestação de Contas"
+                                placement="bottom"
+                            >
+                                <i class="fas fa-history"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

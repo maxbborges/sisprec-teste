@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <h5 class="modal-title">Cadastrar Análise da Estimativa de Custo</h5>
+</div>
+<div class="modal-body">
+  <form class="mb-3" [formGroup]="form">
+    <div class="row">
+      <div class="form-group col-12">
+        <div class="custom-control custom-radio custom-control-inline">
+          <input (change)="desativarCampoMotivo($event)" formControlName="idCadastroStatus" type="radio" id="idRadioAprovado" class="custom-control-input" value="2146">
+          <label class="custom-control-label" for="idRadioAprovado">Aprovado</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input (change)="desativarCampoMotivo($event)" formControlName="idCadastroStatus" type="radio" id="idRadioReprovado" class="custom-control-input" value="2149">
+          <label class="custom-control-label" for="idRadioReprovado">Reprovado</label>
+        </div>
+      </div>
+      <div class="form-group col-12">
+        <label for="idMotivo">Motivo</label>
+        <textarea [ngClass]="{ 'is-invalid': enviando && c.motivo.errors }" formControlName="motivo" class="form-control" id="idMotivo" rows="4"></textarea>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button (click)="cancelar()" type="button" class="btn btn-danger"><i class="fas fa-times"></i> Cancelar</button>
+  <button [disabled]="acaoBloqueada" (click)="sim()" type="button" class="btn btn-success"><i class="fas fa-save"></i> Salvar</button>
+</div>

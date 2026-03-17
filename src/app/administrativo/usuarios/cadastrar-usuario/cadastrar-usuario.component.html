@@ -1,0 +1,69 @@
+<form [formGroup]="formCadastro" (submit)="salvar()">
+    <div class="card shadow mb-3">
+        <h3 class="card-header bg-primary text-white">Cadastrar usuário</h3>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label for="nomeUsuario">Nome</label>
+                            <input type="text" class="form-control" id="nomeUsuario" placeholder="João da silva"
+                                formControlName="nome" maxlength="100">
+                        </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-md-6">
+                            <label for="tipoUsuario">Tipo de usuário</label>
+                            <select (change)="colocarPermitirTrocaTipoUsuarioFalso()" id="tipoUsuario" class="form-control" formControlName="idTipoUsuario">
+                                <option [value]="''">Selecione...</option>
+                                <ng-container *ngFor="let tipoUsuario of lstTipoUsuario">
+                                    <option [value]="tipoUsuario.idIndicador">{{tipoUsuario?.nome}}</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                          <div *ngIf="v.idTipoUsuario == 35 || v.idTipoUsuario == 5" class="form-group d-flex h-100">
+                            <div class="custom-control custom-checkbox mt-auto mb-4">
+                              <input type="checkbox" class="custom-control-input" id="iPermitirTrocaTipoUsuario" formControlName="permitirTrocaTipoUsuario">
+                              <label class="custom-control-label" for="iPermitirTrocaTipoUsuario">Permitir Troca do Tipo de usuário</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="federacaoUsuario">Filiação/Federação</label>
+                            <select id="federacaoUsuario" class="form-control" formControlName="idFiliacao">
+                                <option selected>Selecione...</option>
+                                <ng-container *ngFor="let federacao of lstFederacoes">
+                                    <option [value]="federacao.idIndicador">{{federacao?.sigla}}</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="emailUsuario">Email</label>
+                            <input type="email" class="form-control" id="emailUsuario"
+                                placeholder="joaodasilva@sestsenat.org.br" formControlName="email" maxlength="100">
+                        </div>
+                        <ng-container *ngIf="formCadastro.controls['idTipoUsuario'].value == idTipoUsuarioFederacao">
+                            <div class="form-group col-md-6">
+                                <label for="senhaUsuario">Senha</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="senhaUsuario"
+                                        formControlName="senha" maxlength="100" appExibirEsconderSenha>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            <div class="float-end">
+                <app-botao-voltar textoBotao='Cancelar'></app-botao-voltar>&nbsp;
+                <button type="submit" [disabled]="acaoBloqueada" class="btn btn-success"><i class="fas fa-save"></i>&nbsp;Cadastrar
+                    usuário</button>
+            </div>
+        </div>
+    </div>
+</form>

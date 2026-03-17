@@ -1,0 +1,121 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white"> Visualizar Despesas / Receitas do Lançamento de Extrato</h3>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-0"><strong>Lançamento do Extrato:</strong> {{ this.saldolancamento | currency:'BRL' }} </h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+         <h5 class="mb-0"><strong>Lançamento das Despesas e Devoluções:</strong> {{ this.lancamentosTotal | currency:'BRL' }} </h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-3"><strong>Saldo deste Lançamento:</strong> {{ this.saldoFinal | currency:'BRL' }}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class=" mb-3">
+          <button (click)="voltar()" class="btn btn-success">Concluir</button>
+          <button (click)="voltar()" class="btn btn-outline-dark ms-2">Voltar</button>
+          <button class="btn btn-dark" (click)="exportarClick()" [disabled]="this.lstDespesasLancamento.length == 0" style="float: right;">Gerar Excel</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <table class="table table-bordered table-hover table-striped table-sm">
+          <thead>
+            <tr>
+              <th class="align-middle text-center" scope="col">N</th>
+              <th class="align-middle text-center" scope="col">Data</th>
+              <th class="align-middle text-center" scope="col">Categoria</th>
+              <th class="align-middle text-center" scope="col">Item</th>
+              <th class="align-middle text-center" scope="col">Valor</th>
+              <th class="align-middle text-center" scope="col">Análise</th>
+              <th class="align-middle text-center" scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let despesalancamento of this.lstDespesasLancamento; index as q;">
+              <tr id="{{ despesalancamento.idPrestacaoContaItemSaida + 'prestacao-de-conta-item-saida' }}"
+              [style.background-color]="despesalancamento.analise == 'RetornadoAjustes' ? '#ffff00' : ''">
+                <td class="align-middle text-center">{{ q + 1 }}</td>
+                <td class="align-middle text-center">{{ dateMask(despesalancamento.dataEvento)}}</td>
+                <td class="align-middle text-center">{{ despesalancamento.tipo }}</td>
+                <td class="align-middle text-center">{{ despesalancamento.item }}</td>
+                <td class="align-middle text-center">{{ despesalancamento.valor | currency:'BRL' }}</td>
+                <td class="align-middle text-center">
+                  <ng-container *ngFor="let item of this.lstTipoAnalise">
+                    <input [disabled]="ativarBotaoAnalisar(despesalancamento) || acaoBloqueada" type="radio" name="{{ despesalancamento.idPrestacaoContaItemSaida + 'analise' }}"
+                      checked="{{ despesalancamento.analise == item.sigla ? 'checked' : '' }}"
+                      [id]="item.idIndicador + despesalancamento.idPrestacaoContaItemSaida" [value]="item.idIndicador"
+                      (change)="alteraStatusLancamento(despesalancamento.idPrestacaoContaItemSaida, item, q)">
+                    <label [attr.for]="item.idIndicador + despesalancamento.idPrestacaoContaItemSaida"
+                      style="cursor: pointer;  pointer-events:none;">
+                      {{item.nome}}
+                    </label>
+                    &nbsp;&nbsp;
+                  </ng-container>
+
+                  <ng-multiselect-dropdown
+                  [style.visibility]="despesalancamento.analise == 'RetornadoAjustes' ? 'visible' : 'hidden'"
+                      [disabled]="ativarBotaoAnalisar(despesalancamento) || acaoBloqueada"
+                      id="{{ despesalancamento.idPrestacaoContaItemSaida + 'MotivoRetornoParaAjustes' }}"
+                      [placeholder]="'Selecione o motivo'"
+                      [settings]="motivosConfig"
+                      [data]="this.lstMotivos"
+                      [(ngModel)]="motivosSelecionados[q]"
+                      (onSelect)="alteraMotivoRetornoParaAjustes(despesalancamento.idPrestacaoContaItemSaida, $event, q)"
+                      (onSelectAll)="alteraMotivoRetornoParaAjustes(despesalancamento.idPrestacaoContaItemSaida, $event, q)"
+                      (onDeSelect)="alteraMotivoRetornoParaAjustes(despesalancamento.idPrestacaoContaItemSaida, $event, q)"
+                      (onDeSelectAll)="alteraMotivoRetornoParaAjustes(despesalancamento.idPrestacaoContaItemSaida, $event, q)"
+                  >
+                  </ng-multiselect-dropdown>
+                  <textarea 
+                  [style.display]="despesalancamento.analise == 'RetornadoAjustes' ? 'block' : 'none'"
+                  id="{{ despesalancamento.idPrestacaoContaItemSaida + 'ObservacaoRetornoParaAjustes' }}"
+                  maxlength="255"
+                  [disabled]="ativarBotaoAnalisar(despesalancamento) || acaoBloqueada"
+                  class="form-control" 
+                  style="background-color: inherit; margin-top: 4px;"
+                  [(ngModel)]="lstDespesasLancamento[q].observacao"
+                  value="{{ despesalancamento.observacao}}" 
+                  (focusout)="alteraObservacaoRetornoParaAjustes(despesalancamento.idPrestacaoContaItemSaida, $any($event.target).value)"></textarea>
+                </td>
+                <td class="align-middle text-center" style="width: 60px;">
+                  <button style="margin: 2px;" (click)="visualizarDespesa(despesalancamento.idPrestacaoContaItemSaida)"
+                                            class="btn btn-info btn-sm" placement="top"
+                                            ngbTooltip="Visualizar despesa"><i class="fas fa-eye"></i></button>
+                  <app-download-arquivo [despesaArquivo]="despesalancamento" ></app-download-arquivo>
+                  <a *ngIf="despesalancamento.idRelatorioViagens !== null" class="btn btn-info btn-sm" target="_blank" [routerLink]="['/viagens/visualizar-relatorio/'+ despesalancamento.idRelatorioViagens]">
+                      <i class="fas fa-plane"></i>
+                    </a>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="this.loaditems">
+              <tr>
+                <td colspan="6">
+                  <div class="mt-2">
+                    <app-loading-div mensagem="Carregando lançamentos..."></app-loading-div>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="!this.loaditems && this.lstDespesasLancamento.length == 0">
+              <tr>
+                <td colspan="6">
+                  <div class="alert alert-info">Nenhum registro para análise</div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

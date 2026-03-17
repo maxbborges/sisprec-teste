@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="offset-md-2 col-md-8 mt-3 d-flex justify-content-center">
+      <img src="assets/img/logo.png" class="img-fluid" width="500" alt="Logo Despoluir" />
+  </div>
+</div>
+
+<div class="offset-md-2 col-md-8 mt-3">
+<div class="card shadow-lg">
+  <h3 class="card-header bg-success text-white"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;Recuperar senha</h3>
+  <div class="card-body">
+      <form class="form-signin" [formGroup]="form" (ngSubmit)="recuperarSenha()">
+
+          <div class="form-group row espacamento">
+              <div class="col-sm-12">
+                  <label class="sr-only" for="usuario">E-mail</label>
+                  <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                          <div class="input-group-text">
+                              <i class="fas fa-id-card"></i>
+                          </div>
+                      </div>
+                      <input type="email" formControlName="email" id="email"
+                          class="form-control" placeholder="joaosilva@sestsenat.org.br">
+                  </div>
+              </div>
+          </div>
+
+          <!-- Exibe somente em resoluções maiores - Inicio -->
+          <div class="row">
+              <div class="col-lg-12">
+                  <button class="btn btn-block btn-primary" type="submit">
+                      <!--<i class="fas fa-sign-in-alt"></i>-->Enviar</button>
+              </div>
+              <div class="voltar">
+                <a class="botao-voltar" [routerLink]="['/auth/login']">Voltar</a>
+              </div>
+          </div>
+          <!-- Exibe somente em resoluções maiores - Fim -->
+      </form>
+  </div>
+</div>
+</div>

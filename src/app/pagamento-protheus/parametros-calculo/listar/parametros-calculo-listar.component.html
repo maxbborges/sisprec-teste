@@ -1,0 +1,134 @@
+<div class="card shadow mb-3">
+  <div class="card-header h3 bg-primary text-white">
+    <i class="fas fa-calculator"></i>
+      Parâmetros de Cálculo
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label>Ano:</label>
+            <select class="form-control" formControlName="ano">
+              <option value>Selecione</option>
+              <option *ngFor="let a of anos" [value]="a">{{ a }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label>Federação:</label>
+            <select class="form-control" formControlName="idFederacao">
+              <option value>Selecione</option>
+              <option *ngFor="let federacao of federacoes | async" [value]="federacao.idIndicador">{{ federacao.sigla }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label>Valor de Repasse R$:</label>
+            <input type="text" class="form-control" formControlName="valorRepasse" currencyMask placeholder="0,00">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label>Quantidade de Veículos:</label>
+            <input type="number" class="form-control" formControlName="quantidadeVeiculos" placeholder="0">
+          </div>
+        </div>
+      </div>
+      <div class="row align-items-end">
+        <div class="col">
+          <div class="form-group">
+            <label>Valor de Licenciamento R$:</label>
+            <input type="text" class="form-control" formControlName="valorLicenciamento" currencyMask placeholder="0,00">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label style="white-space: nowrap;">Mês de Abatimento do Licenciamento:</label>
+            <select class="form-control" formControlName="mesAbatimento">
+              <option value>Selecione</option>
+              <option *ngFor="let m of meses" [value]="m.value">{{ m.mes }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <button
+              class="btn btn-success btn-block w-100"
+              type="button"
+              (click)="salvar()"
+              [disabled]="form.invalid || isAnoFederacaoExistente()">
+              Cadastrar Parâmetros de Cálculo
+            </button>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <button
+              (click)="pesquisar()"
+              [disabled]="form.invalid"
+              class="btn btn-primary btn-block w-100">
+              <i class="fas fa-search"></i>
+              Pesquisar
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="row">
+      <p-table
+        tableStyleClass="table table-bordered table-hover table-striped mt-3"
+        [value]="parametros"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{currentPage}/{totalPages}"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="align-middle text-center" scope="col">Ano</th>
+            <th class="align-middle text-center" scope="col">Mês de Abatimento</th>
+            <th class="align-middle text-center" scope="col">Federação</th>
+            <th class="align-middle text-center" scope="col">Valor de Repasse</th>
+            <th class="align-middle text-center" scope="col">Valor de Licenciamento</th>
+            <th class="align-middle text-center" scope="col">Quantidade de Veículos</th>
+            <th class="align-middle text-center" scope="col" [style.width.px]="100">Ações</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-param>
+          <tr>
+            <td class="align-middle text-center">{{ param.ano }}</td>
+            <td class="align-middle text-center">{{ getNomeMes(param.mesAbatimento) }}</td>
+            <td class="align-middle text-center">{{ param.federacao }}</td>
+            <td class="align-middle text-center">{{ param.valorRepasse | currency: 'BRL' }}</td>
+            <td class="align-middle text-center">{{ param.valorLicenciamento | currency: 'BRL' }}</td>
+            <td class="align-middle text-center">{{ param.quantidadeVeiculos }}</td>
+            <td class="align-middle text-center">
+              <div>
+                <a [routerLink]="['/pagamento-protheus/parametros-calculo/editar', param.idParametroCalculo]"
+                  class="btn btn-info btn-sm" placement="top"
+                  ngbTooltip="Editar"><i class="fas fa-edit"></i></a>
+                <span>&nbsp;</span>
+                <ng-container *ngIf="isPermitirExcluir()">
+                  <button type="button" class="btn btn-danger btn-sm" placement="top"
+                    (click)="excluir(param.idParametroCalculo)"
+                    ngbTooltip="Excluir"><i class="fas fa-trash-alt"></i></button>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr>
+            <td colspan="7">
+              <div class="alert alert-info">{{ msg }}</div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

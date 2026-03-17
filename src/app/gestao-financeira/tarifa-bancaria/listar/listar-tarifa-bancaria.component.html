@@ -1,0 +1,159 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white">Listar Tarifa Bancária Vinculadas ao Lançamento</h3>
+  <div class="card-body">
+    <form [formGroup]="formPesquisa">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="slcExercicio">Ano Exercício: <b class="text-danger">*</b></label>
+            <select class="form-control" tabindex="1" formControlName="anoExercicio">
+                <option [disabled]="true">Selecione</option>
+                <ng-container *ngFor="let ano of this.arrayAno">
+                  <option [value]="ano">{{ ano }}</option>
+                </ng-container>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="slcExercicio">Mês Exercício: <b class="text-danger">*</b></label>
+            <select id="slctMes" class="form-control" formControlName="mesExercicio">
+              <option [disabled]="true">Selecione</option>
+              <option value="1">Janeiro</option>
+              <option value="2">Fevereiro</option>
+              <option value="3">Março</option>
+              <option value="4">Abril</option>
+              <option value="5">Maio</option>
+              <option value="6">Junho</option>
+              <option value="7">Julho</option>
+              <option value="8">Agosto</option>
+              <option value="9">Setembro</option>
+              <option value="10">Outubro</option>
+              <option value="11">Novembro</option>
+              <option value="12">Dezembro</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <label>&nbsp;</label>
+          <button
+            (click)="pesquisar()"
+            [disabled]="formPesquisa.invalid"
+            class="btn btn-primary btn-block w-100">
+            <i class="fas fa-search"></i>
+            Pesquisar
+          </button>
+        </div>
+      </div>
+    </form>
+    <div class="row">
+      <div class="col">
+        <button
+        class="btn btn-success btn-block w-100"
+        [routerLink]="['/gestaoFinanceira/tarifa-bancaria/cadastrar']">
+        <i class="fas fa-plus"></i>
+        Nova Tarifa Bancária
+      </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <p-table
+          tableStyleClass="table table-bordered table-hover table-striped mt-3"
+          [value]="tarifas"
+          [paginator]="true"
+          [rows]="10"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="{currentPage}/{totalPages}">
+          <ng-template pTemplate="header">
+            <tr>
+                <th
+                    class="align-middle text-center"
+                    scope="col"
+                >
+                    Federação
+                </th>
+                <th
+                    class="align-middle text-center"
+                    scope="col"
+                >
+                    Ano
+                </th>
+                <th
+                    class="align-middle text-center"
+                    scope="col"
+                >
+                    Mês
+                </th>
+                <th
+                    class="align-middle text-center"
+                    scope="col"
+                >
+                    Item
+                </th>
+                <th
+                    class="align-middle text-center"
+                    scope="col"
+                >
+                    Lançamento
+                </th>
+                <th
+                    class="align-middle text-center"
+                    scope="col"
+                >
+                    Valor R$
+                </th>
+                <th
+                    class="align-middle text-center"
+                    scope="col"
+                    [style.width.px]="100"
+                >
+                    Ações
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-tarifa>
+          <tr>
+            <td class="align-middle text-center">
+              {{tarifa.federacao}}
+            </td>
+            <td class="align-middle text-center">
+              {{tarifa.anoExercicio}}
+            </td>
+            <td class="align-middle text-center">
+              {{nomeMeses[tarifa.mesExercicio - 1]}}
+            </td>
+            <td class="align-middle text-center">
+              {{tarifa.categoriaItem}}
+            </td>
+            <td class="align-middle text-center">
+              {{tarifa.lancamento}}
+            </td>
+            <td class="align-middle text-center">
+              {{tarifa.valor | currency: 'BRL'}}
+            </td>
+            <td class="align-middle text-center">
+              <div class="btn-group" role="group">
+                <a [routerLink]="['/gestaoFinanceira/tarifa-bancaria/editar', tarifa.idTarifaBancariaLancamento]"
+                  class="btn btn-warning btn-sm"  ngbTooltip="Editar"><i class="fas fa-edit"></i></a>
+
+                <button [disabled]="acaoBloqueada" type="button" class="btn btn-danger btn-sm" placement="top"
+                ngbTooltip="Excluir registro"
+                (click)="excluirLancamento(tarifa.idTarifaBancariaLancamento)"><i
+                    class="fas fa-trash-alt"></i></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr>
+              <td colspan="7">
+                  <div class="alert alert-info">{{msg}}</div>
+              </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+

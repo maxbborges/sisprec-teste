@@ -1,0 +1,35 @@
+<div
+    *ngIf="resumo"
+    class="modal-header">
+    <h4
+        class="modal-title"
+        id="ssModalConfirm">
+        <i
+            *ngIf="icone"
+            [ngClass]="icone"></i>
+        {{ resumo }}
+    </h4>
+</div>
+<div
+    *ngIf="detalhe"
+    class="modal-body">
+    <h5>{{ detalhe }}</h5>
+</div>
+<div class="modal-footer">
+    <button
+        (click)="confirmar(true)"
+        [ngClass]="severidade ? 'btn-light' : 'btn-success'"
+        type="button"
+        class="btn order-2 me-0">
+        <i class="far fa-thumbs-up"></i>
+        {{ nomePrimeiroBotao }}
+    </button>
+    <button
+        (click)="confirmar(false)"
+        [ngClass]="severidade ? (severidade === 'a' ? 'btn-outline-dark' : 'btn-outline-light') : 'btn-danger'"
+        type="button"
+        class="btn order-1 ms-0 me-1">
+        <i class="far fa-thumbs-down"></i>
+        {{ nomeSegundoBotao }}
+    </button>
+</div>

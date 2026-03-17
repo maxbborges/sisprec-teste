@@ -1,0 +1,71 @@
+
+<div class="container my-4">
+  <form [formGroup]="formAnalise" (submit)="salvar()">
+    <div class="form-group" *ngIf="!visualizacao">
+      <div class="row">
+        <div class="col-12 col-lg-6 mb-2">
+          <div><strong>Origem:</strong> {{origem?.origemCidade}}/{{origem?.origemUf}}</div>
+        </div>
+        <div class="col-12 col-lg-6 mb-2">
+          <div><strong>Destino:</strong> {{destino?.destinoCidade}}/{{destino?.destinoUf}}</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-lg-6 mb-2">
+          <div><strong>Data Inicial:</strong> {{origem?.dataInicio | date:"dd/MM/yyyy"}}</div>
+        </div> 
+        <div class="col-12 col-lg-6 mb-2">
+          <div><strong>Data Final:</strong> {{destino?.dataFim | date:"dd/MM/yyyy"}}</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-lg-6 mb-2">
+          <div><strong>Distância em KM:</strong> {{dados.solicitacaoDiariaCompleto.distanciaKm}}</div>
+        </div>
+        <div class="col-12 col-lg-6 mb-2">
+          <div><strong>Número Total de Diárias:</strong> {{dados.solicitacaoDiariaCompleto.numeroDiarias}}</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-lg-6 mb-2">
+          <div><strong>Valor Unitário da Diária:</strong> {{dados.solicitacaoDiariaCompleto.valorUnitarioDiaria | currency: 'BRL' }}</div>
+        </div>
+        <div class="col-12 col-lg-6 mb-2">
+          <div><strong>Valor Total a Pagar:</strong> {{dados.solicitacaoDiariaCompleto.valorTotal | currency: 'BRL' }}</div>
+        </div>
+      </div>
+      <div>
+        <strong>Análise</strong>
+      </div>
+      <div *ngFor="let analise of indicadorAnalise">
+        <div *ngIf="analise.sigla != 'ReanaliseRelatorio'" class="form-check" style="padding-left: 0;">
+          <input type="radio" name="idAnalise" formControlName="idAnalise" [id]="analise.idIndicador" [value]="analise.idIndicador">
+          <label class="form-check-label" style="padding-left: 2px;" [for]="analise.idIndicador">
+            {{analise.nome}}
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="visualizacao || showObservacoes">
+      <label for="observacoes" class="form-label">Observações</label>
+      <textarea formControlName="observacoes" name="observacoes" id="observacoes" class="form-control"></textarea>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="!visualizacao" class="modal-footer botoes">
+    <button type="button" (click)="close()" class="btn btn-danger">
+        <i class="pi pi-chevron-left"></i>
+        Cancelar
+    </button>
+
+     <button type="button" (click)="salvar()" class="btn btn-primary" [disabled]="formAnalise.invalid">
+        Salvar
+    </button>
+</div>
+
+<div *ngIf="visualizacao" class="modal-footer botoes">
+     <button type="button" (click)="close()" class="btn btn-primary" style="padding-left: 30px; padding-right: 30px;">
+        OK
+    </button>
+</div>

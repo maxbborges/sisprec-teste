@@ -1,0 +1,95 @@
+<div class="modal-content">
+  <div class="modal-header">
+      <h5 class="modal-title">Pesquisa de Fornecedores</h5>
+      <button type="button" class="close" (click)="cancelar()" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="formPesquisa">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="idTipoFornecedor" id="rndTipo1" value="1013"
+            formControlName="idTipoFornecedor" (change)="mudaTipoFornecedor($event)">
+            <label class="form-check-label" for="rndTipo1">Pessoa Jurídica</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="idTipoFornecedor" id="rndTipo2" value="1012"
+            formControlName="idTipoFornecedor" (change)="mudaTipoFornecedor($event)">
+            <label class="form-check-label" for="rndTipo2">Pessoa Física</label>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin-top: 20px;">
+        <ng-container *ngIf="ehPessoaJuridica">
+          <div class="form-group col-md-6">
+            <label for="txtCnpj">CNPJ:</label>
+            <input type="text" class="form-control" id="txtCnpj" formControlName="numeroDocumento" mask="00.000.000/0000-00">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="txtRazaoSocial">Razão social:</label>
+            <input type="text" class="form-control" formControlName="nome" id="txtRazaoSocial">
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!ehPessoaJuridica">
+          <div class="form-group col-md-6">
+            <label for="txtCpf">CPF:</label>
+            <input type="text" class="form-control" id="txtCpf" formControlName="numeroDocumento" mask="000.000.000-00">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="txtNome">Nome:</label>
+            <input type="text" class="form-control" formControlName="nome" id="txtNome">
+          </div>
+        </ng-container>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-6">
+          <button type="button" class="btn btn-primary ui-button form-control" style="font-size: inherit;" (click)="CadastrarFornecedor()">
+            Cadastrar Fornecedor
+          </button>
+        </div>
+        <div class="form-group col-md-6">
+          <button type="button" class="btn btn-primary form-control" (click)="pesquisaFornecedor()"><i
+              class="fas fa-search"></i>&nbsp;Pesquisar</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table table-hover table-striped table-sm">
+            <thead>
+              <tr>
+                <th scope="col">Tipo</th>
+                <th scope="col">Documento</th>
+                <th scope="col">Nome/Razão social</th>
+                <th scope="col">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let fornecedor of lstFornecedores">
+              <tr>
+                <td>{{ fornecedor?.tipoFornecedor }}</td>
+                <td *ngIf="fornecedor.idTipoFornecedor == 1013">
+                    {{ fornecedor?.numeroDocumento | mask:'00.000.000/0000-00' }}</td>
+                <td *ngIf="fornecedor.idTipoFornecedor == 1012">
+                    {{ fornecedor?.numeroDocumento | mask:'000.000.000-00' }}</td>
+                <td>{{ fornecedor?.nome }}</td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary btn-sm" placement="top" (click)="selecionarFornecedor(fornecedor)"
+                      ngbTooltip="Selecionar Fornecedor"><i class="fas fa-arrow-right"></i></button>
+                  </div>
+                </td>
+              </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+  </div>
+</div>

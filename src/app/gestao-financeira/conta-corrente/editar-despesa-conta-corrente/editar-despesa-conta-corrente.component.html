@@ -1,0 +1,249 @@
+<form [formGroup]="formEditar">
+        <div class="card shadow mb-3">
+            <h3 class="card-header bg-primary text-white">Editar despesa / devolução</h3>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <fieldset class="form-group">
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <legend class="col-form-label  pt-0">Cadastro referente ao saque de R$
+                                        {{lancamento?.valor|currency:'BRL'}}
+                                        realizado em {{lancamento?.dataEvento|date:'shortDate'}}</legend>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <legend class="col-form-label">Tipo: </legend>
+                                    <div class="form-check">
+                                      <ng-container *ngFor="let item of lstTipo">
+                                        <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="idTipo" formControlName="idTipo" (change)="onChangeTipo(item)"
+                                            [id]="'idTipoFornecedor'+item.idIndicador" [value]="item.idIndicador">
+                                          <label class="form-check-label" [attr.for]="'idTipoFornecedor'+item.idIndicador">
+                                            {{item.nome}}
+                                          </label>
+                                        </div>
+                                      </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+
+                            <div class="row">
+
+                                <div class="col-sm-3">
+                                    <label for="slctExercicio">Categoria do item:</label>
+                                    <div class="input-group">
+                                      <select class="form-control" id="slctExercicio" formControlName="idCategoria"
+                                        (change)="onChangeFiltrarCategoriaItem()" tabindex="1" [(ngModel)]="categoriaSelecionada">
+                                        <ng-container *ngFor="let item of this.lstCategoria">
+                                          <option [value]="item.idCategoriaItemPlanoDeConta">{{ item.codigo +'-'+item.descricao }}</option>
+                                        </ng-container>
+
+                                      </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label for="slctExercicio">Item:</label>
+                                    <div class="input-group">
+                                      <select class="form-control" id="slctExercicio" formControlName="idCategoriaItem" tabindex="2"
+                                      (change)="mostrarItem($event)">
+                                        <ng-container *ngFor="let item of itemCategoria">
+                                          <option [value]="item.idItemPlanoDeConta"> {{ item?.codigo + ' - ' + item?.descricao}} </option>
+                                        </ng-container>
+                                      </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label for="txtData">Data do evento:</label>
+                                    <div class="input-group">
+                                        <input type="date" class="form-control" id="txtData" formControlName="dataEvento"
+                                            tabindex="3">
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label for="txtValor">Valor:</label>
+                                    <input type="text" class="form-control" id="txtValor" formControlName="valor"
+                                        currencyMask
+                                        [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, align:'right' }"
+                                        maxlength="14" tabindex="4">
+                                </div>
+
+                            </div> 
+                            <div class="row" *ngIf="isDespesaComComprovant">
+                              <div class="form-group col-md-3">
+                                <label for="slctTipoComprovante">Tipo de Documento:</label>
+                                <select id="slctTipoComprovante" class="form-control" formControlName="idTipoComprovante" [(ngModel)]="comprovanteSelecionado">
+                                  <ng-container *ngFor="let item of this.lstComprovante">
+                                    <option [value]="item.idIndicador">{{ item.nome }}</option>
+                                  </ng-container>
+                                </select>
+                              </div>
+                              <div class="form-group col-md-6">
+                                <label for="txtNumeroTipoComprovante">Número do Documento:</label>
+                                <div class="input-group">
+                                  <input type="text" class="form-control" id="txtNumeroComprovante" formControlName="numeroComprovante" [(ngModel)]="numeroDoComprovante"
+                                  [maxLength]="14">
+                                </div>
+                              </div>
+                              <div class="form-group col-md-3">
+                                <label for="txtDataComprovante">Data do Documento:</label>
+                                <div class="input-group">
+                                  <input type="date" class="form-control" id="txtDataComprovante" formControlName="dataComprovante" >
+                                </div>
+                              </div>
+                            </div>                           
+                            <div class="row" *ngIf="isTipoDespesa">
+                              <div class="form-group col-md-6">
+                                <label for="slctColaborador">Selecione o Colaborador/Técnico:</label>
+                                <select id="slctColaborador" class="form-control" formControlName="idColaborador" [(ngModel)]="colaboradorSelecionado">
+                                  <ng-container *ngFor="let item of this.lstColaborador">
+                                    <option [value]="item.idColaborador">{{ item.nome }}</option> <!-- item.descricao  -->
+                                  </ng-container>
+                                </select>
+                              </div>
+                              <div class="form-group col-md-3">
+                                <label for="txtColaboradorSalario">Informe o Salário:</label>
+                                <input id="txtColaboradorSalario" type="text" class="form-control" formControlName="salario" currencyMask
+                                  [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, align:'right' }"
+                                  maxlength="14">
+                              </div>
+                              <div class="form-group col-md-3">
+                                <label for="botao" class="text-white">.</label>
+                                <button id="botao" type="button" class="btn btn-success form-control"
+                                  (click)="addColaborador(this.formEditar.get('salario').value)"><i class="fas fa-plus"></i>&nbsp;</button>
+                              </div>
+                
+                              <div class="form-group col-md-12">
+                                  <table class="table table-bordered border-secondary bg-primary text-white">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col" class="w-50">Colaborador</th>
+                                        <th scope="col" class="w-50">Salário</th>
+                                        <th scope="col" class="w-50">Ação</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr class="table-light text-dark" *ngFor="let item of this.lstColaboradoresSelecionados; index as i">
+                                        <td class="border border-secondary">{{item.nome}}</td>
+                                        <td class="border border-secondary text-end">{{ item.salario }}</td>
+                                        <td class="border border-secondary">
+                                          <!-- <a class="btn btn-primary btn-sm" placement="top"
+                                          [href]="urlDownload + arquivo.idArquivo" ngbTooltip="Baixar arquivo">
+                                              <i class="fas fa-file-download"></i></a> -->
+                                          <button type="button" [disabled]="acaoBloqueada" class="btn btn-danger btn-sm"
+                                          ngbTooltip="Deletar arquivo" placement="top" (click)="removerColaborador(item.idColaborador)">
+                                            <i class="fas fa-trash-alt"></i>
+                                          </button>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                              </div>
+                            </div>
+                            <div class="row" *ngIf="this.despesa?.idTipo == 1014 && isFornecedorSelecionado == false && !isTipoDespesa">
+                              <div class="form-group col-md-3">
+                                <label for="txtCnpj">Fornecedor:</label>
+                                <button type="button" class="btn btn-primary form-control" tabindex="6"
+                                  (click)="pesquisaFornecedor()"><i class="fas fa-search"></i>&nbsp;Pesquisar Fornecedor</button>
+                              </div>
+                            </div>
+                            <div *ngIf="!isTipoDespesa && isFornecedorSelecionado">
+                              <h6>Fornecedor</h6>
+                              <div class="row">
+                                <div class="form-group col-md-3">
+                                  <label for="txtCnpj">CNPJ/CPF:</label>
+                                  <input type="text" *ngIf="despesa?.idTipoFornecedor === 1012" mask="999.999.999-99" class="form-control" formControlName="numeroDocumento" [disabled]="true">
+                                  <input type="text" *ngIf="despesa?.idTipoFornecedor === 1013" mask="99.999.999/9999-99" class="form-control" formControlName="numeroDocumento" [disabled]="true">
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label for="txtCnpj">Razão Social/Nome:</label>
+                                  <input type="text" class="form-control" formControlName="nomeRazaoSocial" [disabled]="true">
+                                </div>
+                                <div class="form-group col-md-1">
+                                  <label for="txtCnpj">&nbsp;</label>
+                                  <button type="button" class="btn btn-danger btn-sm form-control" (click)="excluirFornecedor()"
+                                                              ngbTooltip="Excluir fornecedor"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row" *ngIf="this.tipo === 'Despesa' && isCategoriaSelecionadaViagensOuDiariasNoPais && !isRelatorioViagensSelecionado">
+                              <div class="form-group col-md-3">
+                                <label for="txtCnpj">Relatório de Viagens:</label>
+                                <button type="button" class="btn btn-primary form-control" tabindex="6"
+                                  (click)="pesquisaViagens()"><i class="fas fa-search"></i>&nbsp;Pesquisar Relatório</button>
+                              </div>
+                            </div>
+
+                            <div *ngIf="isRelatorioViagensSelecionado && isCategoriaSelecionadaViagensOuDiariasNoPais">
+                              <h6>Relatório de Viagens</h6>
+                              <div class="row">
+                                <div class="form-group col-md-3">
+                                  <label for="txtCnpj">E-mail:</label>
+                                  <input type="email" class="form-control" [value]="relatorioViagens.email" [disabled]="true">
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label for="txtCnpj">Nome:</label>
+                                  <input type="email" class="form-control" [value]="relatorioViagens.nome" [disabled]="true">
+                                </div>
+                                <div class="form-group col-md-1">
+                                  <label for="txtCnpj">&nbsp;</label>
+                                  <button type="button" class="btn btn-danger btn-sm form-control" (click)="excluirRelatorioViagensSelecionado()"
+                                    ngbTooltip="Excluir relatório de viagens"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <br />
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label for="slctExercicio">Descrição / Justificativa:</label>
+                                    <textarea name="comment" col="20" class="form-control"
+                                        formControlName="descricao"></textarea>
+                                </div>
+                                <div class="col-sm-6">
+                                  <a *ngIf="!this.mostrararquivo" (click)="alterarArquivo()" style="cursor: pointer">Alterar arquivo</a>
+                                    <ng-container *ngIf="this.mostrararquivo">
+                                        <app-upload-arquivo (enviouArquivo)="subiuArquivo($event)"></app-upload-arquivo>
+                                        <table class="table table-bordered border-secondary bg-primary text-white">
+                                            <thead>
+                                              <tr>
+                                                <th scope="col" class="w-50">Arquivo</th>
+                                                <th scope="col" class="w-50">Ação</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              <tr class="table-light text-dark" *ngFor="let arquivo of this.listaArquivos; index as i">
+                                                <td class="border border-secondary">{{arquivo.nomeArquivo}}</td>
+                                                <td class="border border-secondary">
+                                                  <a class="btn btn-primary btn-sm" placement="top"
+                                                  [href]="urlDownload + arquivo.idArquivo" ngbTooltip="Baixar arquivo">
+                                                      <i class="fas fa-file-download"></i></a>
+                                                  <button type="button" class="btn btn-danger btn-sm"
+                                                  ngbTooltip="Deletar arquivo" [disabled]="acaoBloqueada" placement="top" (click)="deletarArquivo(i)">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                  </button>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <div class="float-end">
+                    <app-botao-voltar textoBotao='Cancelar'></app-botao-voltar>&nbsp;
+                    <button type="button" (click)="editar()"  [disabled]="formEditar.invalid || acaoBloqueada" class="btn btn-success" tabindex="8"><i
+                            class="fas fa-save"></i>&nbsp;Alterar</button>
+                </div>
+            </div>
+        </div>
+    </form>

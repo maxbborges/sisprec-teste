@@ -1,0 +1,107 @@
+<div class="card shadow mb-3">
+    <div class="card-header h3 bg-primary text-white">
+        <i class="fas fa-edit"></i>
+        Editar Nome de Documento
+    </div>
+    <div class="card-body">
+        <form [formGroup]="form">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="idExercicio">
+                            Ano Convênio
+                            <b class="text-danger">*</b>
+                        </label>
+                        <select
+                            formControlName="exercicio"
+                            id="idExercicio"
+                            class="form-control">
+                            <option value>Selecione</option>
+                            <option
+                                *ngFor="let ano of anos | async"
+                                [value]="ano">
+                                {{ ano }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="idTipo">
+                            Tipo
+                            <b class="text-danger">*</b>
+                        </label>
+                        <select
+                            formControlName="idTipo"
+                            id="idTipo"
+                            class="form-control">
+                            <option value>Selecione</option>
+                            <option
+                                *ngFor="let tipoDocumento of tiposDocumento | async"
+                                [value]="tipoDocumento.idIndicador">
+                                {{ tipoDocumento.nome }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="idNome">
+                            Nome do Documento
+                            <b class="text-danger">*</b>
+                        </label>
+                        <input
+                            formControlName="nome"
+                            type="text"
+                            class="form-control"
+                            id="idNome"
+                            maxlength="100">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div
+                        formArrayName="federacoes"
+                        class="form-group">
+                        <label for="idFederacao">
+                            Marcar as federações que tem obrigatoriedade em enviar este documento.
+                        </label>
+                        <div
+                            *ngFor="let federacao of federacoes; let i = index"
+                            class="custom-control custom-checkbox"
+                            [formGroupName]="i">
+                            <input
+                                formControlName="ativo"
+                                type="checkbox"
+                                class="custom-control-input"
+                                id="idFederacaoNomeDocumento{{ federacao.idFederacao }}">
+                            <label
+                                class="custom-control-label"
+                                for="idFederacaoNomeDocumento{{ federacao.idFederacao }}">
+                                {{ federacao.siglaFederacao }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <button
+            [disabled]="form.disabled"
+            type="button"
+            (click)="salvar()"
+            [disabled]="acaoBloqueada"
+            class="btn btn-success float-end ms-1">
+            <i class="fas fa-save"></i>
+            Salvar
+        </button>
+        <button
+            [disabled]="form.disabled"
+            type="button"
+            (click)="cancelar()"
+            class="btn btn-danger float-end">
+            <i class="fas fa-times"></i>
+            Cancelar
+        </button>
+    </div>
+</div>

@@ -1,0 +1,91 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">
+        <i class="fas fa-edit"></i>
+        Editar Indicador
+    </h3>
+    <div class="card-body">
+        <form
+            [formGroup]="indicadorForm"
+            (submit)="salvar()">
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="idNome">Nome</label>
+                        <input
+                            [ngClass]="{'is-invalid' : enviando && c.nome.errors}"
+                            formControlName="nome"
+                            type="text"
+                            class="form-control"
+                            id="idNome">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="idTipo">Tipo</label>
+                        <select
+                            (change)="colocarValidadorEntradaOuSaida($event)"
+                            [ngClass]="{'is-invalid' : enviando && c.tipo.errors}"
+                            formControlName="tipo"
+                            class="form-control"
+                            id="idTipo">
+                            <option value>Selecione</option>
+                            <option [disabled]="itemContaCorrenteDesativado" value="itemContaCorrente">Item conta corrente</option>
+                            <option [disabled]="itemContaInvestimentoDesativado" value="itemContaInvestimento">Item conta investimento</option>
+                            <option [disabled]="motivoDesativado" value="motivo">Motivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-4 d-flex">
+                    <div class="mt-auto mb-4 mx-auto">
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input
+                                [ngClass]="{'is-invalid' : enviando && c.entradaOuSaida.errors}"
+                                type="radio"
+                                id="idEntrada"
+                                formControlName="entradaOuSaida"
+                                class="custom-control-input"
+                                value="entrada">
+                            <label
+                                class="custom-control-label"
+                                for="idEntrada">
+                                Entrada
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input
+                                [ngClass]="{'is-invalid' : enviando && c.entradaOuSaida.errors}"
+                                type="radio"
+                                id="idSaida"
+                                formControlName="entradaOuSaida"
+                                class="custom-control-input"
+                                value="saida">
+                            <label
+                                class="custom-control-label"
+                                for="idSaida">
+                                Saída
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <button
+                        type="submit"
+                        [disabled]="acaoBloqueada"
+                        class="btn btn-success btn-block">
+                        <i class="fas fa-save"></i>
+                        Salvar
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button
+                        (click)="cancelar()"
+                        type="button"
+                        class="btn btn-danger btn-block">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

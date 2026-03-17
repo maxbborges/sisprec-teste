@@ -1,0 +1,164 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white">
+    Minhas Viagens
+  </h3>
+  <div class="card-body">
+    <form [formGroup]="formPesquisa" (submit)="pesquisar()">
+
+      <div class="row">
+
+        <!-- campos do formulário -->
+
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select formControlName="status" name="status" id="status" class="form-control">
+              <option default disabled value="">Selecione</option>
+              <option *ngFor="let s of statusSelecao" value="{{s.idIndicador}}">{{s.nome}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-2">
+          <div class="form-group">
+            <label for="id">ID</label>
+            <input formControlName="id" type="number" name="id" id="id" min="0" class="form-control">
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3 form-group">
+          <label for="origem" style="display: block;">Origem</label>
+          <p-select id="origem" [options]="localizacoes" formControlName="origem" optionLabel="label"
+          optionValue="value" [virtualScroll]="true" [virtualScrollItemSize]="38" [filter]="true" [style]="{ 'margin-top': '2px', 'min-width': '100%', 'max-width': '100%' }" placeholder="Selecione"></p-select>
+        </div>
+        <!-- destino -->
+        <div class="col-12 col-md-6 col-lg-3 form-group">
+          <label for="destino" style="display: block;">Destino</label>
+          <p-select id="destino" [options]="localizacoes" formControlName="destino" optionLabel="label"
+          optionValue="value" [virtualScroll]="true" [virtualScrollItemSize]="38" [filter]="true" [style]="{ 'margin-top': '2px', 'min-width': '100%', 'max-width': '100%' }" placeholder="Selecione"></p-select>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="form-group">
+            <label for="dataInicial">Data Inicial</label>
+            <input formControlName="dataInicial" type="date" name="dataInicial" id="dataInicial" class="form-control" [class.is-invalid]=" f.dataInicial.touched && f.dataInicial.invalid">
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="form-group">
+            <label for="dataFinal">Data Final</label>
+            <input formControlName="dataFinal" type="date" name="dataFinal" id="dataFinal" class="form-control" [class.is-invalid]=" f.dataFinal.touched && f.dataFinal.invalid">
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="row" style="justify-content: right;">
+            <div *ngIf="isCoodenador" class="col-12 col-md-6" style="margin-top: 3px;">
+              <label for="id">&nbsp;</label>
+              <button type="button" class="btn btn-success" style="height: 38px; width: 100%" (click)="irPaginaCriarSolicitacao()">Solicitar diária para mim</button>
+            </div>
+            <div class="col-12 col-md-6" style="margin-top: 3px;">
+              <label for="">&nbsp;</label>
+              <button type="submit" class="btn btn-primary" style="height: 38px; width: 100%" [disabled]="formPesquisa.invalid"><i class="fas fa-search"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="row">
+      <div class="col-12">
+        <p-table
+          tableStyleClass="table table-bordered table-hover table-striped mt-3"
+          [value]="resultadoPesquisa"
+          [paginator]="true"
+          [rows]="10"
+          [showCurrentPageReport]="true"
+          [resizableColumns]="true" [autoLayout]="true"
+          currentPageReportTemplate="{currentPage} de {totalPages}"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col" pSortableColumn="idNumericoSolicitacao">
+                ID <p-sortIcon field="idNumericoSolicitacao"></p-sortIcon>
+              </th>
+              <th scope="col" pSortableColumn="origemCidade">
+                Origem 
+                <p-sortIcon field="origemCidade"></p-sortIcon>
+              </th>
+              <th scope="col" pSortableColumn="destinoCidade">
+                Destino 
+                <p-sortIcon field="destinoCidade"></p-sortIcon>
+              </th>
+              <th scope="col" pSortableColumn="dataInicio">
+                Data Inicial - Final 
+                <p-sortIcon field="dataInicio"></p-sortIcon>
+              </th>
+              <th scope="col" pSortableColumn="statusSolicitacaoAnalise">
+                Status 
+                <p-sortIcon field="statusSolicitacaoAnalise"></p-sortIcon>
+              </th>
+              <th scope="col" style="text-align: center;">Ações</th>
+            </tr>
+          </ng-template>
+          <ng-template
+              pTemplate="body"
+              let-rp
+          >
+            <tr>
+              <td>{{rp.idNumericoSolicitacao}}</td>
+              <td>{{rp.origemCidade}}/{{rp.origemUf}}</td>
+              <td>{{rp.destinoCidade}}/{{rp.destinoUf}}</td>
+              <td>{{rp.dataInicio | date:'dd/MM/yyyy'}} {{isCoodenador ? "-": ""}} {{rp.dataFim | date:'dd/MM/yyyy'}}</td>
+              <td [class]="recuperarCor(rp.statusSolicitacaoAnalise)">{{rp.statusSolicitacaoAnalise}}</td>
+              <td style="text-align: center;">
+                <div class="btn-group" role="group">
+                  <a (click)="realizarDownload(rp)" class="btn btn-warning btn-sm"  data-container="body" placement="top" ngbTooltip="Realizar download do PDF">
+                    <i class="fas fa-file-download"></i>
+                  </a>
+                  <!-- solicitação -->
+                  <a class="btn btn-primary btn-sm"  data-container="body" placement="top" ngbTooltip="Visualizar Solicitação" [routerLink]="['/viagens/solicitar-diaria/visualizar/'+ rp.idSolicitacaoDiaria]"><i class="fas fa-eye"></i></a>
+                  <a *ngIf="isCoodenador" 
+                  [routerLink]="['/viagens/solicitar-diaria/editar/'+ rp.idSolicitacaoDiaria]" 
+                  class="btn btn-info btn-sm"  
+                  data-container="body" 
+                  placement="top" 
+                  ngbTooltip="Alterar solicitação">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <a *ngIf="rp.avaliacao == 'Retornada para Ajustes'" class="btn btn-info btn-sm"  data-container="body" placement="top" ngbTooltip="Informações do Ajuste" (click)="informacoesAjuste(rp.idRelatorioViagens)">
+                    <i class="fas fa-info"></i>
+                  </a>
+                  <a 
+                    *ngIf="!isCoodenador"
+                    class="btn btn-sm btn-info" 
+                    data-container="body"
+                    placement="top" ngbTooltip="Analisar"
+                    (click)="analisar(rp.idSolicitacaoDiaria)"
+                  >
+                    <i class="fas fa-search"></i>
+                  </a>
+
+                  <!-- relatório -->
+
+                  <a *ngIf="['Reanálise', 'Retornada para Ajustes', 'Não analisado'].includes(rp.avaliacaoRelatorio)" [routerLink]="['/viagens/editar-relatorio/'+ rp.idRelatorioViagens]" class="btn btn-success btn-sm"  data-container="body" placement="top" ngbTooltip="Alterar relatório"><i class="fas fa-edit"></i></a>
+                  <a *ngIf="rp.idRelatorioViagens == null && rp.statusSolicitacaoAnalise == 'Aceita'" class="btn btn-success btn-sm"  data-container="body" placement="top" ngbTooltip="Cadastrar Relatório" [routerLink]="['/viagens/cadastrar-relatorio/' + rp.idSolicitacaoDiaria]"><i class="fas fa-file-alt"></i></a>
+                  <a *ngIf="rp.idRelatorioViagens != null && rp.statusSolicitacaoAnalise == 'Aceita'" class="btn btn-success btn-sm"  data-container="body" placement="top" ngbTooltip="Visualizar Relatório" [routerLink]="['/viagens/visualizar-relatorio/'+ rp.idRelatorioViagens]"><i class="fas fa-eye"></i></a>
+                  <!-- <button *ngIf="rp.avaliacao == 'Não analisado'" type="button"
+                    class="btn btn-danger btn-sm" placement="top"
+                    (click)="excluir(rp.idRelatorioViagens)"
+                    ngbTooltip="Excluir relatório"><i
+                    class="fas fa-trash-alt"></i>
+                  </button> -->
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td colspan="6">
+                    <div class="alert alert-info">Nenhuma solicitação encontrada</div>
+                </td>
+            </tr>
+          </ng-template>
+        </p-table>      
+      </div>
+    </div>
+  </div>
+</div>

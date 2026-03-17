@@ -1,0 +1,55 @@
+@charset 'utf-8';
+
+// Bootstrap (using @use for modern SASS)
+@use "bootstrap/scss/bootstrap" as *;
+
+// Font Awesome
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
+// PrimeIcons
+@import '~primeicons/primeicons.css';
+
+// PrimeNG v19 - estilos via design token, sem CSS global legado
+
+// SEST SENAT
+$blue: #104274;
+$error-color: #b00d0d;
+
+// Modal - Cores
+.amarelo .modal-content {
+  background-color: #ffc107 !important;
+}
+
+.ciano .modal-content {
+  background-color: #17a2b8 !important;
+  color: #f8f9fa !important;
+}
+
+.vermelho .modal-content {
+  background-color: #dc3545 !important;
+  color: #f8f9fa !important;
+}
+
+.verde .modal-content {
+  background-color: #28a745 !important;
+  color: #f8f9fa !important;
+}
+
+.required::after {
+  content: "*";
+  color: $error-color;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+button:disabled {
+  cursor: not-allowed! important;
+}
+
+// Configuração da Safe Area (Notch / Bordas nativas iOS / Android)
+body {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}

@@ -1,0 +1,124 @@
+<form [formGroup]="formCadastro" (submit)="salvar()">
+  <div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Inserir documento</h3>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-12">
+          <!-- <ng-container *ngIf="usuarioLogado.ehDex">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="federacaoUsuario">Federação:</label>
+                                <select id="federacaoUsuario" class="form-control" formControlName="idFederacaoDono"
+                                [class.is-invalid]="!formCadastro.controls.idFederacaoDono.valid"
+                                [class.is-valid]="formCadastro.controls.idFederacaoDono.valid">
+                                    <option selected>Selecione...</option>
+                                    <ng-container *ngFor="let federacao of lstFederacoes">
+                                        <option [value]="federacao.idIndicador">{{federacao?.sigla}}</option>
+                                    </ng-container>
+                                </select>
+                                <small class="form-text text-muted">
+                                Selecione a federação dona do arquivo.
+                                </small>
+                            </div>
+                        </div>
+                    </ng-container> -->
+          <div class="row">
+            <div class="form-group col-md-3">
+              <label for="slctAno">Ano:</label>
+              <select id="slctAno" class="form-control" formControlName="ano" (change)="selecionouAno($event)"
+                [class.is-invalid]="!formCadastro.controls.ano.valid"
+                 [class.is-valid]="formCadastro.controls.ano.valid">
+                <option selected>Selecione...</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="!formCadastro.controls.ano.valid">
+                Campo ano é obrigatório.
+              </div>
+            </div>
+            <!-- <div class="form-group col-md-6">
+                            <label for="slctTipoDocumento">Tipo:</label>
+                            <select id="slctTipoDocumento" class="form-control" (change)="selecionouTipoDocumento($event)" [(ngModel)]="tipoDocumentoSelecionado" [ngModelOptions]="{standalone: true}"
+                            [class.is-invalid]="!formCadastro.controls.idNomeDocumento.valid"
+                            [class.is-valid]="formCadastro.controls.idNomeDocumento.valid">
+                                <option selected>Selecione...</option>
+                                <ng-container *ngFor="let grupoDocumento of lstTipoDocumento">
+                                    <optgroup [label]="grupoDocumento.tipo">
+                                        <ng-container *ngFor="let tipoDocumento of grupoDocumento.listaNomeDocumento">
+                                            <option [ngValue]="tipoDocumento">{{tipoDocumento.nome}}</option>
+                                        </ng-container>
+                                    </optgroup>
+                                </ng-container>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="!formCadastro.controls.idNomeDocumento.valid">
+                                Campo tipo é obrigatório.
+                            </div>
+                        </div> -->
+            <div class="form-group col-md-6">
+              <label for="slctNomeDocumento">Nome do Documento:</label>
+              <select id="slctNomeDocumento" class="form-control" formControlName="idNomeDocumento" (change)=verificaTipoDocumentoSelecionado()
+                [class.is-invalid]="!formCadastro.controls.idNomeDocumento.valid"
+                [class.is-valid]="formCadastro.controls.idNomeDocumento.valid">
+                <option selected>Selecione...</option>
+                <ng-container *ngFor="let documento of lstTipoDocumento">
+                  <option [ngValue]="documento.idNomeDocumento">{{ documento.nome }}</option>
+                </ng-container>
+                <!-- <ng-container *ngFor="let grupoDocumento of lstTipoDocumento">
+                  <optgroup [label]="grupoDocumento.tipo">
+                    <ng-container *ngFor="let tipoDocumento of grupoDocumento.listaNomeDocumento">
+                      <option [ngValue]="tipoDocumento">{{tipoDocumento.nome}}</option>
+                    </ng-container>
+                  </optgroup>
+                </ng-container> -->
+              </select>
+              <div class="invalid-feedback" *ngIf="!formCadastro.controls.idNomeDocumento.valid">
+                Campo tipo é obrigatório.
+              </div>
+            </div>
+            <ng-container *ngIf="tipoEhPrestacaoContas">
+              <div class="form-group col-md-3">
+                <label for="slctMes">Mês:</label>
+                <select id="slctMes" class="form-control" formControlName="mes"
+                  [class.is-invalid]="!formCadastro.controls.mes.valid"
+                  [class.is-valid]="formCadastro.controls.mes.valid" (change)="verificaSeExistePrestacao()">
+                  <option selected>Selecione...</option>
+                  <option value="1">Janeiro</option>
+                  <option value="2">Fevereiro</option>
+                  <option value="3">Março</option>
+                  <option value="4">Abril</option>
+                  <option value="5">Maio</option>
+                  <option value="6">Junho</option>
+                  <option value="7">Julho</option>
+                  <option value="8">Agosto</option>
+                  <option value="9">Setembro</option>
+                  <option value="10">Outubro</option>
+                  <option value="11">Novembro</option>
+                  <option value="12">Dezembro</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="!formCadastro.controls.mes.valid">
+                  Campo mês é obrigatório.
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <app-upload-arquivo mode="basic" (enviouArquivo)="subiuArquivo($event.idArquivo)"></app-upload-arquivo>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer text-muted">
+      <div class="float-end">
+        <app-botao-voltar textoBotao='Cancelar'></app-botao-voltar>&nbsp;
+        <button type="submit" [disabled]="acaoBloqueada" class="btn btn-primary w-100"><i class="fas fa-save"></i>&nbsp;Salvar documento</button>
+      </div>
+    </div>
+  </div>
+</form>

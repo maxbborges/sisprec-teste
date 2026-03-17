@@ -1,0 +1,75 @@
+<div class="card shadow mb-3">
+  <div class="card-header h3 bg-primary text-white">
+    <i class="fas fa-calculator"></i>
+    Editar Parâmetros de Cálculo
+  </div>
+  <div class="card-body">
+    <form [formGroup]="formCadastro">
+      <div class="row">
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>Ano: <b class="text-danger">*</b></label>
+            <select class="form-control" formControlName="ano">
+              <option value="">Selecione</option>
+              <option *ngFor="let ano of anos" [value]="ano">{{ ano }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Federação: <b class="text-danger">*</b></label>
+            <select class="form-control" formControlName="idFederacao">
+              <option value="">Selecione</option>
+              <option *ngFor="let federacao of federacoes | async" [value]="federacao.idIndicador">{{ federacao.sigla }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Valor de Repasse R$: <b class="text-danger">*</b></label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+              </div>
+              <input type="text" class="form-control" formControlName="valorRepasse" currencyMask placeholder="0,00">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Quantidade de Veículos: <b class="text-danger">*</b></label>
+            <input type="number" class="form-control" formControlName="quantidadeVeiculos" placeholder="0">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Valor de Licenciamento R$: <b class="text-danger">*</b></label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+              </div>
+              <input type="text" class="form-control" formControlName="valorLicenciamento" currencyMask placeholder="0,00">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Mês de Abatimento do Licenciamento: <b class="text-danger">*</b></label>
+            <select class="form-control" formControlName="mesAbatimento">
+              <option value="">Selecione</option>
+              <option *ngFor="let m of meses" [value]="m.value">{{ m.mes }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer">
+    <button type="button" (click)="voltar()" class="btn btn-danger float-end ms-1">
+      <i class="fas fa-chevron-left"></i> Cancelar
+    </button>
+    <button [disabled]="formCadastro.invalid || acaoBloqueada" type="button" (click)="salvar()" class="btn btn-primary float-end ms-1">
+      <i class="fas fa-save"></i> Salvar
+    </button>
+  </div>
+</div>

@@ -1,0 +1,127 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white"> Visualizar Prestação de Contas</h3>
+  <div class="card-body">
+    <form [formGroup]="formPesquisa" (submit)="pesquisar()">
+      <div class="row mb-3">
+        <div class="form-group col-2">
+          <label for="slcExercicio">Ano do Exercício</label>
+          <select class="form-control" id="slcExercicio" formControlName="exercicio">
+            <option selected value="">Selecione</option>
+            <ng-container *ngFor="let exercicio of lstExercicios">
+              <option [value]="exercicio">{{exercicio}}</option>
+            </ng-container>
+          </select>
+        </div>
+        <div class="form-group col-2">
+          <label for="slcExercicioMes">Mês do Exercício</label>
+          <select class="form-control" id="slcExercicioMes" formControlName="exercicioMes">
+            <option selected value="">Selecione</option>
+            <ng-container *ngFor="let exerciciomes of lstExerciciosMes">
+              <option [value]="exerciciomes">{{exerciciomes}}</option>
+            </ng-container>
+          </select>
+        </div>
+
+        <div class="form-group col-4">
+          <label for="slcStatus">Status</label>
+          <select class="form-control" id="slcStatus" formControlName="idStatusAtualPrestacaoContas">
+            <option selected value="">Selecione</option>
+            <ng-container *ngFor="let item of lstStatusPrestacao">
+              <option [value]="item.idIndicador">{{item?.nome}}</option>
+            </ng-container>
+          </select>
+        </div>
+
+        <div class="form-group col-2">
+          <label for="slcVersao">Versão</label>
+          <select class="form-control" id="slcVersao" formControlName="versao">
+            <option selected value="">Selecione</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+
+        <div class="col-2 d-flex">
+          <button type="button" class="btn btn-primary btn-block w-100" placement="top" ngbTooltip="Pesquisar"
+            (click)="pesquisar()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+    <div class="row">
+      <div class="col-12">
+        <table class="table table-bordered table-hover table-striped table-sm">
+          <thead>
+            <tr>
+              <th class="align-middle text-center" scope="col">Exercício</th>
+              <th class="align-middle text-center" scope="col">Status</th>
+              <th class="align-middle text-center" scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="lstPrestacao.length > 0; else listaVazia">
+              <ng-container *ngFor="let item of lstPrestacao">
+                <tr>
+                  <td class="align-middle text-center">{{item?.mesExercicio}}/{{item?.anoExercicio}}</td>
+                  <td class="align-middle text-center">{{item?.nomeStatusPrestacaoContas}}
+                    {{item.versao ? '- ' + item.versao : ''}}</td>
+                  <td class="align-middle text-center" style="width: 60px;">
+                    <div class="btn-group" role="group">
+                      <!-- <a class="btn btn-primary btn-lg " tabindex="-1" role="button" aria-disabled="true">Primary link</a> -->
+                      <a [ngClass]="{'disabled': desativarBotoes }"
+                      *ngIf="item.idPrestacaoContas != null" [routerLink]="['/prestacaoDeContas/listar/documentacao/', item?.idFederacao, item?.mesExercicio, item?.anoExercicio, item?.idPrestacaoContas]"
+                        class="btn btn-info btn-sm" placement="top" ngbTooltip="Prestação de Contas da documentação"><i
+                          class="far fa-file-alt"></i></a>
+
+                      <a [ngClass]="{'disabled': desativarBotoes }" [routerLink]="['/prestacaoDeContas/listar/contaCorrente/', item?.idFederacao, item?.mesExercicio, item?.anoExercicio, 'TipoContaCorrente', item?.nomeStatusPrestacaoContas]"
+                        class="btn btn-secondary btn-sm" placement="top"
+                        ngbTooltip="Prestação de Contas da Conta Corrente"><i class="far fa-closed-captioning"></i></a>
+
+                      <a [ngClass]="{'disabled': desativarBotoes }" [routerLink]="['/prestacaoDeContas/listar/contaInvestimento/',item?.idFederacao, item?.mesExercicio, item?.anoExercicio, 'TipoContaInvestimento', item?.nomeStatusPrestacaoContas]"
+                        class="btn btn-primary btn-sm" placement="top"
+                        ngbTooltip="Prestação de Contas da Conta Investimento"><i
+                          class="far fa-arrow-alt-circle-up"></i></a>
+
+                      <a [ngClass]="{'disabled': desativarBotoes }"*ngIf="item.idPrestacaoContas != null" [routerLink]="['/prestacaoDeContas/analisar/historico/', item?.idFederacao, item?.mesExercicio, item?.anoExercicio,  item?.idPrestacaoContas]"
+                        class="btn btn-default btn-sm" placement="top" ngbTooltip="Histórico
+                          da Prestação de Contas"><i class="far fa-list-alt"></i></a>
+
+                      <button
+                        [disabled]="desativarBotoes"
+                        *ngIf="item?.siglaStatusPrestacaoContas === 'Cadastrada' || item?.siglaStatusPrestacaoContas === 'RetornadaAjustes'"
+                        (click)="enviarParaAnalise(item)" class="btn btn-success btn-sm" placement="top"
+                        ngbTooltip="Enviar para analise"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+            <ng-template #listaVazia>
+              <tr>
+                <td colspan="4">
+                  <div class="alert alert-info">{{msg}}</div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-container *ngIf="false">
+              <tr>
+                <td colspan="4">
+                  <div class="alert alert-info">{{msg}}</div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

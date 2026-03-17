@@ -1,0 +1,263 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">
+        <i class="fas fa-search-dollar"></i>
+        Analisar Estimativa de Custo
+    </h3>
+    <div
+        *ngIf="valor && historicos$ | async as historicos; else carregando"
+        class="card-body">
+        <div class="d-flex mb-3">
+            <div class="flex-fill pr-1">
+                <button
+                    routerLink="/estimativaDeCusto/analisar"
+                    class="btn btn-danger btn-block">
+                    <i class="fas fa-chevron-left"></i>
+                    Voltar
+                </button>
+            </div>
+            <div class="flex-fill px-1">
+                <button
+                    (click)="analisar(idCadastro)"
+                    class="btn btn-primary btn-block">
+                    <i class="fas fa-search-dollar"></i>
+                    Analisar
+                </button>
+            </div>
+            <div class="flex-fill pl-1">
+                <button
+                    (click)="clicarBaixarExcel()"
+                    class="btn btn-success btn-block">
+                    <i class="fas fa-file-excel"></i>
+                    Baixar Excel
+                </button>
+            </div>
+        </div>
+        <table class="table table-bordered table-hover table-sm table-striped">
+            <thead>
+                <tr>
+                    <th [style.width.px]="60"></th>
+                    <th [style.width.px]="200"></th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Janeiro
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Fevereiro
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Março
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Abril
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Maio
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Junho
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Julho
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Agosto
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Setembro
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Outubro
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Novembro
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Dezembro
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Valor previsto
+                    </th>
+                    <th
+                        class="align-middle"
+                        scope="col">
+                        Valor realizado
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let itemSubitemValor of valor?.itensSubitensValores">
+                <th *ngIf="itemSubitemValor.ehPai" class="align-middle text-start">{{ itemSubitemValor.codigoItem }}</th>
+                <th *ngIf="itemSubitemValor.ehPai" colspan="14" class="align-middle text-start">{{ itemSubitemValor.nomeItem }}</th>
+                <tr>
+                    <td
+                        scope="row"
+                        class="align-middle">
+                        {{itemSubitemValor.codigo}}
+                    </td>
+                    <td class="align-middle">{{ itemSubitemValor.nome }}</td>
+                    <td
+                        *ngFor="let mesValor of itemSubitemValor.mesesValores"
+                        class="align-middle">
+                        {{ mesValor.valor | currency: 'BRL' }}
+                    </td>
+                    <td class="align-middle">
+                        {{ itemSubitemValor.total | currency: 'BRL' }}
+                    </td>
+                    <td class="align-middle">
+                      <!--Inserir aqui o valor previsto-->
+                    </td>
+                </tr>
+                <tr>
+                    <td class="align-middle"></td>
+                    <td class="align-middle">
+                      Valor realizado
+                    </td>
+                    <td
+                      *ngFor="let mesDespesa of itemSubitemValor.mesesDespesas"
+                      class="align-middle">
+                        <ng-container *ngIf="mesDespesa.valor < 0; else itemDespesa">
+                          <div style="color: red">
+                            {{ mesDespesa.valor | currency: 'BRL' }}
+                          </div>
+                        </ng-container>
+                        <ng-template #itemDespesa>
+                          {{ mesDespesa.valor | currency: 'BRL' }}
+                        </ng-template>
+                    </td>
+                    <td class="align-middle">
+
+                    </td>
+                    <td class="align-middle">
+                      {{ itemSubitemValor.totalDespesas | currency: 'BRL' }}
+                    </td>
+                </tr>
+                <tr>
+                  <td class="align-middle"></td>
+                  <td class="align-middle">
+                    Total restante
+                  </td>
+                  <td
+                      *ngFor="let mesTotal of itemSubitemValor.mesesTotais"
+                      class="align-middle">
+                      <!-- {{ mesTotal.valor | currency: 'BRL' }} -->
+                      <ng-container *ngIf="mesTotal.valor < 0; else itemTotal">
+                        <div style="color: red">
+                          {{ mesTotal.valor | currency: 'BRL' }}
+                        </div>
+                      </ng-container>
+                      <ng-template #itemTotal>
+                        {{ mesTotal.valor | currency: 'BRL' }}
+                      </ng-template>
+                  </td>
+                  <td class="align-middle">
+                    <ng-container *ngIf="itemSubitemValor.mesesTotais[11].valor < 0; else totalValorPrevisto">
+                      <div style="color: red">
+                        {{ itemSubitemValor.mesesTotais[11].valor | currency: 'BRL' }}
+                      </div>
+                    </ng-container>
+                    <ng-template #totalValorPrevisto>
+                        {{ itemSubitemValor.mesesTotais[11].valor | currency: 'BRL' }}
+                    </ng-template>
+                  </td>
+                  <td class="align-middle">
+                      <!--Inserir aqui o valor previsto-->
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+            <tfoot>
+                <th
+                    class="align-middle"
+                    scope="col"
+                    colspan="2">
+                    Total por mês
+                </th>
+                <th
+                    *ngFor="let totalMesValor of valor?.totaisMesesValores"
+                    class="align-middle"
+                    scope="col">
+                    {{ totalMesValor.totalMes | currency: 'BRL' }}
+                </th>
+                <th
+                    class="align-middle"
+                    scope="col">
+                    {{ valor?.total | currency: 'BRL' }}
+                </th>
+            </tfoot>
+        </table>
+        <div *ngIf="historicos.length">
+            <h5>
+                <i class="fas fa-history"></i>
+                Histórico da Estimativa de Custo
+            </h5>
+            <table class="table table-bordered table-hover table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Data
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Usuário
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Status
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Motivo do retorno
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let historico of historicos">
+                        <td
+                            scope="row"
+                            class="align-middle">
+                            {{ historico.data | date: 'short' }}
+                        </td>
+                        <td class="align-middle">{{ historico.nomeUsuario }}</td>
+                        <td class="align-middle">{{ historico.nomeCadastroStatus }}</td>
+                        <td class="align-middle">{{ historico.motivo || '-' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <ng-template #carregando>
+        <div class="card-body">
+            <app-loading-div mensagem="Carregando..."></app-loading-div>
+        </div>
+    </ng-template>
+</div>

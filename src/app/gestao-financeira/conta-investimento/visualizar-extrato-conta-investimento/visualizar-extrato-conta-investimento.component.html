@@ -1,0 +1,145 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Extrato da conta investimento</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col" *ngIf="podeEditar">
+                <a class="btn btn-block btn-success w-100"
+                    (click)="cadastrarLancamentoRedirecionar()"><i
+                        class="fas fa-receipt"></i>&nbsp;Cadastrar Lançamento</a>
+            </div>
+            <div class="col">
+                <a class="btn btn-block btn-info w-100" (click)="exportarClick()"><i class="fas fa-file-excel"></i>&nbsp;Gerar
+                    Excel</a>
+            </div>
+        </div>
+        <app-barra-espacamento></app-barra-espacamento>
+        <div class="row mb-3">
+            <div class="col">
+                <select class="form-control form-control-sm" id="slcPorExercicio" [(ngModel)]="filtroAno">
+                    <option value="0" selected disabled>Ano</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+            <div class="col">
+                <select class="form-control form-control-sm" id="slctExercicio" tabindex="4"
+                    [(ngModel)]="filtroMes">
+                    <option value="0" selected [disabled]="true">Mês</option>
+                    <option value="1">1 - Janeiro</option>
+                    <option value="2">2 - Fevereiro</option>
+                    <option value="3">3 - Março</option>
+                    <option value="4">4 - Abril</option>
+                    <option value="5">5 - Maio</option>
+                    <option value="6">6 - Junho</option>
+                    <option value="7">7 - Julho</option>
+                    <option value="8">8 - Agosto</option>
+                    <option value="9">9 - Setembro</option>
+                    <option value="10">10 - Outubro</option>
+                    <option value="11">11 - Novembro</option>
+                    <option value="12">12 - Dezembro</option>
+                </select>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-primary w-100" placement="top" ngbTooltip="Filtrar"
+                    (click)="carregarLancamentos()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="row" *ngIf="mostraDetalhe">
+            <div class="col-6">
+                <dl class="row">
+
+                    <dt class="col-sm-7 text-end">SALDO ANTERIOR:</dt>
+                    <dd class="col-sm-5">{{saldoAnterior |currency:'BRL'}}</dd>
+
+                    <dt class="col-sm-7 text-end">IOF:</dt>
+                    <dd class="col-sm-5">{{iof |currency:'BRL'}}</dd>
+
+                    <dt class="col-sm-7 text-end">IRRF:</dt>
+                    <dd class="col-sm-5">{{irrf |currency:'BRL'}}</dd>
+
+                    <dt class="col-sm-7 text-end">RESGATE:</dt>
+                    <dd class="col-sm-5">- {{resgate |currency:'BRL'}}</dd>
+
+                    <dt class="col-sm-7 text-end">APLICAÇÃO:</dt>
+                    <dd class="col-sm-5">{{aplicacao |currency:'BRL'}}</dd>
+
+                    <dt class="col-sm-7 text-end">RENDIMENTO BRUTO NO MÊS:</dt>
+                    <dd class="col-sm-5">{{rendimento |currency:'BRL'}}</dd>
+
+                    <dt class="col-sm-7 text-end">SALDO NO MÊS:</dt>
+                    <dd class="col-sm-5">{{saldoAtual |currency:'BRL'}}</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-bordered table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Data</th>
+                            <th scope="col">Tipo de transação</th>
+                            <th scope="col">Item</th>
+                            <th scope="col">Valor</th>
+                            <th scope="col">Saldo</th>
+                            <th scope="col">Análise</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="!loading">
+                            <ng-container *ngFor="let lancamento of lstLancamentos">
+                                <tr>
+                                    <td>{{lancamento?.dataEvento|date:'shortDate'}}</td>
+                                    <td>{{lancamento?.tipoLancamento}}</td>
+                                    <td>{{lancamento?.itemLancamento}}</td>
+
+                                    <td *ngIf="lancamento?.tipoLancamento === 'Resgate da conta investimento'; else elseBlock"> - {{lancamento?.valor|currency:'BRL'}}</td>
+                                    <ng-template #elseBlock>{{lancamento?.valor|currency:'BRL'}}</ng-template>
+
+                                    <td>{{lancamento?.saldo|currency:'BRL'}}</td>
+                                    <td>{{lancamento?.nomeAnalise}}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a *ngIf="podeEditar"
+                                                [routerLink]="['/gestaoFinanceira/conta-investimento/editarLancamento/', lancamento.idLancamento]"
+                                                class="btn btn-warning btn-sm" placement="top"
+                                                ngbTooltip="Editar lançamento"><i class="fas fa-edit"></i></a>
+                                            <button *ngIf="podeEditar" [disabled]="acaoBloqueada" type="button" class="btn btn-danger btn-sm"
+                                                placement="top" ngbTooltip="Excluir lançamento"
+                                                (click)="excluirLancamento(lancamento.idLancamento)"><i
+                                                    class="fas fa-trash-alt"></i></button>
+                                            <app-ficha-auxiliar motivo="{{lancamento?.motivo}}" observacao="{{lancamento?.observacao}}" *ngIf="lancamento?.analise === 'RetornadoAjustes'"></app-ficha-auxiliar>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="loading">
+                            <tr>
+                                <td colspan="6">
+                                    <div class="mt-2">
+                                        <app-loading-div mensagem="Carregando lançamentos..."></app-loading-div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <ng-container *ngIf="msg">
+                            <tr>
+                                <td colspan="6">
+                                    <div class="alert alert-info">{{msg}}</div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

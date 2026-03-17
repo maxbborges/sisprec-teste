@@ -1,0 +1,88 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">
+        <i class="fas fa-tasks"></i>
+        Gerenciar Estimativa de Custo
+    </h3>
+    <div
+        *ngIf="cadastros$ | async as cadastros; else carregando"
+        class="card-body">
+        <table class="table table-bordered table-hover table-sm table-striped">
+            <thead>
+                <tr>
+                    <th
+                        class="align-middle text-center"
+                        scope="col">
+                        Federação
+                    </th>
+                    <th
+                        class="align-middle text-center"
+                        scope="col">
+                        Exercício
+                    </th>
+                    <th
+                        class="align-middle text-center"
+                        scope="col">
+                        Status
+                    </th>
+                    <th
+                        class="align-middle text-center"
+                        scope="col">
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cadastro of cadastros">
+                    <td
+                        scope="row"
+                        class="align-middle text-center">
+                        {{ cadastro.siglaFederacao }}
+                    </td>
+                    <td class="align-middle text-center">{{ cadastro.anoExercicio }}</td>
+                    <td class="align-middle text-center">{{ cadastro.nomeCadastroStatus }}</td>
+                    <td class="align-middle text-center">
+                        <div
+                            class="btn-group"
+                            role="group"
+                            aria-label="Ação">
+                            <button
+                                *ngIf="cadastro.idCadastroStatus === 2147 || cadastro.idCadastroStatus === 2149"
+                                (click)="enviarParaAnalise(cadastro)"
+                                [disabled]="acaoBloqueada"
+                                ngbTooltip="Enviar para Análise"
+                                placement="bottom"
+                                container="body"
+                                type="button"
+                                class="btn btn-success btn-sm">
+                                <i class="fas fa-file-import"></i>
+                            </button>
+                            <button
+                                [routerLink]="['/estimativaDeCusto/cadastrarValores', cadastro.idCadastro, 'visualizar']"
+                                ngbTooltip="Visualizar"
+                                placement="bottom"
+                                type="button"
+                                class="btn btn-info btn-sm">
+                                <i class="far fa-eye"></i>
+                            </button>
+                            <button
+                                *ngIf="cadastro.idCadastroStatus === 2147 || cadastro.idCadastroStatus === 2149"
+                                [routerLink]="['/estimativaDeCusto/cadastrarValores', cadastro.idCadastro, 'cadastrarEditar']"
+                                ngbTooltip="Cadastrar / Editar"
+                                placement="bottom"
+                                container="body"
+                                type="button"
+                                class="btn btn-warning btn-sm">
+                                <i class="far fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <ng-template #carregando>
+        <div class="card-body">
+            <app-loading-div mensagem="Carregando..."></app-loading-div>
+        </div>
+    </ng-template>
+</div>

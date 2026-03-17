@@ -1,0 +1,82 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Visualizar despesas e devoluções por lançamento de extrato</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <a *ngIf="lancamento?.siglaStatusAtualPrestacaoContas == null || lancamento?.siglaStatusAtualPrestacaoContas == 'RetornadaAjustes'" class="btn btn-block btn-success" [routerLink]="['/gestaoFinanceira/conta-corrente/cadastrarDespesa/',idLancamento]">Cadastrar
+                    despesa</a>
+            </div>
+        </div>
+        <app-barra-espacamento></app-barra-espacamento>
+        <div class="row mb-3">
+            <div class="col-6">
+                <dl class="row">
+                    <dt class="col-sm-7">Saque:</dt>
+                    <dd class="col-sm-5"> {{lancamento?.valor|currency:'BRL'}}</dd>
+
+                    <dt class="col-sm-7">Total das despesas e devoluções:</dt>
+                    <dd class="col-sm-5"> {{lancamentosTotal | currency:'BRL'}}</dd>
+
+                    <dt class="col-sm-7">Saldo deste lançamento:</dt>
+                    <dd class="col-sm-5">{{saldoFinal | currency:'BRL'}} </dd>
+                </dl>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-bordered table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Data</th>
+                            <th scope="col">Item</th>
+                            <th scope="col">Valor</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let item of lstDespesasLancamento">
+                            <tr>
+                                <td>{{item?.dataEvento|date:'shortDate'}}</td>
+                                <td>{{item?.item}}</td>
+                                <ng-template #list>
+                                    <div class="d-flex flex-column">
+                                    <span>Despesa ajustada recentemente.</span>
+                                    <span>Data: {{item?.dataAtualizacao | date: 'dd/MM/yyyy HH:mm'}}</span>
+                                    </div>
+                                </ng-template>
+                                <td>- {{item?.valor|currency:'BRL'}} 
+                                    <i *ngIf="item?.dataAtualizacao" class="fas fa-history" style="color: #0b2f52" tooltipClass="white-space-pre-line" [ngbTooltip]="list"></i>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <app-download-arquivo [despesaArquivo]="item"></app-download-arquivo>
+                                        <a [routerLink]="['/gestaoFinanceira/conta-corrente/visualizarDespesa/', item?.idPrestacaoContaItemSaida]" class="btn btn-info btn-sm" placement="top" ngbTooltip="Visualizar despesa"><i class="fas fa-eye"></i></a>
+                                        <a *ngIf="possivelAlterar(item)" [routerLink]="['/gestaoFinanceira/conta-corrente/editarDespesa/', item?.idPrestacaoContaItemSaida]" class="btn btn-warning btn-sm" placement="top" ngbTooltip="Editar despesa"><i class="fas fa-edit"></i></a>
+                                        <a *ngIf="lancamentoSemAnaliseOuAjustes()" [routerLink]="['/gestaoFinanceira/conta-corrente/copiarDespesa', item?.idPrestacaoContaItemSaida]" class="btn btn-secondary btn-sm" placement="top" [ngbTooltip]="'Copiar despesa'">
+                                            <i class="fas fa-copy"></i>
+                                        </a>
+                                        <button *ngIf="possivelAlterar(item)" type="button" class="btn btn-danger btn-sm" placement="top" (click)="excluirLancamento(item)" ngbTooltip="Excluir despesa"><i class="fas fa-trash-alt"></i></button>
+                                        <app-ficha-auxiliar *ngIf="(lancamento.siglaStatusAtualPrestacaoContas == null || lancamento.siglaStatusAtualPrestacaoContas == 'RetornadaAjustes') &&
+                                         (item?.analise == 'RetornadoAjustes' && ((item?.dataAtualizacao === null) || item?.dataAtualizacao < item.dataAlteracaoPrestacaoConta))" motivo="{{item.motivos}}" observacao="{{item.observacao}}" [mostrarTooltipCompleta]="true"></app-ficha-auxiliar>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer text-muted">
+        <div class="float-end">
+            <ng-container *ngIf="usuarioLogado?.tipoUsuarioSigla === 'UsuarioFederacao'; else defaultBackButton">
+                <button id="btnVoltar" class="btn btn-danger" (click)="location.back()">
+                    <i class="fas fa-chevron-left me-1"></i> Voltar
+                </button>
+            </ng-container>
+            <ng-template #defaultBackButton>
+                <app-botao-voltar></app-botao-voltar>
+            </ng-template>
+        </div>
+    </div>
+</div>

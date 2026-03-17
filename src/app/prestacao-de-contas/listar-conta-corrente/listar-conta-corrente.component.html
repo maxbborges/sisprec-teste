@@ -1,0 +1,95 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white"> Prestação de Contas da Conta Corrente</h3>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-0"><strong>Exercício:</strong> {{mes}}/{{ano}}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-0"><strong>Status atual:</strong> {{ status }} - {{ this.versaoStatus }}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-0"><strong>Saldo Anterior:</strong> {{ saldoAnterior | currency:'BRL'}} </h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <!-- <h5 class="mb-3"><strong>Saldo:</strong> 3.000,00</h5> -->
+      </div>
+    </div><br />
+    <div class="row">
+      <div class="col">
+        <div class=" mb-3">          
+        <button (click)="voltar()" class="btn btn-light me-2">Voltar</button>
+        <button class="btn btn-dark" (click)="exportarExcel()" >Gerar Excel</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <table class="table table-bordered table-hover table-striped table-sm">
+          <thead>
+            <tr>
+              <th class="align-middle text-center" scope="col">N</th>
+              <th class="align-middle text-center" scope="col">Data</th>
+              <th class="align-middle text-center" scope="col">Tipo de Transação</th>
+              <th class="align-middle text-center" scope="col">Item</th>
+              <th class="align-middle text-center" scope="col">Valor</th>
+              <th class="align-middle text-center" scope="col">Saldo</th>
+              <th class="align-middle text-center" scope="col">Análise</th>
+              <th class="align-middle text-center" scope="col">Motivo</th>
+              <th class="align-middle text-center" scope="col">Há ajustes para despesas?</th>
+              <th class="align-middle text-center" scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="this.lstItemPrestacaoCC.length > 0; else listaVazia">
+              <ng-container *ngFor="let item of lstItemPrestacaoCC; index as i">
+                <!-- <tr *ngIf="item?.analise === 'Retornado para Ajustes'" style="background-color:yellow;"> *ngIf="item?.analise !== 'Retornado para Ajustes'"-->
+                <tr>
+                  <td class="align-middle text-center">{{i + 1}}</td>
+                  <td class="align-middle text-center">{{item?.dataEvento |date:'shortDate'}}</td>
+                  <td class="align-middle text-center">{{item?.tipoLancamento}}</td>
+                  <td class="align-middle text-center">{{item?.item}}</td>
+                  <td *ngIf="item?.tipoLancamento === 'Saída'" class="align-middle text-center">-
+                    {{item?.valor | currency:'BRL'}}</td>
+                  <td *ngIf="item?.tipoLancamento === 'Entrada'" class="align-middle text-center">
+                    {{item?.valor | currency:'BRL'}}</td>
+                  <td class="align-middle text-center">{{item?.saldo | currency:'BRL'}}</td>
+                  <td class="align-middle text-center">{{item?.analise}}</td>
+                  <td class="align-middle text-center">{{item?.motivo}}</td>
+                  <td *ngIf="item?.analise == 'Retornado para Ajustes'" class="align-middle text-center">Sim</td>
+                  <td *ngIf="item?.analise != 'Retornado para Ajustes'" class="align-middle text-center">Não</td>
+                  <td *ngIf="item?.tipoLancamento === 'Saída'" class="align-middle text-center" style="width: 160px;">
+                    <!-- <app-ficha-auxiliar-historico  tipoLancamento="{{'prestacao-contas'}}" idLancamento="{{item.idLancamento}}" idPrestacaoContaItemSaida="{{item.idPrestacaoContaItemSaida}}"></app-ficha-auxiliar-historico>&nbsp; -->
+                    <a [routerLink]="['fichaAuxiliar',item.idLancamento]"
+                      routerLinkActive="router-link-active" class="btn btn-primary btn-sm" ngbTooltip="Visualizar Histórico Ficha" target="_blank" placement="bottom"><i class="fas fa-file-alt"></i></a>&nbsp;
+                    <a [routerLink]="['/prestacaoDeContas/listar/despesasEReceitas/', item?.idLancamento]"
+                      class="btn btn-secondary btn-sm" placement="top" ngbTooltip="Visualizar Análise das
+                          Despesas/Devoluções deste Lançamento"><i class="far fa-eye"></i></a>
+                  </td>
+                  <td *ngIf="item?.tipoLancamento !== 'Saída'" class="align-middle text-center" style="width: 60px;">
+                    - </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+            <ng-template #listaVazia>
+              <tr>
+                <td colspan="8">
+                  <div class="alert alert-info">{{msg}}</div>
+                <td colspan="4">
+                  <!-- <div class="alert alert-info">{{msg}}</div> -->
+                  <div class="alert alert-info"></div>
+                </td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

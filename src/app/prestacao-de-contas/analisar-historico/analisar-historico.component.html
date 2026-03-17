@@ -1,0 +1,72 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white"> Histórico da Prestação de Contas</h3>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-0"><strong>Federação:</strong> {{federacao?.sigla}}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-3"><strong>Exercício:</strong> {{mesExerciocio}}/{{anoExercicio}}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class=" mb-3">          
+          <button (click)="voltar()" class="btn btn-outline-dark me-2">Voltar</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <table class="table table-bordered table-hover table-striped table-sm">
+          <thead>
+            <tr>
+              <th rowspan="2" class="align-middle text-center" scope="col">Data</th>
+              <th rowspan="2" class="align-middle text-center" scope="col">Usuário</th>
+              <th rowspan="2" class="align-middle text-center" scope="col">Status da Prestação de Contas</th>
+              <th class="align-middle text-center" scope="col">Conta Corrente</th>
+              <th class="align-middle text-center" scope="col">Despesa / Receita</th>
+              <th class="align-middle text-center" scope="col">Conta Investimento</th>
+              <th class="align-middle text-center" scope="col">Documentação</th>
+            </tr>
+            <tr>
+              <th class="align-middle text-center" colspan="4">Item(ns) Retornados</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="true">
+                <tr *ngFor="let h of historico; let i = index">
+                  <td class="align-middle text-center">{{h?.dataCadastro | date:'shortDate'}}</td>
+                  <td class="align-middle text-center">{{h?.usuarioCadastro}}</td>
+                  <td class="align-middle text-center">{{h?.statusPrestacaoContas}} - {{h?.versao}}</td>
+                  <td class="align-middle text-center">{{h?.itemRetornadoContaCorrente}}</td>
+                  <td class="align-middle text-center">{{h?.itemRetornadoDespesaReceita}}</td>
+                  <td class="align-middle text-center">{{h?.itemRetornadoContaInvestimento}}</td>
+                  <td class="align-middle text-center">{{h?.itemRetornadoDocumentacao}}</td>
+                </tr>
+              </ng-container>
+            <ng-container *ngIf="false">
+              <tr>
+                <td colspan="6">
+                  <div class="mt-2">
+                    <app-loading-div mensagem="Carregando lançamentos..."></app-loading-div>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="false">
+              <tr>
+                <td colspan="4">
+                  <!-- <div class="alert alert-info">{{msg}}</div> -->
+                  <div class="alert alert-info"></div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

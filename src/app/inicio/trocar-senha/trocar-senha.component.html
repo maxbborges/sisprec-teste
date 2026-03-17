@@ -1,0 +1,55 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white"><i class="fas fa-key"></i> Alteração da Senha</h3>
+  <div class="card-body">
+    <form [formGroup]="fgAlteracaoSenha" (submit)="alterar()">
+
+      <div class="form-group">
+        <label for="idSenhaAntiga">Senha antiga</label>
+        <input [ngClass]="{ 'is-invalid': enviando && c.senhaAtual.errors }" formControlName="senhaAtual"
+          type="password" class="form-control form-control-lg" id="idSenhaAntiga" aria-label="Senha antiga"
+          autocomplete="current-password">
+        <div *ngIf="enviando" class="invalid-feedback">
+          <div *ngIf="c.senhaAtual.errors?.required">O campo <b>Senha antiga</b> é obrigatório.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="idNovaSenha">Nova senha</label>
+        <input
+          [ngClass]="{ 'is-invalid': enviando && (c.novaSenha.errors || fgAlteracaoSenha.errors?.camposDiferentes === 'senhaAtual!==novaSenha') }"
+          formControlName="novaSenha" type="password" id="idNovaSenha" class="form-control form-control-lg"
+          aria-label="Nova senha" autocomplete="new-password">
+        <div *ngIf="enviando" class="invalid-feedback">
+          <div *ngIf="c.novaSenha.errors?.required">O campo <b>Nova senha</b> é obrigatório.</div>
+          <div *ngIf="fgAlteracaoSenha.errors?.camposDiferentes === 'senhaAtual!==novaSenha'">O campo <b>Nova senha</b>
+            não pode ser igual ao campo <b>Senha antiga</b>.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="idConfirmarSenha">Confirmar senha</label>
+        <input
+          [ngClass]="{ 'is-invalid': enviando && (c.novaSenhaConfirmacao.errors || fgAlteracaoSenha.errors?.camposIguais === 'novaSenha===novaSenhaConfirmacao') }"
+          formControlName="novaSenhaConfirmacao" (keydown)="$event.ctrlKey !== true" type="password"
+          id="idConfirmarSenha" class="form-control form-control-lg" aria-label="Confirmar senha"
+          autocomplete="new-password">
+        <div *ngIf="enviando" class="invalid-feedback">
+          <div *ngIf="c.novaSenhaConfirmacao.errors?.required">O campo <b>Confirmar senha</b> é obrigatório.</div>
+          <div *ngIf="fgAlteracaoSenha.errors?.camposIguais === 'novaSenha===novaSenhaConfirmacao'">O campo
+            <b>Confirmar senha</b> deve ser igual ao campo <b>Nova senha</b>.</div>
+        </div>
+      </div>
+
+      <button [disabled]="fgAlteracaoSenha.disabled" class="btn btn-success  float-end" type="submit">
+        <i class="fas fa-save"></i>
+        {{ fgAlteracaoSenha.disabled ? 'Salvando alteração da senha' : 'Salvar alteração da senha' }}
+      </button>
+
+      <button (click)="cancelar()" [disabled]="fgAlteracaoSenha.disabled" class="btn btn-danger btn float-end me-2"
+        type="button">
+        <i class="fas fa-times"></i> Cancelar
+      </button>
+
+    </form>
+  </div>
+</div>

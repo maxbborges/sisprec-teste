@@ -1,0 +1,54 @@
+<form [formGroup]="formCadastro" (submit)="salvar()">
+    <div class="card shadow mb-3">
+        <h3 class="card-header bg-primary text-white">Cadastrar fornecedor</h3>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="idTipoFornecedor" id="rndTipo1"
+                                    formControlName="idTipoFornecedor" value="1013" (change)="mudaTipoFornecedor($event)">
+                                <label class="form-check-label" for="rndTipo1">Pessoa Jurídica</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="idTipoFornecedor" id="rndTipo2"
+                                    formControlName="idTipoFornecedor" value="1012" (change)="mudaTipoFornecedor($event)">
+                                <label class="form-check-label" for="rndTipo2">Pessoa Física</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <ng-container *ngIf="ehPessoaJuridica">
+                            <div class="form-group col-md-4">
+                                <label for="txtCnpj">CNPJ:</label>
+                                <input type="text" class="form-control" id="txtCnpj" formControlName="numeroDocumento" mask="00.000.000/0000-00">
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label for="txtRazaoSocial">Razão social:</label>
+                                <input type="text" class="form-control" id="txtRazaoSocial" formControlName="nome">
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="!ehPessoaJuridica">
+                            <div class="form-group col-md-4">
+                                <label for="txtCpf">CPF:</label>
+                                <input type="text" class="form-control" id="txtCpf" formControlName="numeroDocumento" mask="000.000.000-00">
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label for="txtNomeFornecedor">Nome:</label>
+                                <input type="text" class="form-control" id="txtNomeFornecedor" formControlName="nome" >
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            <div class="float-end">
+                <app-botao-voltar textoBotao='Cancelar'></app-botao-voltar>&nbsp;
+                <button type="submit" [disabled]="acaoBloqueada" class="btn btn-success"><i class="fas fa-save"></i>&nbsp;Cadastrar
+                    fornecedor</button>
+            </div>
+        </div>
+    </div>
+</form>

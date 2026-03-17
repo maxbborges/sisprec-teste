@@ -1,0 +1,59 @@
+<form [formGroup]="formCadastro">
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Colaboradores Vinculados às Federações</h3>
+    <div class="card-body">
+        <div class="row">        
+            <div class="form-group col-12">
+                <label for="slcPorFederacao">Selecione uma federação para exibir os colaboradores:</label>
+                <select class="form-control form-control-sm" id="slcPorFederacao" [(ngModel)]="filtroFederacao"
+                formControlName="idFederacao"
+                    (change)="onChangeFederacao($event)">
+                    <option [selected]="this.usuarioLogado.idFiliacao === federacao.idIndicador" *ngFor="let federacao of lstFederacoes" [value]="federacao.idIndicador">{{federacao?.sigla}}</option>
+                </select>
+              </div>  
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class=" mb-3">
+                    <button type="buton" class="btn btn-info btn-block w-100" (click)="exportarClick()" [disabled]="this.lstColaboradores.length == 0" style="margin-top: 2%;">Gerar Excel</button>
+                </div>
+            </div>            
+        </div>
+        <app-barra-espacamento></app-barra-espacamento>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Documento</th>
+                            <th scope="col">Nome/Razão social</th>                            
+                            <ng-container *ngIf="!['UsuarioFederacao', 'UsuarioPresidente'].includes(usuarioLogado.tipoUsuarioSigla)">
+                               <th>Ações</th>
+                            </ng-container>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let colaborador of lstColaboradores">
+                            <tr>
+                                <td>{{ colaborador?.tipoColaborador }}</td>
+                                <td *ngIf="colaborador.idTipoColaborador == 1013">
+                                    {{ colaborador?.numeroDocumento | mask:'00.000.000/0000-00' }}</td>
+                                <td *ngIf="colaborador.idTipoColaborador == 1012">
+                                    {{ colaborador?.numeroDocumento | mask:'000.000.000-00' }}</td>
+                                <td>{{ colaborador?.nome }}</td>                                
+                                <ng-container *ngIf="!['UsuarioFederacao', 'UsuarioPresidente'].includes(usuarioLogado.tipoUsuarioSigla)">
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" placement="top" (click)="excluir(colaborador.idColaborador)"
+                                        ngbTooltip="Desativar colaborador"><i class="fas fa-trash-alt"></i></button>
+                                    </td>
+                                </ng-container>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</form>

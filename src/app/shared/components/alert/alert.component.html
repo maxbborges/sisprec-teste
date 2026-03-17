@@ -1,0 +1,27 @@
+<div
+    *ngIf="resumo"
+    class="modal-header">
+    <h4
+        class="modal-title"
+        id="ssModalAlert">
+        <i
+            *ngIf="icone"
+            [ngClass]="icone"></i>
+        {{ resumo }}
+    </h4>
+</div>
+<div
+    *ngIf="detalhe"
+    class="modal-body">
+    <h5>{{ detalhe }}</h5>
+</div>
+<div class="modal-footer">
+    <button
+        (click)="ok()"
+        [ngClass]="severidade ? 'btn-light' : 'btn-success'"
+        type="button"
+        class="btn">
+        <i class="far fa-thumbs-up"></i>
+        {{ nomeBotao }}
+    </button>
+</div>

@@ -1,0 +1,101 @@
+<div class="card shadow mb-3">
+  <div class="card-header h3 bg-primary text-white">
+      <i class="fas fa-calendar-alt"></i>
+      Definir Prazo - Disparo de e-mail
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="idExercicio">
+              Ano Exercício
+              <b class="text-danger">*</b>
+            </label>
+            <select (change)="onChangeAno($any($event.target).value)" formControlName="anoExercicio" id="idExercicio" class="form-control">
+              <option value>Selecione</option>
+              <option *ngFor="let ano of anos | async" [value]="ano">
+                {{ ano }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="idExercicio">
+              Mês Exercício
+              <b class="text-danger">*</b>
+            </label>
+            <select (change)="onChangeMes($any($event.target).value)" formControlName="mesExercicio" class="form-control" id="idMesExercicio">
+              <option selected value="">Selecione</option>
+              <option value="1">01 - Janeiro</option>
+              <option value="2">02 - Fevereiro</option>
+              <option value="3">03 - Março</option>
+              <option value="4">04 - Abril</option>
+              <option value="5">05 - Maio</option>
+              <option value="6">06 - Junho</option>
+              <option value="7">07 - Julho</option>
+              <option value="8">08 - Agosto</option>
+              <option value="9">09 - Setembro</option>
+              <option value="10">10 - Outubro</option>
+              <option value="11">11 - Novembro</option>
+              <option value="12">12 - Dezembro</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="txtData">
+            Prazo limite de pagamento:
+            <b class="text-danger">*</b>
+          </label>
+          <div class="input-group">
+            <input type="date" class="form-control" id="txtData" formControlName="dataLimitePagamento" tabindex="3">
+          </div>
+        </div>
+        <div class="col">
+          <label for="txtData">
+            Data de envio de e-mail (lembrete):
+            <b class="text-danger">*</b>
+          </label>
+          <div class="input-group">
+            <input type="date" class="form-control" id="txtData" formControlName="dataEnvioEmail" tabindex="3">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12" style="margin-top: 20px;margin-bottom: -40px;">
+          <ng-container *ngIf="loading">
+            <app-loading-div mensagem="Buscando..."></app-loading-div>
+          </ng-container>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer">
+      <button
+          [disabled]="form.invalid || acaoBloqueada"
+          type="button"
+          (click)="salvar()"
+          class="btn btn-success float-end ms-1">
+          <i class="fas fa-save"></i>
+          Salvar
+      </button>
+      <button
+          [disabled]="idPrazoEnvioPrestacaoContas == null || acaoBloqueada"
+          type="button"
+          (click)="enviarEmail()"
+          class="btn btn-primary float-end ms-1">
+          <i class="fas fa-paper-plane"></i>
+          Enviar E-mail
+      </button>
+      <button
+          type="button"
+          (click)="limparForm()"
+          class="btn btn-warning float-end">
+          <i class="fas fa-broom"></i>
+          Limpar Dados
+      </button>
+  </div>
+</div>

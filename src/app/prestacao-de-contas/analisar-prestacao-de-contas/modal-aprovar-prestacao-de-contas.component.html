@@ -1,0 +1,20 @@
+<div class="modal-body">
+  <div class="mb-3">
+    <div><strong>Federação:</strong> {{ prestacaoContas.siglaFederacao }}</div>
+    <div><strong>Exercício:</strong> {{ prestacaoContas.mesExercicio +'/'+ prestacaoContas.anoExercicio }}</div>
+    <div><strong>Status:</strong> {{ prestacaoContas.nomeStatusPrestacaoContas }}</div>
+  </div>
+  <ng-container *ngIf="this.msgRetorno === ''; else temlancamentosnaoavaliados">
+    <h5 class="m-0">Tem certeza que deseja aprovar esta Prestação de Contas?</h5>
+  </ng-container>
+  <ng-template #temlancamentosnaoavaliados>
+    <div class="alert alert-info">{{ this.msgRetorno }}</div>
+  </ng-template>
+</div>
+<div class="modal-footer">
+  <button (click)="cancelar()" type="button" class="btn btn-danger">Cancelar</button>
+  <button  *ngIf="this.msgRetorno === ''" (click)="sim()" type="button" class="btn btn-success">Sim</button>
+</div>
+
+
+

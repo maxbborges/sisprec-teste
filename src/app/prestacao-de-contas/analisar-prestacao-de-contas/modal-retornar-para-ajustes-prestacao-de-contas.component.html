@@ -1,0 +1,12 @@
+<div class="modal-body">
+  <div class="mb-3">
+    <div><strong>Federação:</strong> {{ prestacaoContas.siglaFederacao }}</div>
+    <div><strong>Exercício:</strong> {{ prestacaoContas.mesExercicio +'/'+ prestacaoContas.anoExercicio }}</div>
+    <div><strong>Status:</strong> {{ prestacaoContas.nomeStatusPrestacaoContas }}</div>
+  </div>
+  <h5 class="m-0">Tem certeza que deseja retornar esta prestação de contas para ajustes?</h5>
+</div>
+<div class="modal-footer">
+  <button (click)="cancelar()" type="button" class="btn btn-danger">Cancelar</button>
+  <button (click)="sim()" type="button" class="btn btn-success">Sim</button>
+</div>

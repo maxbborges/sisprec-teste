@@ -1,0 +1,74 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white"> Analisar Prestação de Contas da Documentação</h3>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-0"><strong>Exercício:</strong> {{ mesAnoExercicio }}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-3"><strong>Status atual:</strong> {{ statusPrestacaoContas }}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class=" mb-3">
+          <button routerLink="/prestacaoDeContas/analisar" class="btn btn-success">Concluir</button>
+          <button (click)="voltar()" class="btn btn-outline-dark ms-2">Voltar</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <table class="table table-bordered table-hover table-striped table-sm">
+          <thead>
+            <tr>
+              <th class="align-middle text-center" scope="col">N</th>
+              <th class="align-middle text-center" scope="col">Ano</th>
+              <th class="align-middle text-center" scope="col">Mês</th>
+              <th class="align-middle text-center" scope="col">Federação</th>
+              <th class="align-middle text-center" scope="col">Nome do Documento</th>
+              <th class="align-middle text-center" scope="col">Análise</th>
+              <th class="align-middle text-center" scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="true">
+              <ng-container>
+                <tr *ngFor="let d of documentos; let i = index" [style.background-color]="d.analise == 'RetornadoAjustes' ? '#ffff00' : ''">
+                  <td class="align-middle text-center">{{ i + 1 }}</td>
+                  <td class="align-middle text-center">{{ d?.ano }}</td>
+                  <td class="align-middle text-center">{{ d?.mes }}</td>
+                  <td class="align-middle text-center">{{ d?.siglaFederacao }}</td>
+                  <td class="align-middle text-center">{{ d?.nomeDocumento }}</td>
+                  <td class="align-middle text-center">{{ (d.idAnalise ? d.nomeAnalise : 'Não Analisado') + (d.idMotivo ? ' - ' + d.nomeMotivo : '') }}</td>
+                  <td class="align-middle text-center" style="width: 60px;">
+                    <button class="btn btn-primary btn-sm" (click)="analisar(i+1, d)"> <i class="fas fa-search"></i> </button>
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="false">
+              <tr>
+                <td colspan="6">
+                  <div class="mt-2">
+                    <app-loading-div mensagem="Carregando lançamentos..."></app-loading-div>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="false">
+              <tr>
+                <td colspan="4">
+                  <!-- <div class="alert alert-info">{{msg}}</div> -->
+                  <div class="alert alert-info"></div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

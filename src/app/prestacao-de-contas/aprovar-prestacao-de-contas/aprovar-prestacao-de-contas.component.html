@@ -1,0 +1,154 @@
+<p-confirmDialog #cd header="Confirmação" icon="pi pi-exclamation-triangle">
+  <p-footer>    
+      <button type="button" style="background-color:#28a745;border-color: #28a745;" pButton icon="pi pi-check" label="Sim" (click)="cd.onAccept()"></button>
+      <button type="button" pButton icon="pi pi-times" label="Não" (click)="cd.onReject()"></button>
+  </p-footer>
+</p-confirmDialog>
+
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white">Visualizar Prestação de Contas</h3>
+  <div class="card-body">    
+  <p-messages [value]="msgs"></p-messages>
+    <div [formGroup]="form" class="row mb-3">
+      <div class="form-group col-3">
+        <label for="slcFederacao">Federação</label>
+        <select formControlName="idFederacao" class="form-control" id="slcFederacao">
+          <option selected value="">Selecione</option>
+          <option *ngFor="let federacao of federacoes | async" [value]="federacao.idIndicador">{{ federacao.sigla }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group col-2">
+        
+        <label for="idExercicio">Exercício</label>
+        <select formControlName="exercicio" class="form-control" id="idExercicio">
+          <option selected value="">Selecione</option>
+          <option value="2020-1">1/2020</option>
+          <option value="2020-2">2/2020</option>
+          <option value="2020-3">3/2020</option>
+          <option value="2020-4">4/2020</option>
+          <option value="2020-5">5/2020</option>
+          <option value="2020-6">6/2020</option>
+          <option value="2020-7">7/2020</option>
+          <option value="2020-8">8/2020</option>
+          <option value="2020-9">9/2020</option>
+          <option value="2020-10">10/2020</option>
+          <option value="2020-11">11/2020</option>
+          <option value="2020-12">12/2020</option>
+        </select>
+      </div>
+      <div class="form-group col-2">
+        <label for="slcStatus">Status</label>
+        <select formControlName="idStatusAtualPrestacaoContas" class="form-control" id="slcStatus">
+          <option selected value="">Selecione</option>
+          <option *ngFor="let status of statusPrestacaoContas | async" [value]="status.idIndicador">{{ status.nome }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group col-2">
+        <label for="slcVersao">Versão</label>
+        <select formControlName="versao" class="form-control" id="slcVersao">
+          <option selected value="">Selecione</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="col-3 d-flex">
+        <button type="button" class="btn btn-primary btn-block w-100" placement="top" ngbTooltip="Pesquisar"
+          (click)="pesquisar()">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+    <div class="mb-3">
+      <button [disabled]="desativarBotoes" (click)="aprovar()" class="btn btn-success me-2"><i class="fas fa-check"></i> Aprovar</button>
+      <!-- <button [disabled]="desativarBotoes" (click)="retornarParaAjustes()" class="btn btn-warning"><i class="fas fa-undo"></i> Retornar para
+        Ajustes</button> -->
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <table class="table table-bordered table-hover table-striped table-sm">
+          <thead>
+            <tr>
+              <th>
+                <div class="form-check text-center">
+                    <p-checkbox value="" [ngModelOptions]="{standalone: true}" (onChange)="selecionarTodos($event)"  [(ngModel)]="prestacaoContasSelecionadas" ></p-checkbox>
+                </div>
+              </th>
+              <th class="align-middle text-center" scope="col">Exercício</th>
+              <th class="align-middle text-center" scope="col">Status</th>
+              <th class="align-middle text-center" scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <ng-container>
+              
+              <tr *ngFor="let pc of listPrestacoesContas; let i =index">
+                <td>
+                  <form>
+                    <div class="form-check text-center">
+                      <p-checkbox *ngIf="podeAprovar(pc)" (onChange)="selecionarPrestacao()"  value="{{pc.idPrestacaoContas}}" [ngModelOptions]="{standalone: true}"  [(ngModel)]="prestacaoContasSelecionadas" ></p-checkbox>
+
+                    </div>
+                  </form>
+                </td>
+                <td class="align-middle text-center">{{ pc.mesExercicio + '/' + pc.anoExercicio }}</td>
+                <td class="align-middle text-center">
+                  {{ pc.nomeStatusPrestacaoContas + (pc.versao ? ' - ' + pc.versao : '') }}</td>
+                <td class="align-middle text-center" style="width: 60px;">
+                  <div ngbDropdown placement="bottom-right">
+                    <button class="btn btn-primary btn-sm" id="dropdownBasic2" ngbDropdownToggle></button>
+                    <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+                      <button [disabled]="!pc.existirDocumento" ngbDropdownItem
+                      [routerLink]="['/prestacaoDeContas/listar/documentacao/',pc?.idFederacao, pc?.mesExercicio, pc?.anoExercicio, pc?.idPrestacaoContas]">Prestação
+                        de Contas da Documentação</button>
+                      <button ngbDropdownItem
+                      [routerLink]="['/prestacaoDeContas/listar/contaCorrente/',pc?.idFederacao, pc?.mesExercicio, pc?.anoExercicio, 'TipoContaCorrente', pc?.nomeStatusPrestacaoContas]">Prestação
+                        de Contas da Conta
+                        Corrente</button>
+                      <button ngbDropdownItem
+                      [routerLink]="['/prestacaoDeContas/listar/contaInvestimento/',pc?.idFederacao, pc?.mesExercicio, pc?.anoExercicio, 'TipoContaInvestimento', pc?.nomeStatusPrestacaoContas]">Prestação
+                        de Contas da Conta
+                        Investimento</button>
+                      <button ngbDropdownItem
+                        [routerLink]="['/prestacaoDeContas/analisar/historico/', pc.idFederacao, pc.mesExercicio, pc.anoExercicio, pc.idPrestacaoContas ? pc.idPrestacaoContas : 'semIdPrestacaoContas']">Histórico
+                        da Prestação de Contas</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+
+            <ng-container *ngIf="load">
+              <tr>
+                <td colspan="6">
+                  <div class="mt-2">
+                    <app-loading-div mensagem="Carregando Prestação de Contas..."></app-loading-div>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="!load && this.listPrestacoesContas.length == 0">
+              <tr>
+                <td colspan="4">
+                  <div class="alert alert-info">
+                    {{mensagemLista}}
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

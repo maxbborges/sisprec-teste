@@ -1,0 +1,83 @@
+<form [formGroup]="formEditar" (submit)="salvar()">
+    <div class="card shadow mb-3">
+        <h3 class="card-header bg-primary text-white">Editar relatório de visita técnica</h3>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <fieldset class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="federacaoUsuario">Federação</label>
+                                <select id="federacaoUsuario" class="form-control" formControlName="idFederacao">
+                                    <option value='' selected>Selecione...</option>
+                                    <ng-container *ngFor="let federacao of lstFederacoes">
+                                        <option [value]="federacao.idIndicador">{{federacao?.sigla}}</option>
+                                    </ng-container>
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="slctExercicio">Ano</label>
+                            <div class="input-group">
+                                <select class="form-control" id="slctExercicio" formControlName="anoExercicio" tabindex="3">
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="slctMes">Mês:</label>
+                            <div class="input-group">
+                                <select class="form-control" id="slctMes" formControlName="mesExercicio" tabindex="4">
+                                    <option value="1">1 - Janeiro</option>
+                                    <option value="2">2 - Fevereiro</option>
+                                    <option value="3">3 - Março</option>
+                                    <option value="4">4 - Abril</option>
+                                    <option value="5">5 - Maio</option>
+                                    <option value="6">6 - Junho</option>
+                                    <option value="7">7 - Julho</option>
+                                    <option value="8">8 - Agosto</option>
+                                    <option value="9">9 - Setembro</option>
+                                    <option value="10">10 - Outubro</option>
+                                    <option value="11">11 - Novembro</option>
+                                    <option value="12">12 - Dezembro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-5" *ngIf="visita?.nomeArquivo != null" >
+                            <label>&nbsp;</label>
+                            <p class="form-control" >{{visita?.nomeArquivo}}</p>
+                        </div>
+                        <div *ngIf="visita?.idArquivo == null" class="arquivo form-group col-md-3">
+                            <app-upload-arquivo mode="basic"
+                                (enviouArquivo)="subiuArquivo($event)"></app-upload-arquivo>
+                            <p>{{visita?.nomeArquivo}}</p>
+                        </div>
+
+                        <div class="form-group col-md-1" *ngIf="visita?.idArquivo != null" >
+                            <p>&nbsp;</p>
+                            <button type="button" class="btn btn-danger btn-sm" placement="top" [ngbTooltip]="'Excluir Arquivo'" (click)="apagarArquivo()"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            <div class="float-end">
+                <app-botao-voltar textoBotao='Cancelar'></app-botao-voltar>&nbsp;
+                <button type="submit" [disabled]="!formEditar.valid || acaoBloqueada || !visita?.idArquivo" class="btn btn-success" tabindex="8"><i class="fas fa-save"></i>&nbsp;Salvar
+                    Visita</button>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,191 @@
+<div class="card shadow mb-3">
+    <ng-container *ngIf="getIsPresidente()">
+        <h3 class="card-header bg-primary text-white"><i class="fas fa-archive"></i>&nbsp;&nbsp;Fluxo de Caixa</h3>
+    </ng-container>
+    <ng-container *ngIf="getIsPresidente() == false">
+        <h3 class="card-header bg-primary text-white"><i class="fas fa-archive"></i>&nbsp;&nbsp;Visualizar/Inserir documentos</h3>
+    </ng-container>
+    <div class="card-body">
+        <app-barra-espacamento></app-barra-espacamento>
+        <div class="row">
+            <div class="form-group col">
+                <label for="slcPorAno">Ano</label>
+                <select class="form-control form-control-sm" id="slcPorAno" [(ngModel)]="filtroAno" (change)="selecionouFiltro()">
+                    <option value="0">Todos</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+            <div class="form-group col">
+              <label for="slcPorTipo">Tipo</label>
+                <select class="form-control form-control-sm" id="slcPorTipo" [(ngModel)]="filtroTipo" (change)="selecionouFiltro()">
+                    <option value="0">Todos</option>
+                    <ng-container *ngFor="let tipo of lstTipos">
+                      <option [value]="tipo.idIndicador">{{tipo?.nome}}</option>
+                  </ng-container>
+                </select>
+            </div>
+            <div class="form-group col">
+                <label for="slcPorFederacao">Federação</label>
+                <select class="form-control form-control-sm" id="slcPorFederacao" [(ngModel)]="filtroFederacao" [disabled]="this.disableFederacoes || getIsPresidente()">
+                    <option [selected]="this.usuarioLogado.idFiliacao === federacao.idIndicador" *ngFor="let federacao of lstFederacoes" [value]="federacao.idIndicador">{{federacao?.sigla}}</option>
+                </select>
+            </div>
+            <div class="form-group col-3">
+                <label for="slcPorNomeDocumento">Nome do Documento</label>
+                <select class="form-control form-control-sm" id="slcPorNomeDocumento" [(ngModel)]="filtroTipoDocumento">
+                    <option value="0">Todos</option>
+                    <ng-container *ngFor="let documento of lstTipoDocumento">
+                      <option [ngValue]="documento">{{ (documento.nome + ' - ' + documento.tipo) }}</option>
+                    </ng-container>
+
+                    <!-- <ng-container *ngFor="let grupoDocumento of lstTipoDocumento">
+                        <optgroup [label]="grupoDocumento.tipo">
+                            <ng-container *ngFor="let tipoDocumento of grupoDocumento.listaNomeDocumento">
+                                <option [ngValue]="tipoDocumento">{{tipoDocumento.nome}}</option>
+                            </ng-container>
+                        </optgroup>
+                    </ng-container> -->
+                </select>
+            </div>
+            <ng-container *ngIf="filtroTipoDocumento?.idTipo == idTipoPrestacaoContas" class="form-group col">
+                    <label for="slcPorMes">Mês</label>
+                    <select class="form-control form-control-sm" id="slcPorMes" [(ngModel)]="filtroMes">
+                        <option value="0">Todos</option>
+                        <option value="1">1 - Janeiro</option>
+                        <option value="2">2 - Fevereiro</option>
+                        <option value="3">3 - Março</option>
+                        <option value="4">4 - Abril</option>
+                        <option value="5">5 - Maio</option>
+                        <option value="6">6 - Junho</option>
+                        <option value="7">7 - Julho</option>
+                        <option value="8">8 - Agosto</option>
+                        <option value="9">9 - Setembro</option>
+                        <option value="10">10 - Outubro</option>
+                        <option value="11">11 - Novembro</option>
+                        <option value="12">12 - Dezembro</option>
+                    </select>
+            </ng-container>
+            <div class="form-group col-1">
+                <label>&nbsp;</label>
+                <div>
+                    <button type="button" class="btn btn-block btn-primary w-100" placement="top"
+                        ngbTooltip="Filtrar documentos" (click)="carregarListaDocumentos()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <!--
+                <div class="col-12">
+                    <a class="btn btn-block btn-success" routerLink="/arquivo/documentos/inserir"><i
+                            class="fas fa-file-upload"></i>&nbsp;Inserir arquivo</a>
+                </div>
+            -->
+            <div class="arquivo col-12" *ngIf="!ehTipoRelatorioCoordenador() && ehTipoRelatorioCoordenadorFluxo() == false">
+              <ng-container *ngIf="getIsPresidente() == false">
+                  <app-upload-arquivo mode="basic" (enviouArquivo)="subiuArquivo($event)"></app-upload-arquivo>
+                  <p>{{nomeArquivo}}</p>
+              </ng-container>
+            </div>
+        </div>
+        <div class="row ">
+          <div class="botoes col-12">
+            <button type="button" *ngIf="ehTipoRelatorioCoordenadorFluxo() && getIsPresidente() == false" [disabled]="bloquearSalvarPorStatus || acaoBloqueada" class="btn btn-success" (click)="abrirModal()">Enviar Fluxo de Caixa</button>
+            <ng-container *ngIf="getIsPresidente() == false">
+                <button type="button" *ngIf="!ehTipoRelatorioCoordenador() && ehTipoRelatorioCoordenadorFluxo() == false" [disabled]="bloquearSalvarPorStatus || acaoBloqueada" class="btn btn-primary w-100" (click)="salvarDocumento()"><i class="fas fa-save"></i> Salvar documento</button>
+                <button type="button" *ngIf="ehTipoRelatorioCoordenador() && ehTipoRelatorioCoordenadorFluxo() == false" [disabled]="bloquearSalvarPorStatus || acaoBloqueada" class="btn btn-success w-100" (click)="cadastrarRelatorio()">Cadastrar Relatório</button>
+                <button type="button" *ngIf="ehTipoRelatorioCoordenadorFluxo() == false" class="btn btn-danger w-100" (click)="limparCampos()"><i class="pi pi-chevron-left"></i> Cancelar</button>
+            </ng-container>
+          </div>
+        </div>
+        <app-barra-espacamento></app-barra-espacamento>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Ano</th>
+                            <th scope="col">Mês</th>
+                            <th scope="col">Federação</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Nome do documento</th>
+                            <th scope="col">
+                              <ng-container *ngIf="ehPC(lstDocumento)">
+                                Análise
+                              </ng-container>
+                            </th>
+                            <th scope="col">Opções</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let documento of lstDocumento">
+                            <tr>
+                                <td>{{documento?.ano}}</td>
+                                <td>{{ (documento?.mes == 0 ? '--' : escreveMes(documento?.mes)) }}</td>
+                                <ng-container *ngIf="documento?.federacao != null else sem_fereracao">
+                                  <td title="{{ documento?.federacao }}">{{ (documento?.federacao.length < 70 ? documento?.federacao : documento?.federacao.substring(0,70) + '...' ) }}</td>
+                                </ng-container>
+                                <ng-template #sem_fereracao>
+                                  <td>--</td>
+                                </ng-template>
+                                <td>{{documento?.tipo}}</td>
+                                <td>{{documento?.nomeDocumento}}</td>
+                                <td>
+                                  <ng-container *ngIf="documento?.tipo === 'Prestação de Contas'">
+                                    {{documento?.nomeAnalise === null ? "Não analisado" : documento?.nomeAnalise }}
+                                  </ng-container>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button
+                                            [disabled]="validarAcao(documento) || acaoBloqueada"
+                                            *ngIf="documento.idTextoHtml !== null && getIsPresidente() == false"
+                                            ngbTooltip="Editar"
+                                            placement="bottom"
+                                            container="body"
+                                            (click)="editarRelatorio(documento)"
+                                            type="button"
+                                            class="btn btn-primary btn-sm">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <a *ngIf="documento.idArquivo !== null" [href]="urlDownload + documento.idArquivo" class="btn btn-warning btn-sm" placement="top" [ngbTooltip]="'Baixar arquivo ' + documento.nomeDocumento"><i class="fas fa-file-download"></i></a>
+                                        <a *ngIf="documento.idTextoHtml !== null" [href]="urlDownloadRelatorio + documento.idTextoHtml + tituloDoc" class="btn btn-warning btn-sm" placement="top" [ngbTooltip]="'Baixar arquivo ' + documento.nomeDocumento"><i class="fas fa-file-download"></i></a>
+                                        <button *ngIf="getIsPresidente() == false" [disabled]="validarAcao(documento) || acaoBloqueada" type="button" class="btn btn-danger btn-sm" placement="top" [ngbTooltip]="'Excluir ' + documento.nomeDocumento" (click)="desativarDocumento(documento.idDocumento, documento.nomeDocumento)"><i class="fas fa-trash-alt"></i></button>
+                                        <button 
+                                        *ngIf="getIsPresidente() && (documento?.idAnalise == null || documento?.idAnalise === 2014)" 
+                                        [disabled]="acaoBloqueada" type="button" class="btn btn-primary btn-sm" placement="top" [ngbTooltip]="'Ver informações do ' + documento.nomeDocumento" (click)="abrirModalSelecionado(documento)"><i class="fas fa-search"></i></button>
+                                        <app-ficha-auxiliar motivo="{{documento?.motivo}}" observacao="{{documento?.observacao}}" *ngIf="documento?.idAnalise === 2014"></app-ficha-auxiliar>
+                                        <app-ficha-auxiliar motivo="Presidente" observacao="{{documento?.observacao}}" titulo="Informações adicionais" *ngIf="documento?.idAnalise === 4139"></app-ficha-auxiliar>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <ng-container *ngIf="loading">
+                            <tr>
+                                <td colspan="6">
+                                    <div class="mt-2">
+                                        <app-loading-div mensagem="Carregando documentos..."></app-loading-div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <ng-container *ngIf="msg">
+                            <tr>
+                                <td colspan="6">
+                                    <div class="alert alert-info">{{msg}}</div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

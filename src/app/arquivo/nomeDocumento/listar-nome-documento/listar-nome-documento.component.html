@@ -1,0 +1,98 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white"><i class="far fa-file"></i>&nbsp;&nbsp;Nomes de documentos</h3>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12">
+        <a class="btn btn-block btn-success w-100" routerLink="/arquivo/nomeDocumento/cadastrar"><i
+            class="fas fa-plus"></i>&nbsp;Cadastrar novo nome de documento</a>
+      </div>
+    </div>
+    <app-barra-espacamento></app-barra-espacamento>
+    <div class="row">
+      <div class="form-group col-md-4">
+        <label for="slctAnoConvenio">Ano do Convênio</label>
+        <select id="slctAnoConvenio" class="form-control form-control-sm" [(ngModel)]="filtroExercicio">
+          <option value="0" selected>Todos</option>
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="slctTipoNomeDocumento">Tipo</label>
+        <select id="slctTipoNomeDocumento" class="form-control form-control-sm" [(ngModel)]="filtroTipo">
+          <option value="0" selected>Todos</option>
+          <ng-container *ngFor="let tipo of lstTipoDeDocumento">
+            <option [value]="tipo.idIndicador">{{tipo?.nome}}</option>
+          </ng-container>
+        </select>
+      </div>
+      <div class="checkbox col-md-2">
+        <input type="checkbox" class="inativar" id="inativar" (change)="alterarStatus()"> <label for="inativar">Inativos</label>
+      </div>
+      <div class="form-group col-1">
+        <label>&nbsp;</label>
+        <div>
+          <button type="button" class="btn btn-block btn-sm btn-primary" placement="top"
+            ngbTooltip="Filtrar nome de documento" (click)="carregarListaNomeDocumento()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <table class="table table-hover table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Ano Convênio</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Nome do documento</th>
+              <th scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="lstNomeDocumento.length > 0; else listaVazia">
+              <ng-container *ngFor="let nomeDocumento of lstNomeDocumento">
+                <tr>
+                  <th>{{nomeDocumento?.exercicio}}</th>
+                  <td>{{nomeDocumento?.tipo}}</td>
+                  <td>{{nomeDocumento?.nome}}</td>
+                  <td>
+                    <div class="btn-group" role="group">
+
+                        <button type="button" [ngClass]="nomeDocumento.ativo ? 'btn btn-danger btn-sm' : 'btn btn-success btn-sm'" placement="top"
+                        ngbTooltip="Ativar/Desativar nome do documento"
+                        [disabled]="acaoBloqueada"
+                        (click)="alterarStatusAtivo(nomeDocumento)"><i
+                          class="fa fa-power-off"></i></button>
+
+                      <a class="btn btn-warning btn-sm"
+                        [routerLink]="['/arquivo/nomeDocumento/editar/', nomeDocumento?.idNomeDocumento]"
+                        placement="top" ngbTooltip="Editar nome do documento"><i class="fas fa-edit"></i></a>
+                      <!-- <button type="button" class="btn btn-danger btn-sm" placement="top"
+                        [disabled]="nomeDocumento.qtddDocumentosVinculados != 0" ngbTooltip="Excluir nome do documento"
+                        (click)="desativarNomeDocumento(nomeDocumento?.idNomeDocumento)"><i
+                          class="fas fa-trash-alt"></i></button> -->
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+            <ng-template #listaVazia>
+              <tr>
+                <td colspan="4">
+                  <div class="alert alert-info">{{msg}}</div>
+                </td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

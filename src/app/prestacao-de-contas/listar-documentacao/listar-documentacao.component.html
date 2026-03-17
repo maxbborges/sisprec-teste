@@ -1,0 +1,74 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white"> Prestação de Contas da Documentação</h3>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-0"><strong>Exercício:</strong> {{mes}}/{{ano}}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5 class="mb-3"><strong>Status atual:</strong> {{this.status}} {{ this.versaoStatus != null ? '- ' + this.versaoStatus.toString() : '' }}</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class=" mb-3">
+          <button (click)="voltar()" class="btn btn-light me-2">Voltar</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <table class="table table-bordered table-hover table-striped table-sm">
+          <thead>
+            <tr>
+              <th class="align-middle text-center" scope="col">N</th>
+              <th class="align-middle text-center" scope="col">Exercício</th>
+              <th class="align-middle text-center" scope="col">Federação</th>
+              <th class="align-middle text-center" scope="col">Nome do Documento</th>
+              <th class="align-middle text-center" scope="col">Análise</th>
+              <th class="align-middle text-center" scope="col">Motivo</th>
+              <th class="align-middle text-center" scope="col">Ações</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="lstDocumentos.length > 0; else listaVazia">
+              <ng-container *ngFor="let item of lstDocumentos; index as i">
+
+                <tr *ngIf="item?.analise === 'Retornado para Ajustes'" style="background-color:yellow;">
+                <tr *ngIf="item?.analise !== 'Retornado para Ajustes'">
+                  <td class="align-middle text-center">{{i + 1}}</td>
+                  <td class="align-middle text-center">{{item?.ano}}</td>
+                  <td class="align-middle text-center">{{item?.siglaFederacao}}</td>
+                  <td class="align-middle text-center">{{item?.nomeDocumento}}</td>
+                  <td class="align-middle text-center">{{ (item.idAnalise ? item.nomeAnalise : 'Não Analisado')}}</td>
+                  <td class="align-middle text-center">{{item?.nomeMotivo}}</td>
+                  <td class="align-middle text-center">
+                    <!-- <app-ficha-auxiliar-historico  tipoLancamento="{{'documento'}}" idLancamento="{{item.idDocumento}}" idPrestacaoContaItemSaida="{{null}}"></app-ficha-auxiliar-historico>&nbsp; -->
+                    <a [routerLink]="['fichaAuxiliar',item.idDocumento]"
+                    routerLinkActive="router-link-active" class="btn btn-primary btn-sm" ngbTooltip="Visualizar Histórico Ficha" target="_blank" placement="bottom"><i class="fas fa-file-alt"></i></a>&nbsp;
+                    <span *ngIf="item?.idArquivo !== null"><a [href]="urlDownload + item?.idArquivo" download class="btn btn-primary btn-sm" ngbTooltip="Baixar Arquivo" placement="bottom"><i class="fas fa-download"></i></a>&nbsp;</span>
+                    <span *ngIf="item?.idTextoHtml !== null"><a [href]="urlDownloadRelatorio + item?.idTextoHtml + tituloDoc" download class="btn btn-primary btn-sm" ngbTooltip="Baixar Arquivo" placement="bottom"><i class="fas fa-download"></i></a>&nbsp;</span>
+                    <app-ficha-auxiliar *ngIf="item?.idAnalise === 2014" motivo="{{item?.nomeMotivo}}" observacao="{{item?.observacao}}"></app-ficha-auxiliar>
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+            <ng-template #listaVazia>
+              <tr>
+                <td colspan="8">
+                  <div class="alert alert-info">{{msg}}</div>
+                <td colspan="4">
+                  <!-- <div class="alert alert-info">{{msg}}</div> -->
+                  <div class="alert alert-info"></div>
+                </td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

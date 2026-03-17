@@ -1,0 +1,36 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Visualizar detalhe das despesas</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <p><b><span>Tipo:</span></b> {{despesaDetalhe?.tipo }} </p>
+                <p><b><span>Data Evento:</span></b> {{despesaDetalhe?.dataEvento|date:'shortDate'}}</p>
+                <p><b><span>Descrição:</span></b> {{despesaDetalhe?.descricao}}</p>
+                <ng-container *ngIf="despesaDetalhe?.idTipoComprovante != null">
+                    <p><b><span>Tipo de Documento:</span></b> {{ getNomeTipoComprovante(despesaDetalhe?.idTipoComprovante) }} </p>
+                    <p><b><span>Número do Documento:</span></b> {{despesaDetalhe?.numeroComprovante}}</p>
+                    <p><b><span>Data do Documento:</span></b> {{despesaDetalhe?.dataComprovante | date:'shortDate'}}</p>
+                </ng-container>
+                <ng-container *ngIf="despesaDetalhe?.idTipo == 1014">
+                    <p><b><span>Tipo Fornecedor:</span></b> {{despesaDetalhe?.tipoFornecedor}}</p>
+                    <p><b><span>Nome Fornecedor:</span></b> {{despesaDetalhe?.fornecedor}}</p>
+                    <p *ngIf="despesaDetalhe?.idTipoFornecedor === 1012"><b><span>Numero Documento:</span></b> {{despesaDetalhe?.numeroDocumentoFornecedor | mask:'000.000.000-00'}}</p>
+                    <p *ngIf="despesaDetalhe?.idTipoFornecedor === 1013"><b><span>Numero Documento:</span></b> {{despesaDetalhe?.numeroDocumentoFornecedor | mask:'00.000.000/0000-00'}}</p>
+                </ng-container>
+                <ng-container *ngIf="despesaDetalhe?.colaboradores?.length > 0">
+                    <div *ngFor="let colaborador of despesaDetalhe?.colaboradores">
+                        <p><b><span>Nome do Colaborador:</span></b> {{colaborador?.nome}}</p>
+                        <p><b><span>Salário:</span></b> {{colaborador?.salario | currency:'BRL':true }}</p>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <app-barra-espacamento></app-barra-espacamento>
+
+    </div>
+    <div class="card-footer text-muted">
+        <div class="float-end">
+            <app-botao-voltar></app-botao-voltar>&nbsp;
+        </div>
+    </div>
+</div>

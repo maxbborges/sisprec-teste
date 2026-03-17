@@ -1,0 +1,214 @@
+<div class="card shadow mb-3">
+  <div class="card-header h3 bg-primary text-white">
+    <i class="fas fa-money-check-alt"></i>
+      Pagamento
+  </div>
+  <div class="card-body">
+    <form [formGroup]="formCadastro">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Federação:
+              <b class="text-danger">*</b>
+            </label>
+            <select class="form-control" formControlName="idFederacao" (change)="carregaValores($event)">
+              <option value="">Selecione</option>
+              <option *ngFor="let federacao of federacoes" [value]="federacao.idIndicador">{{ federacao.sigla }}</option>
+            </select>
+
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Produtividade referente ao ano:
+              <b class="text-danger">*</b>
+            </label>
+            <select class="form-control" formControlName="ano" (change)="getMesesNoAno($event)">
+              <option value="99">Selecione</option>
+              <option *ngFor="let ano of anos" [value]="ano">{{ ano }}</option>
+            </select>
+            
+
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Produtividade referente ao mês:
+              <b class="text-danger">*</b>
+            </label>
+            <select class="form-control" formControlName="mes" (change)="carregaValoresMes($event)">
+              <option value="99">Selecione</option>
+              <option *ngFor="let mes of mesesNoAno" [value]="mes['value']">{{ mes['value'] }} - {{ mes['mes'] }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Número do título:
+              <b class="text-danger">*</b>
+            </label>
+            <input type="text" class="form-control" formControlName="numeroTitulo" placeholder="Valor preenchido automaticamente">
+        </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Emissão:
+              <b class="text-danger">*</b>
+            </label>
+            <input type="date" class="form-control" tabindex="3" formControlName="dataEmissao">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Vencimento:
+              <b class="text-danger">*</b>
+            </label>
+            <input type="date" class="form-control" tabindex="3" (change)="dataVencimentoValidator()" formControlName="dataVencimento">
+            <div *ngIf="formCadastro.get('dataVencimento').errors?.dataInvalida" class="text-danger">
+              A data de vencimento não pode ser inferior à data de emissão.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Valor do título R$:
+              <b class="text-danger">*</b>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="valorTitulo"
+              currencyMask
+              [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, align:'right' }"
+              maxlength="14" (keyup)="verifyValue()"
+              tabindex="4">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label>
+              Observação:
+              <b class="text-danger">*</b>
+            </label>
+            <textarea class="form-control" formControlName="observacao" maxlength="1000" rows="5"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Projeto:
+              <b class="text-danger">*</b>
+            </label>
+            <select class="form-control" [disabled]="true">
+              <option value="000000001">000000001</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Centro de Custo:
+              <b class="text-danger">*</b>
+            </label>
+            <select class="form-control" [disabled]="true">
+              <option value="31801">31801</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Programa:
+              <b class="text-danger">*</b>
+            </label>
+            <select class="form-control" [disabled]="true">
+              <option value="400000000">400000000</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Sub Programa:
+              <b class="text-danger">*</b>
+            </label>
+            <select class="form-control" [disabled]="true">
+              <option value="420000000">420000000</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Grp Orc:
+              <b class="text-danger">*</b>
+            </label>
+            <select class="form-control" [disabled]="true">
+              <option value="000000034">000000034</option>
+            </select>
+          </div>
+        </div>
+        <!--div class="col-md-4">
+          <app-upload-arquivo mode="basic" (enviouArquivo)="subiuArquivo($event)"></app-upload-arquivo>
+              <p>{{nomeArquivo}}</p>
+        </div-->
+      </div>
+      <div class="row" *ngIf="enviadoProtheus">
+        <div class="col-md-12">
+          <div class="alert alert-success">
+            <strong>Título já enviado para o sistema Protheus</strong>
+          </div>
+        </div>
+      </div>
+      <div class="card-body" *ngIf="enviandoProtheus">
+        <app-loading-div mensagem="Enviando..."></app-loading-div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer">
+    <button
+        type="button"
+        (click)="voltar()"
+        class="btn btn-danger float-end ms-1">
+        <i class="fas fa-chevron-left"></i>
+        Cancelar
+    </button>
+    <button
+        [disabled]="formCadastro.invalid || enviadoProtheus || acaoBloqueada || enviandoProtheus"
+        type="button"
+        (click)="onEnviarPagamentoProtheus()"
+        class="btn btn-secondary float-end ms-1">
+        <i class="fas fa-paper-plane"></i>
+        Enviar para Protheus
+    </button>
+    <button
+        [disabled]="formCadastro.invalid || enviadoProtheus || acaoBloqueada || enviandoProtheus"
+        type="button"
+        (click)="salvar()"
+        class="btn btn-primary float-end ms-1">
+        <i class="fas fa-save"></i>
+        Salvar Rascunho
+    </button>
+  </div>
+</div>

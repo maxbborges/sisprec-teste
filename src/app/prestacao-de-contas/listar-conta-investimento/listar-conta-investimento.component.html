@@ -1,0 +1,120 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">
+        Prestação de Contas da Conta Investimento
+    </h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <h5 class="mb-0">
+                    <strong>Exercício:</strong>
+                    {{mes}}/{{ano}}
+                </h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h5 class="mb-0">
+                    <strong>Status atual:</strong>
+                    {{status}}
+                </h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h5 class="mb-3">
+                    <strong>Saldo Anterior:</strong>
+                    {{saldoAnterior | currency:'BRL'}}
+                </h5>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <div class=" mb-3">
+                    <button
+                        (click)="voltar()"
+                        class="btn btn-light me-2">
+                        Voltar
+                    </button>
+                    <button class="btn btn-dark">Gerar Excel</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-bordered table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th
+                                class="align-middle text-center"
+                                scope="col">
+                                N
+                            </th>
+                            <th
+                                class="align-middle text-center"
+                                scope="col">
+                                Data
+                            </th>
+                            <th
+                                class="align-middle text-center"
+                                scope="col">
+                                Tipo de Transação
+                            </th>
+                            <th
+                                class="align-middle text-center"
+                                scope="col">
+                                Detalhe
+                            </th>
+                            <th
+                                class="align-middle text-center"
+                                scope="col">
+                                Valor
+                            </th>
+                            <th
+                                class="align-middle text-center"
+                                scope="col">
+                                Análise
+                            </th>
+                            <th
+                                class="align-middle text-center"
+                                scope="col">
+                                Motivo
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="lstItemPrestacaoCI.length > 0; else listaVazia">
+                            <tr *ngFor="let item of lstItemPrestacaoCI; let i = index" [style.backgroundColor]="item.analise == 'Retornado para Ajustes' ? 'yellow' : ''">
+                                <td class="align-middle text-center">{{ i + 1}}</td>
+                                <td class="align-middle text-center">{{item.dataEvento |date:'shortDate'}}</td>
+                                <td class="align-middle text-center">{{item.tipoLancamento}}</td>
+                                <td class="align-middle text-center">{{item.item}}</td>
+                                <td
+                                    *ngIf="item.tipoLancamento === 'Saída'"
+                                    class="align-middle text-center">
+                                    -{{item.valor | currency:'BRL'}}
+                                </td>
+                                <td
+                                    *ngIf="item.tipoLancamento === 'Entrada'"
+                                    class="align-middle text-center">
+                                    {{item.valor | currency:'BRL'}}
+                                </td>
+                                <td class="align-middle text-center">{{item.analise}}</td>
+                                <td class="align-middle text-center">{{item.motivo}}
+                                    <app-ficha-auxiliar *ngIf="item?.analise === 'Retornado para Ajustes'" motivo="{{item?.motivo}}" observacao="{{item?.observacao}}"></app-ficha-auxiliar>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <ng-template #listaVazia>
+                            <tr>
+                                <td colspan="8">
+                                    <div class="alert alert-info">{{msg}}</div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

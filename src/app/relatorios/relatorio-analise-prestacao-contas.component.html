@@ -1,0 +1,292 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white">
+    Relatório de Análise da Prestação de Contas
+  </h3>
+  <div class="card-body">
+    <form
+      [formGroup]="relatorioAnalisePrestacaoContasForm"
+      (submit)="pesquisar()"
+    >
+      <div class="row">
+        <div class="col d-flex">
+          <div class="mt-auto mb-4 mx-auto">
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="idDetalhado"
+                formControlName="detalhadoOuConsolidado"
+                class="custom-control-input"
+                value="detalhado"
+              />
+              <label class="custom-control-label" for="idDetalhado">
+                Detalhado
+              </label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="idConsolidado"
+                formControlName="detalhadoOuConsolidado"
+                class="custom-control-input"
+                value="consolidado"
+              />
+              <label class="custom-control-label" for="idConsolidado">
+                Consolidado
+              </label>
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="!['UsuarioFederacao', 'UsuarioPresidente'].includes(usuario.tipoUsuarioSigla)"
+          class="col"
+        >
+          <div class="form-group">
+            <label for="idFederacao">Federação</label>
+            <select
+              formControlName="idFederacao"
+              class="form-control"
+              id="idFederacao"
+            >
+              <option value>Todas</option>
+              <option
+                *ngFor="let federacao of federacoes"
+                [value]="federacao.idIndicador"
+              >
+                {{ federacao.sigla }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="idAnoExercicio">Ano</label>
+            <select
+              formControlName="anoExercicio"
+              class="form-control"
+              id="idAnoExercicio"
+            >
+              <option value="0">Todos</option>
+              <option
+                *ngFor="let anoExercicio of anosExercicio"
+                [value]="anoExercicio"
+              >
+                {{ anoExercicio }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="idMesExercicio">Mês</label>
+            <select
+              formControlName="mesExercicio"
+              class="form-control"
+              id="idMesExercicio"
+            >
+              <option value="0">Todos</option>
+              <option
+                *ngFor="let mesExercicio of mesesExercicio"
+                [value]="mesExercicio.idMes"
+              >
+                {{ mesExercicio.idMes + " - " + mesExercicio.nome }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col d-flex">
+          <button
+            [disabled]="relatorioAnalisePrestacaoContasForm.disabled"
+            type="submit"
+            class="btn btn-primary btn-block w-100"
+          >
+            <i
+              [ngClass]="
+                relatorioAnalisePrestacaoContasForm.disabled
+                  ? 'fa-spinner fa-pulse'
+                  : 'fa-search'
+              "
+              class="fas"
+            ></i>
+            {{
+              relatorioAnalisePrestacaoContasForm.disabled
+                ? "Pesquisando"
+                : "Pesquisar"
+            }}
+          </button>
+        </div>
+        <div class="col d-flex">
+          <button
+            (click)="baixarExcel()"
+            [disabled]="
+              relatorioAnalisePrestacaoContasForm.disabled ||
+              botaoBaixarDesativado ||
+              verificarIguaisTodasSelecoes()
+            "
+            type="button"
+            class="btn btn-outline-success btn-block w-100"
+          >
+            <i class="far fa-file-excel"></i>
+            Baixar em Excel
+          </button>
+        </div>
+        <div class="col d-flex">
+          <button
+            (click)="baixarPdf()"
+            [disabled]="
+              relatorioAnalisePrestacaoContasForm.disabled ||
+              botaoBaixarDesativado ||
+              verificarIguaisTodasSelecoes()
+            "
+            type="button"
+            class="btn btn-outline-danger btn-block w-100"
+          >
+            <i class="far fa-file-pdf"></i>
+            Baixar em PDF
+          </button>
+        </div>
+      </div>
+    </form>
+    <ng-container *ngIf="historicosPrestacaoContas.length > 0">
+      <table
+        *ngFor="let historicoPrestacaoContas of historicosPrestacaoContas"
+        class="table table-bordered table-hover table-striped table-sm"
+      >
+        <thead>
+          <tr>
+            <th scope="col" colspan="7">
+              Federação: {{ historicoPrestacaoContas.siglaFederacao }} | Mês:
+              {{ historicoPrestacaoContas.mesExercicio }} -
+              {{ colocarNomeMes(historicoPrestacaoContas.mesExercicio) }} | Ano:
+              {{ historicoPrestacaoContas.anoExercicio }}
+            </th>
+          </tr>
+          <tr>
+            <th rowspan="2" scope="col" class="align-middle text-center">
+              Data
+            </th>
+            <th rowspan="2" scope="col" class="align-middle text-center">
+              Usuário
+            </th>
+            <th rowspan="2" scope="col" class="align-middle text-center">
+              Status da Prestação de Contas
+            </th>
+            <th scope="col" class="align-middle text-center">Conta Corrente</th>
+            <th scope="col" class="align-middle text-center">
+              Despesa/Receita
+            </th>
+            <th scope="col" class="align-middle text-center">
+              Conta Investimento
+            </th>
+            <th scope="col" class="align-middle text-center">Documentação</th>
+          </tr>
+          <tr>
+            <th colspan="4" class="align-middle text-center">
+              Item(ns) Retornado(s)
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="
+              let item of historicoPrestacaoContas.itensHistoricoPrestacaoContasResponseModel
+            "
+          >
+            <th scope="row" class="align-middle">
+              {{ item.dataCadastro | date : "short" }}
+            </th>
+            <td class="align-middle">{{ item.nomeUsuarioCadastro }}</td>
+            <td class="align-middle">
+              {{
+                item.versao
+                  ? item.nomeStatusPrestacaoContas + " - Versão: " + item.versao
+                  : item.nomeStatusPrestacaoContas
+              }}
+            </td>
+            <td class="align-middle text-center">
+              {{ item.itensRetornadoContaCorrente }}
+            </td>
+            <td class="align-middle text-center">
+              {{ item.itensRetornadoDespesaReceita }}
+            </td>
+            <td class="align-middle text-center">
+              {{ item.itensRetornadoContaInvestimento }}
+            </td>
+            <td class="align-middle text-center">
+              {{ item.itensRetornadoDocumentacao }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+    <table
+      *ngIf="prestacoesContas.length > 0"
+      class="table table-bordered table-hover table-striped table-sm"
+    >
+      <thead>
+        <tr>
+          <th scope="col" class="align-middle text-center">Federação</th>
+          <th scope="col" class="align-middle text-center">Ano</th>
+          <th scope="col" class="align-middle text-center">Mês</th>
+          <th scope="col" class="align-middle text-center">
+            Data de Envio da Prestação de Contas
+          </th>
+          <th scope="col" class="align-middle text-center">
+            Quantidade de Iterações
+          </th>
+          <th scope="col" class="align-middle text-center">
+            Total de Itens Analisados
+          </th>
+          <th scope="col" class="align-middle text-center">
+            Total de Itens Retornados
+          </th>
+          <th scope="col" class="align-middle text-center">Conta Corrente</th>
+          <th scope="col" class="align-middle text-center">Despesa/Receita</th>
+          <th scope="col" class="align-middle text-center">
+            Conta Investimento
+          </th>
+          <th scope="col" class="align-middle text-center">Documentação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prestacaoContas of prestacoesContas">
+          <td scope="row" class="align-middle">
+            {{ prestacaoContas.siglaFederacao }}
+          </td>
+          <td class="align-middle">{{ prestacaoContas.anoExercicio }}</td>
+          <td class="align-middle">
+            {{ prestacaoContas.mesExercicio }} -
+            {{ colocarNomeMes(prestacaoContas.mesExercicio) }}
+          </td>
+          <td class="align-middle">
+            {{ prestacaoContas.dataEnvioPrestacaoContas | date : "short" }}
+          </td>
+          <td class="align-middle text-center">
+            {{ prestacaoContas.quantidadeIteracoes }}
+          </td>
+          <th class="align-middle text-center">
+            {{ prestacaoContas.totalItensAnalisados }}
+          </th>
+          <td class="align-middle text-center">
+            {{ prestacaoContas.totalItensRetornados }}
+          </td>
+          <td class="align-middle text-center">
+            {{ prestacaoContas.contaCorrente }}
+          </td>
+          <td class="align-middle text-center">
+            {{ prestacaoContas.despesaReceita }}
+          </td>
+          <td class="align-middle text-center">
+            {{ prestacaoContas.contaInvestimento }}
+          </td>
+          <td class="align-middle text-center">
+            {{ prestacaoContas.documentacao }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 *ngIf="resultadoNaoEncontrado" class="text-center my-5">
+      Resultado não encontrado.
+      <i class="far fa-frown"></i>
+    </h2>
+  </div>
+</div>

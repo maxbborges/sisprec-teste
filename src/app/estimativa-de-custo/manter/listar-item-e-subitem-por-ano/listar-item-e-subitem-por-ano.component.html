@@ -1,0 +1,70 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">
+        <i class="fas fa-list-ol"></i>
+        Itens e Subitens
+    </h3>
+    <div
+        *ngIf="anos$ | async as anos; else carregando"
+        class="card-body">
+        <table class="table table-bordered table-hover table-sm table-striped">
+            <thead>
+                <tr>
+                    <th
+                        class="align-middle text-center"
+                        scope="col">
+                        Ano
+                    </th>
+                    <th
+                        class="align-middle text-center"
+                        scope="col">
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let ano of anos; let l = last">
+                    <td
+                        scope="row"
+                        class="align-middle text-center"
+                        scope="col">
+                        {{ ano }}
+                    </td>
+                    <td
+                        class="align-middle text-center"
+                        scope="col">
+                        <div
+                            class="btn-group"
+                            role="group"
+                            aria-label="Ação">
+                            <button
+                                [routerLink]="['/estimativaDeCusto/manter', ano, 'listar']"
+                                ngbTooltip="Visualizar"
+                                placement="bottom"
+                                container="body"
+                                type="button"
+                                class="btn btn-info btn-sm">
+                                <i class="far fa-eye"></i>
+                            </button>
+                            <button
+                                (click)="copiar(ano+1)"
+                                [disabled]="acaoBloqueada"
+                                *ngIf="l"
+                                ngbTooltip="Copiar dados para o próximo ano"
+                                placement="bottom"
+                                container="body"
+                                type="button"
+                                class="btn btn-dark btn-sm">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <ng-template #carregando>
+        <div class="card-body">
+            <app-loading-div mensagem="Carregando..."></app-loading-div>
+        </div>
+    </ng-template>
+</div>

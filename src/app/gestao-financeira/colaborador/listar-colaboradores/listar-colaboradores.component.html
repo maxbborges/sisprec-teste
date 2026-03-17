@@ -1,0 +1,49 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Colaboradores</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <a class="btn btn-block btn-success w-100" routerLink="/gestaoFinanceira/colaborador/cadastrar"><i
+                        class="fas fa-plus"></i>&nbsp;Cadastrar novo colaborador</a>
+            </div>
+        </div>
+        <app-barra-espacamento></app-barra-espacamento>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Documento</th>
+                            <th scope="col">Nome/Razão social</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let colaborador of lstColaboradores">
+                            <tr>
+                                <td>{{ colaborador?.tipoColaborador }}</td>
+                                <td *ngIf="colaborador.idTipoColaborador == 1013">
+                                    {{ colaborador?.numeroDocumento | mask:'00.000.000/0000-00' }}</td>
+                                <td *ngIf="colaborador.idTipoColaborador == 1012">
+                                    {{ colaborador?.numeroDocumento | mask:'000.000.000-00' }}</td>
+                                <td>{{ colaborador?.nome }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a [routerLink]="['/gestaoFinanceira/colaborador/editar/', colaborador.idColaborador]"
+                                            class="btn btn-warning btn-sm" placement="top"
+                                            ngbTooltip="Editar colaborador"><i class="fas fa-edit"></i></a>
+                                        <ng-container *ngIf="usuarioLogado.tipoUsuarioSigla != 'UsuarioFederacao'">
+                                            <button type="button" [disabled]="acaoBloqueada" class="btn btn-danger btn-sm" placement="top" (click)="excluir(colaborador.idColaborador)"
+                                            ngbTooltip="Desativar colaborador"><i class="fas fa-trash-alt"></i></button>
+                                        </ng-container>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

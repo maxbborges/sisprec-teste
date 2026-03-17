@@ -1,0 +1,169 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">
+        <i class="far fa-edit"></i>
+        Cadastrar / Editar Estimativa de
+    Custo
+    </h3>
+    <div
+        *ngIf="valor; else carregando"
+        class="card-body">
+        <form
+            [formGroup]="form"
+            (submit)="salvar()">
+            <table class="table table-bordered table-hover table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th [style.width.px]="60"></th>
+                        <th [style.width.px]="200"></th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Janeiro
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Fevereiro
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Março
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Abril
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Maio
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Junho
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Julho
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Agosto
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Setembro
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Outubro
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Novembro
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Dezembro
+                        </th>
+                        <th
+                            class="align-middle text-center"
+                            scope="col">
+                            Total
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                  <ng-container
+                    *ngFor="let itemSubitemValor of valor?.itensSubitensValores; let i = index"
+                    formArrayName="itensSubitensValores"
+                  >
+                    <th *ngIf="itemSubitemValor.ehPai" class="align-middle text-end">{{ itemSubitemValor.codigoItem }}</th>
+                    <th *ngIf="itemSubitemValor.ehPai" colspan="14" class="align-middle text-start">{{ itemSubitemValor.nomeItem }}</th>
+                    <tr>
+                        <td
+                            scope="row"
+                            class="align-middle text-end">
+                            {{ itemSubitemValor.codigo }}
+                        </td>
+                        <td class="align-middle text-start">{{ itemSubitemValor.nome }}</td>
+                        <td
+                            *ngFor="let mesValor of itemSubitemValor.mesesValores; let j = index"
+                            class="align-middle text-center"
+                            [formGroupName]="i">
+                            <ng-container formArrayName="mesesValores">
+                                <ng-container [formGroupName]="j">
+                                    <input
+                                        (blur)="calcularValores($event, itemSubitemValor, mesValor)"
+                                        currencyMask
+                                        [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, align:'right' }"
+                                        formControlName="valor"
+                                        type="text"
+                                        class="form-control form-control-sm">
+                                </ng-container>
+                            </ng-container>
+                        </td>
+                        <th class="align-middle text-end">
+                            {{ itemSubitemValor.total | currency: 'BRL' }}
+                        </th>
+                    </tr>
+                  </ng-container>
+                </tbody>
+                <tfoot>
+                    <th
+                        class="align-middle text-start text-nowrap"
+                        scope="col"
+                        colspan="2">
+                        Total por Mês
+                    </th>
+                    <th
+                        *ngFor="let totalMesValor of valor?.totaisMesesValores"
+                        class="align-middle text-end"
+                        scope="col">
+                        {{ totalMesValor.totalMes | currency: 'BRL' }}
+                    </th>
+                    <th
+                        class="align-middle text-end"
+                        scope="col">
+                        {{ valor?.total | currency: 'BRL' }}
+                    </th>
+                </tfoot>
+            </table>
+            <div class="d-flex mb-3">
+                <div class="flex-fill pr-1">
+                    <button
+                        [disabled]="form.disabled || acaoBloqueada"
+                        type="submit"
+                        class="btn btn-success btn-block">
+                        <i class="fas fa-save"></i>
+                        Salvar
+                    </button>
+                </div>
+                <div class="flex-fill pl-1">
+                    <button
+                        [disabled]="form.disabled"
+                        type="button"
+                        (click)="voltar()"
+                        class="btn btn-danger btn-block">
+                        <i class="fas fa-chevron-left"></i>
+                        Voltar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <ng-template #carregando>
+        <div class="card-body">
+            <app-loading-div mensagem="Carregando..."></app-loading-div>
+        </div>
+    </ng-template>
+</div>

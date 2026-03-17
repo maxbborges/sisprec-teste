@@ -1,0 +1,98 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">
+        <i class="fas fa-list-ol"></i>
+        Itens e Subitens - {{ anoExercicio }}
+    </h3>
+    <div
+        *ngIf="itensSubitens$ | async as itensSubitens; else carregando"
+        class="card-body">
+        <div class="d-flex mb-3">
+            <div class="flex-fill pr-1">
+                <button
+                    routerLink="/estimativaDeCusto/manter"
+                    class="btn btn-danger btn-block">
+                    <i class="fas fa-chevron-left"></i>
+                    Voltar
+                </button>
+            </div>
+            <div class="flex-fill pl-1">
+                <button
+                    [routerLink]="['/estimativaDeCusto/manter', anoExercicio, 'cadastrar']"
+                    class="btn btn-success btn-block">
+                    <i class="fas fa-plus"></i>
+                    Cadastrar
+                </button>
+            </div>
+        </div>
+        <table class="table table-bordered table-hover table-sm table-striped">
+            <thead>
+                <tr>
+                    <th
+                        class="align-middle text-center"
+                        scope="col">
+                        Item / Subitem
+                    </th>
+                    <th
+                        class="align-middle text-center"
+                        scope="col">
+                        Descrição
+                    </th>
+                    <th
+                        class="align-middle text-center"
+                        scope="col">
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let itemSubitem of itensSubitens">
+                    <td
+                        scope="row"
+                        class="align-middle text-center"
+                        scope="col">
+                        {{ itemSubitem.codigoSubitem ? itemSubitem.codigoItem + '.' + itemSubitem.codigoSubitem : itemSubitem.codigoItem }}
+                    </td>
+                    <td
+                        scope="row"
+                        class="align-middle text-center"
+                        scope="col">
+                        {{ itemSubitem.nome }}
+                    </td>
+                    <td
+                        class="align-middle text-center"
+                        scope="col">
+                        <div
+                            class="btn-group"
+                            role="group"
+                            aria-label="Ação">
+                            <button
+                                [routerLink]="['/estimativaDeCusto/manter', itemSubitem.anoExercicio, 'editar', itemSubitem.idItemSubitem]"
+                                ngbTooltip="Editar"
+                                placement="bottom"
+                                container="body"
+                                type="button"
+                                class="btn btn-warning btn-sm">
+                                <i class="far fa-edit"></i>
+                            </button>
+                            <button
+                                *ngIf="itemSubitem.codigoSubitem !== 0"
+                                (click)="inativar(itemSubitem)"
+                                [disabled]="acaoBloqueada"
+                                ngbTooltip="Inativar"
+                                placement="bottom"
+                                type="button"
+                                class="btn btn-danger btn-sm">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <ng-template #carregando>
+        <div class="card-body">
+            <app-loading-div mensagem="Carregando..."></app-loading-div>
+        </div>
+    </ng-template>
+</div>

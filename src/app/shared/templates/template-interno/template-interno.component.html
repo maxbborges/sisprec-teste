@@ -1,0 +1,8 @@
+<!-- <app-cabecalho></app-cabecalho> -->
+<app-menu-superior></app-menu-superior>
+
+<div [ngClass]="permitirContainerFluid() ? 'container-fluid':'container'">
+  <router-outlet></router-outlet>
+</div>
+
+<app-rodape></app-rodape>

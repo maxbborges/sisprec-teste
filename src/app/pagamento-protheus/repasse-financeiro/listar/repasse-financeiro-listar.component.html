@@ -1,0 +1,169 @@
+<div class="card shadow mb-3">
+  <div class="card-header h3 bg-primary text-white">
+    <i class="fas fa-money-check-alt"></i>
+      Listagem de Pagamentos
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>
+              Federação:
+            </label>
+            <select class="form-control" formControlName="idFederacao">
+              <option value>Selecione</option>
+              <option *ngFor="let federacao of federacoes | async" [value]="federacao.idIndicador">{{ federacao.sigla }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="txtData">
+            Data inicial:
+          </label>
+          <div class="input-group">
+            <input type="date" class="form-control" formControlName="dataInicial" tabindex="4">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="txtData">
+            Data final:
+          </label>
+          <div class="input-group">
+            <input type="date" class="form-control" formControlName="dataFinal" tabindex="4">
+          </div>
+        </div>                
+        <div class="col-md-2">
+          <label>&nbsp;</label>
+          <button
+            (click)="pesquisar()"
+            [disabled]="form.invalid"
+            class="btn btn-primary btn-block w-100">
+            <i class="fas fa-search"></i>
+            Pesquisar
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button
+          class="btn btn-success btn-block w-100" style="margin: 1% 0;"
+          [routerLink]="['/pagamento-protheus/repasse-financeiro/novo']">
+          <i class="fas fa-plus"></i>
+          Cadastrar Pagamento
+        </button>
+        </div>
+      </div>
+    </form>
+
+    <div class="row">
+      <p-table
+          tableStyleClass="table table-bordered table-hover table-striped mt-3"
+          [value]="pagamentos"
+          [paginator]="true"
+          [rows]="10"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="{currentPage}/{totalPages}"
+      >
+          <ng-template pTemplate="header">
+              <tr>
+                  <th
+                      class="align-middle text-center"
+                      scope="col"
+                  >
+                      Federação
+                  </th>
+                  <th
+                      class="align-middle text-center"
+                      scope="col"
+                  >
+                      Valor do Título
+                  </th>
+                  <th
+                      class="align-middle text-center"
+                      scope="col"
+                  >
+                      Status
+                  </th>
+                  <th
+                      class="align-middle text-center"
+                      scope="col"
+                  >
+                      Emissão
+                  </th>
+                  <th
+                      class="align-middle text-center"
+                      scope="col"
+                      [style.width.px]="100"
+                  >
+                      Ações
+                  </th>
+              </tr>
+          </ng-template>
+          <ng-template
+              pTemplate="body"
+              let-pagamento
+          >
+              <tr>
+                  <td class="align-middle text-center">
+                    {{pagamento.federacao}}
+                  </td>
+                  <td class="align-middle text-center">
+                    {{pagamento.valorTitulo | currency: 'BRL'}}
+                  </td>
+                  <td class="align-middle">
+                    <div style="float:left; text-align: center;width:50%;">
+                      {{pagamento.status}}
+                    </div>
+                    <div style="float: right; text-align: right; width: 50%;">
+                      <!-- Caso seja RASCUNHO-->
+                      <span *ngIf="pagamento.siglaStatus == 'ST_Rascunho'" >
+                        <i style="color: gray;" class="fas fa-file-alt"></i>
+                      </span>
+
+                      <!-- Caso seja SUCESSO-->
+                      <ng-template #htmlContentSucesso>
+                        <p>Lançado por:</p>&nbsp;<strong>{{pagamento.usuario}}</strong> em
+                        <strong>{{pagamento.dataMovimento | date: 'short'}}</strong>
+                      </ng-template>
+                      <span *ngIf="pagamento.siglaStatus == 'ST_Enviado'" >
+                        <i style="color: green;" placement="right" [ngbTooltip]="htmlContentSucesso" class="fas fa-user"></i>
+                      </span>
+
+                      <!-- Caso seja ERRO-->
+                      <ng-template #htmlContentErro>
+                        <code>{{pagamento.erro}}</code>
+                      </ng-template>
+                      <span *ngIf="pagamento.siglaStatus == 'ST_Erro'" >
+                        <i style="color: red;" placement="right" [ngbTooltip]="htmlContentErro" class="fas fa-times-circle"></i>
+                      </span>
+                    </div>
+                  </td>
+                  <td class="align-middle text-center">
+                    {{pagamento.dataEmissao | date: 'shortDate'}}
+                  </td>
+                  <td class="align-middle text-center">
+                    <div>
+                      <a [routerLink]="['/pagamento-protheus/repasse-financeiro/editar', pagamento.idPagamento]"
+                        class="btn btn-info btn-sm" placement="top"
+                        ngbTooltip="Editar"><i class="fas fa-edit"></i></a><span>&nbsp;</span>
+                      <ng-container *ngIf="pagamento.siglaStatus == 'ST_Erro' && isPermitirExcluir()">
+                        <button type="button" class="btn btn-danger btn-sm" placement="top" (click)="excluir(pagamento.idPagamento)"
+                        ngbTooltip="Excluir"><i class="fas fa-trash-alt"></i></button>
+                      </ng-container>
+                    </div>
+                  </td>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td colspan="5">
+                    <div class="alert alert-info">{{msg}}</div>
+                </td>
+            </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+  </div>
+</div>

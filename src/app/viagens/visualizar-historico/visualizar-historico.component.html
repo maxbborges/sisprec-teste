@@ -1,0 +1,96 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white">
+    Histórico de Análises - Relatório de Viagens
+  </h3>
+  <div class="card-body">
+    <form [formGroup]="formVisualizar">
+      <!-- campos do formulário -->
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-2">
+          <div class="form-group">
+            <label for="federacao">Federação</label>
+            <input formControlName="federacao" name="federacao" id="federacao" class="form-control" [disabled]="true">
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-2">
+          <div class="form-group">
+            <label for="dataInicial">Data Inicial</label>
+            <input formControlName="dataInicial" type="date" name="dataInicial" id="dataInicial" class="form-control" [disabled]="true">
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-2">
+          <div class="form-group">
+            <label for="dataFinal">Data Final</label>
+            <input formControlName="dataFinal" type="date" name="dataFinal" id="dataFinal" class="form-control" [disabled]="true">
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="form-group">
+            <label for="nome">Nome</label>
+            <input formControlName="nome" type="text" name="nome" id="nome"class="form-control" [disabled]="true">
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input formControlName="email" type="email" name="email" id="email"class="form-control" [disabled]="true">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-2">
+          <button type="button" class="btn btn-outline-danger" (click)="voltar()" style="width: 100%;">
+            Voltar
+          </button>
+        </div>
+        <div class="col-12 col-md-6 col-lg-2">
+          <button type="button" class="btn btn-success" (click)="baixarPdf()" style="width: 100%;">
+            Baixar PDF
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div class="row">
+            <div class="col-12">
+                <table class="table table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Data</th>
+                            <th scope="col">Autor</th>
+                            <th scope="col">Análise</th>
+                            <th scope="col">Observações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let rv of resultadoPesquisa">
+                            <tr>
+                                <td>{{rv.dataAvaliacao | date:'dd/MM/yyyy HH:mm'}}</td>
+                                <td>{{rv.nome}}</td>
+                                <td>{{rv.avaliacao}}</td>
+                                <td>{{rv.observacoes}}</td>
+                            </tr>
+                        </ng-container>
+                        <ng-container *ngIf="carregando">
+                            <tr>
+                                <td colspan="6">
+                                    <div class="mt-2">
+                                        <app-loading-div mensagem="Carregando histórico..."></app-loading-div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <ng-container *ngIf="msg">
+                            <tr>
+                                <td colspan="6">
+                                    <div class="alert alert-info">{{msg}}</div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+  </div>
+</div>

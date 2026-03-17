@@ -1,0 +1,136 @@
+<div class="card shadow mb-3">
+  <h3 class="card-header bg-primary text-white">
+    {{editar? "Editar": "Cadastrar"}} Relatório de Viagens
+  </h3>
+  <div class="card-body">
+    <form [formGroup]="formCadastro" (submit)="cadastrar()">
+
+      <div class="row" *ngIf="editar && observacoes !== ''">
+        <div class="col-12 form-group">
+          <label for="observacoes">Observações</label>
+          <textarea id="observacoes" [value]="observacoes" class="form-control" [disabled]="true"></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <!-- campos do formulário -->
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="form-group">
+            <label for="federacao">Federação</label>
+            <select disabled 
+              name="federacao" 
+              id="federacao" 
+              class="form-control">
+              <option default value="">{{usuario.filiacaoSigla}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="form-group">
+            <label for="dataInicial">Data de Início da Viagem</label>
+            <input 
+              formControlName="dataInicial" 
+              type="date" 
+              name="dataInicial" 
+              id="dataInicial" 
+              class="form-control"
+              [class.is-invalid]="(submited || f.dataInicial.touched) && f.dataInicial.invalid">
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="form-group">
+            <label for="dataFinal">Data de Fim da Viagem</label>
+            <input 
+              formControlName="dataFinal" 
+              type="date" 
+              name="dataFinal" 
+              id="dataFinal" 
+              class="form-control"
+              [class.is-invalid]="(submited || f.dataFinal.touched) && f.dataFinal.invalid"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="form-group mt-2">
+        <label style="display: inline;" for="colaboradoresText">A viagem foi realizada com a participação de outros colaboradores e/ou colaboradores eventuais?</label>
+        &nbsp;
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="participacaoColaboradores" id="participacaoColaboradoresSim"
+                formControlName="participacaoColaboradores" [value]="true" autocomplete="off"  
+                [class.is-invalid]="(submited || f.participacaoColaboradores.touched) && f.participacaoColaboradores.invalid">
+            <label class="form-check-label" for="participacaoColaboradoresSim">Sim</label>
+        </div>
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="participacaoColaboradores" id="participacaoColaboradoresNao"
+                formControlName="participacaoColaboradores" [value]="false" autocomplete="off"  
+                [class.is-invalid]="(submited || f.participacaoColaboradores.touched) && f.participacaoColaboradores.invalid">
+            <label class="form-check-label" for="participacaoColaboradoresNao">Não</label>
+        </div>
+
+        <textarea *ngIf="mostrarColaboradores" formControlName="colaboradores" id="colaboradoresText" 
+          class="form-control mt-2" [class.is-invalid]="(submited || f.colaboradores.touched) && f.colaboradores.invalid"></textarea>
+      </div> -->
+
+      <div class="form-group textoRelatorio mt-2">
+          <label for="textoRelatorioInput">
+              <h6>Relatório de Viagens</h6>
+              <p>Descreva aqui as atividades realizadas no período, resultados alcançados e outras observações pertinentes.</p>
+          </label>
+          <app-rich-text 
+          id="textoRelatorioInput" 
+          [control]="$any(formCadastro.controls['textoHtml'])"
+          [placeholder]="'Comece a redigir o seu relatório...'"
+          [class.is-invalid]="(submited || f.textoHtml.touched) && f.textoHtml.invalid"
+          >
+          </app-rich-text>
+      </div>
+
+      <div class="form-group mt-2">
+        <label for="infoAdicional">Informações adicionais</label>
+        <textarea formControlName="informacoesAdicionais" id="infoAdicional" 
+          class="form-control" [class.is-invalid]="(submited || f.informacoesAdicionais.touched) && f.informacoesAdicionais.invalid"></textarea>
+      </div>
+
+      <!-- termo -->
+
+      <div class="row">
+        <div class="col-12">
+          <div class="form-check">
+              <input 
+                formControlName="termo" 
+                class="form-check-input" 
+                type="checkbox" 
+                id="termo"
+                [class.is-invalid]="(submited || f.termo.touched) && f.termo.invalid"
+              >
+              <label class="form-check-label" for="termo">
+                  Declaro que as informações prestadas neste relatório são verdadeiras e de minha inteira responsabilidade.
+              </label>
+          </div>
+        </div>
+      </div>
+
+      
+
+      <hr>
+
+      <!-- botões -->
+
+      <div class="row" style="justify-content: right;">
+        <div class="col-12 col-md-6 col-lg-3" style="margin-top: 3px;">
+          <button (click)="cancelar()" type="button" class="btn btn-danger" style="width: 100%">Cancelar</button>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3" style="margin-top: 3px;">
+          <button [disabled]="carregando" type="submit" class="btn btn-success" style="width: 100%">{{editar? "Ree": "E"}}nviar Relatório</button>
+        </div>
+      </div>
+
+    </form>
+    
+  </div>
+</div>

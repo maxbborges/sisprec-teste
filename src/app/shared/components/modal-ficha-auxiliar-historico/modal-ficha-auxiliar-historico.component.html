@@ -1,0 +1,55 @@
+
+<div class="container my-4">
+  <h4 class="mb-3 fw-bold text-primary"> Ficha Auxiliar Histórico</h4>
+    <div class="row">
+        <div class="col-12" style="max-height: 500px; overflow-y: auto;">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover table-striped align-middle">
+                <thead style="background-color: #003366; color: white;">
+                  <tr>
+                    <th class="text-nowrap">Log</th>
+                    <th>Análise</th>
+                    <th>Motivo</th>
+                    <th>Observação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let ficha of lstFichaAuxiliarLog; let i = index">
+                    <tr>
+                        <td class="text-wrap">
+                            <label><strong>Data: </strong> {{ficha?.data | date: 'dd/MM/yyyy HH:mm'}}</label><br>
+                            <label>{{ficha?.acaoRealizada}}</label><br>
+                        </td>                        
+                        <td>
+                            <label>{{getStatus(ficha?.objeto?.Analise)}}</label>
+                        </td>
+                        <td>
+                            <b>Motivo: </b> {{ getMotivo(ficha.objeto) }}
+                        </td>
+                        <td class="text-wrap">
+                            <b>observacao: </b> {{ficha.objeto?.Observacao}}
+                        </td>
+                    </tr>
+                </ng-container>
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer botoes">
+    <button
+        (click)="baixarPdf()"
+        [disabled]="false"
+        type="button"
+        class="btn btn-primary mt-auto"
+        >
+        <i class="far fa-file-pdf"></i>
+        Gerar PDF
+    </button>
+    <button type="button" (click)="close()" class="btn btn-danger">
+        <i class="pi pi-chevron-left"></i>
+        Voltar
+    </button>
+</div>

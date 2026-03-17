@@ -1,0 +1,114 @@
+  <div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Relatório de Despesas</h3>
+
+    <div class="card-body">
+      <form [formGroup]="f">
+        <div class="row">
+          <div *ngIf="federacoes$ | async as federacoes" class="form-group col">
+            <div class="mb-4">
+              <label class="required">Federação:</label>
+              <select formControlName="idFederacao" class="form-control">
+                <option value>Selecione</option>
+                <option *ngFor="let federacao of federacoes" [value]="federacao.idIndicador">
+                  {{ federacao.sigla }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group col">
+            <label class="required">Ano:</label>
+            <select formControlName="ano" #ano (change)="onChangeAno($any(ano.value))" class="form-control">
+              <option value>Selecione</option>
+              <option *ngFor="let ano of anos | async" [value]="ano">
+                {{ ano }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col">
+            <label class="">Status:</label>
+            <select formControlName="idStatus" class="form-control">
+              <option value>Selecione</option>
+              <option *ngFor="let status of listaStatus" [value]="status.idIndicador">
+                {{ status.nome }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col">
+            <label class="required">Categoria:</label>
+            <select formControlName="categoria" [(ngModel)]="categoriaSelecionada" class="form-control">
+              <option value>Selecione</option>
+              <option *ngFor="let categoria of categorias" [ngValue]="categoria">
+                {{ categoria.item }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col">
+            <label class="">Mês:</label>
+            <select formControlName="mes" class="form-control">
+              <option value>Selecione</option>
+              <option *ngFor="let mes of listaMeses" [value]="mes.value">
+                {{ mes.nome }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-2">
+            <label class="">&nbsp;&nbsp;</label>
+            <button [disabled]="f.invalid" (click)="clicarPesquisar()" class="btn btn-primary btn-block w-100">
+              <i class="fas fa-search"></i>
+              Pesquisar
+            </button>
+          </div>
+          <div class="form-group col-2">
+            <label class="">&nbsp;</label>
+            <button
+              [disabled]="!((relatorioDespesa$ | async)?.length > 0)"
+              (click)="clicarBaixarExcel()"
+              class="btn btn-success btn-block w-100">
+              <i class="fas fa-file-excel"></i>
+              Baixar Excel
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="row">
+        <table
+            *ngIf="relatorioDespesa$ | async as relatorioDespesa"
+            class="table table-striped table-hover table-sm"
+            id="table-rel-despesas">
+            <thead>
+                <tr>
+                    <th scope="col">Federação</th>
+                    <th scope="col">Ano</th>
+                    <th scope="col">Mês</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Categoria(Item)</th>
+                    <th scope="col">Valor R$</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let rd of relatorioDespesa">
+                  <td scope="row">{{ rd.federacao }}</td>
+                  <td scope="row">{{ rd.ano }}</td>
+                  <td scope="row">{{ rd.mes }}</td>
+                  <td scope="row">{{ rd.situacao }}</td>
+                  <td scope="row">{{ rd.item }}</td>
+                  <td>{{ rd.valorTotal | currency:'BRL' }}</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+

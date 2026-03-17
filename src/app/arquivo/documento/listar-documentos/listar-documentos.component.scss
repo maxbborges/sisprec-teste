@@ -1,0 +1,27 @@
+.arquivo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.arquivo p {
+  margin-top: 4.5vh;
+  margin-left: 1vw;
+}
+
+.botoes {
+  display: flex;
+  flex-direction: row-reverse;
+  padding-right: 2vw;
+}
+
+.botoes button {
+  margin-left: 1vw;
+  display: flex;
+  align-items: center;
+}
+
+.botoes i {
+  margin-right: 0.4vw;
+}
+

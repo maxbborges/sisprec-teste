@@ -1,0 +1,7 @@
+<div style="position: fixed; top: 0; right: 0;z-index: 999999;" role="alert" aria-live="assertive" aria-atomic="true">
+  <ng-container *ngFor="let toast of this.toasts$ | async; index as i">
+    <div class=" toast alert alert-{{toast.severity}} alert-dismissible fade fade-in show" role="alert">
+      {{ toast.message }}
+    </div>
+  </ng-container> 
+</div>

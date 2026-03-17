@@ -1,0 +1,756 @@
+<nav class="navbar navbar-expand-lg navbar-dark mb-3">
+  <a routerLink="/inicio" class="navbar-brand">
+    {{ nomeSistema }}
+  </a>
+  <button
+    (click)="isMenuCollapsed = !isMenuCollapsed"
+    [attr.aria-expanded]="!isMenuCollapsed"
+    aria-controls="navbarSupportedContent"
+    aria-label="Alternar navegação"
+    class="navbar-toggler"
+    type="button"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div
+    [ngbCollapse]="isMenuCollapsed"
+    class="collapse navbar-collapse"
+    id="navbarSupportedContent"
+  >
+    <ul class="navbar-nav mr-auto">
+      <!-- Versão -->
+      <span class="navbar-text px-lg-2 d-lg-inline d-block user-select-none">
+        <i class="fas fa-code-branch"></i>
+        {{ versao }}
+      </span>
+      <!-- / Versão -->
+      <!-- Estimativa de Custo -->
+      <li
+        #rlaEstimativaCusto="routerLinkActive"
+        *ngIf="menuEstimativaCusto"
+        ngbDropdown
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <a
+          ngbDropdownToggle
+          class="nav-link"
+          href="javascript:void(0);"
+          id="navbarDropdownEstimativaCusto"
+          role="button"
+        >
+          <i class="fas fa-search-dollar"></i>
+          Estimativa de Custo
+          <span *ngIf="rlaEstimativaCusto.isActive" class="sr-only">
+            (atual)
+          </span>
+        </a>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="navbarDropdownEstimativaCusto"
+          class="dropdown-menu"
+        >
+          <a
+            #rlaEstimativaCustoAnalisar="routerLinkActive"
+            routerLink="/estimativaDeCusto/analisar"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuEstimativaCustoAnalisar"
+            ngbDropdownItem
+          >
+            Analisar
+            <span *ngIf="rlaEstimativaCustoAnalisar.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaEstimativaCustoCadastrarValores="routerLinkActive"
+            routerLink="/estimativaDeCusto/cadastrarValores"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuEstimativaCustoCadastrarValores"
+            ngbDropdownItem
+          >
+            Cadastrar Valores
+            <span
+              *ngIf="rlaEstimativaCustoCadastrarValores.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaEstimativaCustoManter="routerLinkActive"
+            routerLink="/estimativaDeCusto/manter"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuEstimativaCustoManter"
+            ngbDropdownItem
+          >
+            Manter
+            <span *ngIf="rlaEstimativaCustoManter.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+        </div>
+      </li>
+      <!-- / Estimativa de Custo -->
+      <!-- Arquivo -->
+      <li
+        #rlaArquivo="routerLinkActive"
+        *ngIf="menuArquivo"
+        ngbDropdown
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <a
+          ngbDropdownToggle
+          class="nav-link"
+          href="javascript:void(0);"
+          id="navbarDropdownArquivo"
+          role="button"
+        >
+          <i class="fas fa-archive"></i>
+          Arquivo
+          <span *ngIf="rlaArquivo.isActive" class="sr-only"> (atual) </span>
+        </a>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="navbarDropdownArquivo"
+          class="dropdown-menu"
+        >
+          <a
+            #rlaArquivoBaixarComprovantes="routerLinkActive"
+            routerLink="/arquivo/baixar-comprovantes"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuArquivoBaixarComprovantes"
+            ngbDropdownItem
+          >
+            Baixar Comprovantes
+            <span *ngIf="rlaArquivoBaixarComprovantes.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaArquivoInsercaoDocumento="routerLinkActive"
+            routerLink="/arquivo/documentos"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuArquivoInsercaoDocumento"
+            ngbDropdownItem
+          >
+            {{ usuarioLogado.tipoUsuarioSigla === presidente ? 'Analisar Fluxo de Caixa' : 'Inserção Documento' }}
+            <span *ngIf="rlaArquivoInsercaoDocumento.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaArquivoNomeDocumento="routerLinkActive"
+            routerLink="/arquivo/nomeDocumento"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuArquivoNomeDocumento"
+            ngbDropdownItem
+          >
+            Nome Documento
+            <span *ngIf="rlaArquivoNomeDocumento.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+        </div>
+      </li>
+      <!-- / Arquivo -->
+      <!-- Gestão Financeira -->
+      <li
+        #rlaGestaoFinanceira="routerLinkActive"
+        *ngIf="menuGestaoFinanceira"
+        ngbDropdown
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <a
+          ngbDropdownToggle
+          class="nav-link"
+          href="javascript:void(0);"
+          id="navbarDropdownGestaoFinanceira"
+          role="button"
+        >
+          <i class="fas fa-balance-scale"></i>
+          Gestão Financeira
+          <span *ngIf="rlaGestaoFinanceira.isActive" class="sr-only">
+            (atual)
+          </span>
+        </a>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="navbarDropdownGestaoFinanceira"
+          class="dropdown-menu"
+        >
+          <a
+            #rlaGestaoFinanceiraContaCorrente="routerLinkActive"
+            routerLink="/gestaoFinanceira/conta-corrente"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuGestaoFinanceiraContaCorrente"
+            ngbDropdownItem
+          >
+            Conta Corrente
+            <span
+              *ngIf="rlaGestaoFinanceiraContaCorrente.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaGestaoFinanceiraContaInvestimento="routerLinkActive"
+            routerLink="/gestaoFinanceira/conta-investimento"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuGestaoFinanceiraContaInvestimento"
+            ngbDropdownItem
+          >
+            Conta Investimento
+            <span
+              *ngIf="rlaGestaoFinanceiraContaInvestimento.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaGestaoFinanceiraColaboradores="routerLinkActive"
+            routerLink="/gestaoFinanceira/colaborador"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuGestaoFinanceiraColaboradores"
+            ngbDropdownItem
+          >
+            Colaboradores
+            <span
+              *ngIf="rlaGestaoFinanceiraColaboradores.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaGestaoFinanceiraFornecedores="routerLinkActive"
+            routerLink="/gestaoFinanceira/fornecedor"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuGestaoFinanceiraFornecedores"
+            ngbDropdownItem
+          >
+            Fornecedores
+            <span
+              *ngIf="rlaGestaoFinanceiraFornecedores.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaGestaoFinanceiraTarifasBancarias="routerLinkActive"
+            routerLink="/gestaoFinanceira/tarifa-bancaria"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuGestaoFinanceiraTarifasBancarias"
+            ngbDropdownItem
+          >
+            Tarifas Bancárias
+            <span
+              *ngIf="rlaGestaoFinanceiraTarifasBancarias.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+        </div>
+      </li>
+      <!-- / Gestão Financeira -->
+      <!-- Prestação de Contas -->
+      <li
+        #rlaPrestacaoContas="routerLinkActive"
+        *ngIf="menuPrestacaoContas"
+        ngbDropdown
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <a
+          ngbDropdownToggle
+          class="nav-link"
+          href="javascript:void(0);"
+          id="navbarDropdownArquivo"
+          role="button"
+        >
+          <i class="fas fa-tasks"></i>
+          Prestação de Contas
+          <span *ngIf="rlaPrestacaoContas.isActive" class="sr-only">
+            (atual)
+          </span>
+        </a>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="navbarDropdownPrestacaoContas"
+          class="dropdown-menu"
+        >
+          <a
+            #rlaPrestacaoContasAnalisar="routerLinkActive"
+            routerLink="/prestacaoDeContas/analisar"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuPrestacaoContasAnalisar"
+            ngbDropdownItem
+          >
+            Analisar
+            <span *ngIf="rlaPrestacaoContasAnalisar.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaPrestacaoContasPesquisar="routerLinkActive"
+            routerLink="/prestacaoDeContas/pesquisar"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuPrestacaoContasPesquisar"
+            ngbDropdownItem
+          >
+            Pesquisar
+            <span *ngIf="rlaPrestacaoContasPesquisar.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaPrestacaoContasVisualizarAnalise="routerLinkActive"
+            routerLink="/prestacaoDeContas/listar"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuPrestacaoContasVisualizarAnalise"
+            ngbDropdownItem
+          >
+            Visualizar Análise
+            <span
+              *ngIf="rlaPrestacaoContasVisualizarAnalise.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaEstimativaCustDefinirPrazo="routerLinkActive"
+            routerLink="/estimativaDeCusto/definir-prazo"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuPrestacaoContasDefinirPrazo"
+            ngbDropdownItem
+          >
+            Definir prazo
+            <span
+              *ngIf="rlaEstimativaCustDefinirPrazo.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+        </div>
+      </li>
+      <!-- / Prestação de Contas -->
+      <!-- Relatórios -->
+      <li
+        #rlaRelatorios="routerLinkActive"
+        *ngIf="menuRelatorios"
+        ngbDropdown
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <a
+          ngbDropdownToggle
+          class="nav-link"
+          href="javascript:void(0);"
+          id="navbarDropdownRelatorios"
+          role="button"
+        >
+          <i class="fas fa-file-invoice"></i>
+          Relatórios
+          <span *ngIf="rlaRelatorios.isActive" class="sr-only"> (atual) </span>
+        </a>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="navbarDropdownRelatorios"
+          class="dropdown-menu"
+        >
+          <a
+            #rlaRelatoriosAnalisePrestacaoContas="routerLinkActive"
+            routerLink="/relatorios/analise-prestacao-contas"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuRelatoriosAnalisePrestacaoContas"
+            ngbDropdownItem
+          >
+            Análise da Prestação de Contas
+            <span
+              *ngIf="rlaRelatoriosAnalisePrestacaoContas.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaRelatoriosHistoricoPrestacaoContas="routerLinkActive"
+            routerLink="/relatorios/historico-prestacao-contas"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuRelatoriosHistoricoPrestacaoContas"
+            ngbDropdownItem
+          >
+            Histórico de Prestação de Contas
+            <span
+              *ngIf="rlaRelatoriosHistoricoPrestacaoContas.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaRelatoriosDespesas="routerLinkActive"
+            routerLink="/relatorios/despesas"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuRelatoriosDespesas"
+            ngbDropdownItem
+          >
+            Despesas
+            <span *ngIf="rlaRelatoriosDespesas.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaRelatoriosPrestacaoContas="routerLinkActive"
+            routerLink="/relatorios/prestacao-contas"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuRelatoriosPrestacaoContas"
+            ngbDropdownItem
+          >
+            Prestação de Contas
+            <span *ngIf="rlaRelatoriosPrestacaoContas.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaRelatoriosDespesas="routerLinkActive"
+            routerLink="/relatorios/colaboradores"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuRelatoriosDespesas"
+            ngbDropdownItem
+          >
+            Colaboradores
+            <span *ngIf="rlaRelatoriosDespesas.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+        </div>
+      </li>
+      <!-- / Relatórios -->
+
+      <!-- Visita -->
+      <li
+        #rlaVisitas="routerLinkActive"
+        *ngIf="menuVisita"
+        ngbDropdown
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <a
+          ngbDropdownToggle
+          class="nav-link"
+          href="javascript:void(0);"
+          id="navbarDropdownVisita"
+          role="button"
+        >
+          <i class="fas fa-file-invoice"></i>
+          Visitas
+          <span *ngIf="rlaVisitas.isActive" class="sr-only"> (atual) </span>
+        </a>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="navbarDropdownVisita"
+          class="dropdown-menu"
+        >
+          <a
+            #rlaRelatoriosVisitasTecnicas="routerLinkActive"
+            routerLink="/visitaTecnica/listarRelatorioVisitaTecnica"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuRelatoriosVisitasTecnicas"
+            ngbDropdownItem
+          >
+            Relatórios de Visitas Técnicas
+            <span *ngIf="rlaRelatoriosVisitasTecnicas.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+        </div>
+      </li>
+      <!-- / Visita -->
+
+      <!-- Pagamento/Protheus -->
+      <li
+        #rlaPagamentoProtheus="routerLinkActive"
+        *ngIf="menuPagamentoProtheus"
+        ngbDropdown
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <a
+          ngbDropdownToggle
+          class="nav-link"
+          href="javascript:void(0);"
+          id="navbarDropdownPagamentoProtheus"
+          role="button"
+        >
+          <i class="fas fa-money-check-alt"></i>
+          Pagamento/Protheus
+          <span *ngIf="rlaPagamentoProtheus.isActive" class="sr-only">
+            (atual)
+          </span>
+        </a>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="navbarDropdownPagamentoProtheus"
+          class="dropdown-menu"
+        >
+          <a
+            #rlaPagamentoProtheusRepasseFinan="routerLinkActive"
+            routerLink="/pagamento-protheus/repasse-financeiro/listar"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuPagamentoProtheusRepasseFinan"
+            ngbDropdownItem
+          >
+            Repasse Financeiro
+            <span
+              *ngIf="rlaPagamentoProtheusRepasseFinan.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaPagamentoProtheusParametrosCalculo="routerLinkActive"
+            routerLink="/pagamento-protheus/parametros-calculo/listar"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuPagamentoProtheus"
+            ngbDropdownItem
+          >
+            Parâmetros de Cálculo
+            <span *ngIf="rlaPagamentoProtheusParametrosCalculo.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+        </div>
+      </li>
+
+      <!-- Viagens -->
+      <li
+        #rlaViagens="routerLinkActive"
+        *ngIf="menuViagens"
+        ngbDropdown
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <a
+          ngbDropdownToggle
+          class="nav-link"
+          href="javascript:void(0);"
+          id="navbarDropdownRelatorios"
+          role="button"
+        >
+          <i class="fas fa-plane"></i>
+          Viagens
+          <span *ngIf="rlaViagens.isActive" class="sr-only"> (atual) </span>
+        </a>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="navbarDropdownViagens"
+          class="dropdown-menu"
+        >
+          <a
+            #rlaViagensCadastro="routerLinkActive"
+            routerLink="/viagens/listar-cadastrar"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuViagensCadastrar"
+            ngbDropdownItem
+          >
+            Minhas Viagens
+            <span
+              *ngIf="rlaViagensCadastro.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaViagensAnalise="routerLinkActive"
+            routerLink="/viagens/listar-relatorios"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuViagensAnalisar"
+            ngbDropdownItem
+          >
+            Analisar Relatório
+            <span
+              *ngIf="rlaViagensAnalise.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaViagensAnalise="routerLinkActive"
+            routerLink="/viagens/minhas-viagens"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuViagensMinhasViagens"
+            ngbDropdownItem
+          >
+            Minhas Viagens
+            <span
+              *ngIf="rlaViagensAnalise.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+        </div>
+      </li>
+      <!-- / Viagens -->
+
+      <!-- /Pagamento/Protheus -->
+      <!-- Admin -->
+      <li
+        #rlaAdmin="routerLinkActive"
+        *ngIf="menuAdmin"
+        ngbDropdown
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <a
+          ngbDropdownToggle
+          class="nav-link"
+          href="javascript:void(0);"
+          id="navbarDropdownAdmin"
+          role="button"
+        >
+          <i class="fas fa-cog"></i>
+          Admin
+          <span *ngIf="rlaAdmin.isActive" class="sr-only"> (atual) </span>
+        </a>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="navbarDropdownAdmin"
+          class="dropdown-menu"
+        >
+          <a
+            #rlaAdminIndicadores="routerLinkActive"
+            routerLink="/admin/indicadores"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuAdminIndicadores"
+            ngbDropdownItem
+          >
+            Indicadores
+            <span *ngIf="rlaAdminIndicadores.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaAdminIndicadoresSomenteDesenvolvedor="routerLinkActive"
+            routerLink="/administrativo/indicadores"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuAdminIndicadoresSomenteDesenvolvedor"
+            ngbDropdownItem
+          >
+            Indicadores somente Desenvolvedor
+            <span
+              *ngIf="rlaAdminIndicadoresSomenteDesenvolvedor.isActive"
+              class="sr-only"
+            >
+              (atual)
+            </span>
+          </a>
+          <a
+            #rlaAdminUsuarios="routerLinkActive"
+            routerLink="/administrativo/usuarios"
+            routerLinkActive="active"
+            (click)="isMenuCollapsed = true"
+            *ngIf="menuAdminUsuarios"
+            ngbDropdownItem
+          >
+            Usuários
+            <span *ngIf="rlaAdminUsuarios.isActive" class="sr-only">
+              (atual)
+            </span>
+          </a>
+        </div>
+      </li>
+      <!-- / Admin -->
+    </ul>
+    <!-- Usuário -->
+    <ul
+      *ngIf="
+        usuarioLogadoDinamico.permitirTrocaTipoUsuario;
+        else semTrocaTipoUsuario
+      "
+      class="navbar-nav"
+    >
+      <a
+        (click)="trocarPerfil(); isMenuCollapsed = true"
+        href="javascript:void(0);"
+        class="nav-link"
+      >
+        <i class="fas fa-user"></i>
+        {{ usuarioLogadoDinamico.nome.split(" ")[0] }}
+        {{ "(" + usuarioLogadoDinamico.tipoUsuario + ")" }}
+      </a>
+    </ul>
+    <ng-template #semTrocaTipoUsuario>
+      <span class="navbar-text px-lg-2 d-lg-inline d-block user-select-none">
+        <i class="fas fa-user"></i>
+        {{ usuarioLogadoDinamico.nome }}
+      </span>
+    </ng-template>
+    <!-- / Usuário -->
+    <ul class="navbar-nav">
+      <!-- Alterar Senha -->
+      <li
+        *ngIf="menuAlterarSenha"
+        routerLinkActive="active"
+        #rlaas="routerLinkActive"
+        class="nav-item"
+      >
+        <a routerLink="/inicio/alterar-senha" class="nav-link">
+          <i class="fas fa-key"></i>
+          Alterar Senha
+          <span *ngIf="rlaas.isActive" class="sr-only"> (atual) </span>
+        </a>
+      </li>
+      <!-- / Alterar Senha -->
+      <!-- Sair -->
+      <li routerLinkActive="active" #rlas="routerLinkActive" class="nav-item">
+        <a routerLink="/inicio/sair" class="nav-link">
+          <i class="fas fa-sign-out-alt"></i>
+          Sair
+          <span *ngIf="rlas.isActive" class="sr-only"> (atual) </span>
+        </a>
+      </li>
+      <!-- / Sair -->
+    </ul>
+  </div>
+</nav>

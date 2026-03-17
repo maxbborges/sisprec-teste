@@ -1,0 +1,39 @@
+<div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">
+        {{editar ? 'Editar' : visualizar ? 'Visualizar' : 'Cadastrar'}} Relatório
+    </h3>
+    <div class="card-body">
+        <form [formGroup]="form" (submit)="enviar()">
+            <div class="row">
+                <div class="form-group col-12 col-md-4">
+                    <label for="dataRelatorio">
+                        <h6>Período do relatório</h6>
+                    </label>
+                    <input type="text" id="dataRelatorio" disabled class="form-control" value="{{formatarMes(mes)}}/{{ano}}">
+                </div>
+            </div>
+            <div class="form-group textoRelatorio">
+                <label for="textoRelatorioInput">
+                    <h6>Relatório de Atividades</h6>
+                    <p>Descreva aqui as atividades realizadas no período, resultados alcançados e outras observações pertinentes.</p>
+                </label>
+                <app-rich-text 
+                id="textoRelatorioInput" 
+                [control]="$any(form.controls['textoHtml'])"
+                [placeholder]="'Comece a redigir o seu relatório...'"
+                >
+                </app-rich-text>
+            </div>
+            <div class="form-check">
+                <input formControlName="termo" class="form-check-input" type="checkbox" id="termo">
+                <label class="form-check-label" for="termo">
+                    Declaro que as informações prestadas neste relatório são verdadeiras e de minha inteira responsabilidade.
+                </label>
+            </div>
+            <div class="form-group botoesEnvio">
+                <app-botao-voltar textoBotao="Cancelar"></app-botao-voltar>
+                <button *ngIf="!visualizar" type="submit" class="btn btn-success" [disabled]="carregando || !form.valid">{{editar ? 'Reenviar' : 'Enviar'}} Relatório</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,105 @@
+<form [formGroup]="formCadastro">
+  <div class="card shadow mb-3">
+    <h3 class="card-header bg-primary text-white">Vincular Tarifa Bancária ao Lançamento</h3>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md">
+          <div class="form-group">
+            <label for="slcExercicio">Ano Exercício: <b class="text-danger">*</b></label>
+            <select class="form-control" tabindex="1" (change)="onChangeGetCategoria($any($event.target).value)"
+                formControlName="anoExercicio">
+                <option [disabled]="true">Selecione</option>
+                <ng-container *ngFor="let ano of this.arrayAno">
+                  <option [value]="ano">{{ ano }}</option>
+                </ng-container>
+            </select>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-group">
+            <label for="slcExercicio">Mês Exercício: <b class="text-danger">*</b></label>
+            <select id="slctMes" class="form-control" formControlName="mesExercicio"
+            (change)="onChangeGetLancamentoSaida($any($event.target).value)">
+              <option [disabled]="true">Selecione</option>
+              <option value="1">Janeiro</option>
+              <option value="2">Fevereiro</option>
+              <option value="3">Março</option>
+              <option value="4">Abril</option>
+              <option value="5">Maio</option>
+              <option value="6">Junho</option>
+              <option value="7">Julho</option>
+              <option value="8">Agosto</option>
+              <option value="9">Setembro</option>
+              <option value="10">Outubro</option>
+              <option value="11">Novembro</option>
+              <option value="12">Dezembro</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="slcExercicio">Categoria do item: <b class="text-danger">*</b></label>
+            <select class="form-control" tabindex="3" formControlName="idCategoria"
+                (change)="onChangeGetItemCategoria($any($event.target).value)">
+                <option [disabled]="true">Selecione</option>
+                <ng-container *ngFor="let cat of lstCategorias">
+                    <option [value]="cat.idCategoriaItemPlanoDeConta">{{cat?.codigo}} - {{cat?.descricao}}</option>
+                </ng-container>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="slcExercicio">Item: <b class="text-danger">*</b></label>
+            <select class="form-control" tabindex="4" formControlName="idCategoriaItem">
+              <option [disabled]="true">Selecione</option>
+                <ng-container *ngFor="let item of lstItemCategorias">
+                  <option [value]="item.idItemPlanoDeConta">{{item?.codigo}} - {{item?.descricao}}</option>
+              </ng-container>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label>Lançamento: <b class="text-danger">*</b></label>
+            <select class="form-control" tabindex="4" formControlName="idLancamento">
+              <option [disabled]="true">Selecione</option>
+                <ng-container *ngFor="let item of lstLancamentos">
+                  <option [value]="item.idLancamento">{{ item?.valor | currency: 'BRL' }} - {{item?.dataEvento | date:'shortDate'}} - {{ item.item }}</option>
+              </ng-container>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button
+          type="button"
+          (click)="voltar()"
+          class="btn btn-danger float-end ms-1">
+          <i class="fas fa-chevron-left"></i>
+          Cancelar
+      </button>
+      <button
+          type="button"
+          [disabled]="isEdicao"
+          (click)="formCadastro.reset()"
+          class="btn btn-secondary float-end ms-1">
+          <i class="fas fa-trash"></i>
+          Limpar
+      </button>
+      <button
+          [disabled]="formCadastro.invalid || acaoBloqueada"
+          type="button"
+          (click)="salvar()"
+          class="btn btn-primary float-end ms-1">
+          <i class="fas fa-save"></i>
+          Salvar
+      </button>
+    </div>
+  </div>
+</form>
