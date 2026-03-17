@@ -11,11 +11,12 @@ workflows:
       - name: Sync Capacitor
         script: npx cap sync ios
       - name: Build iOS Native
-        script: |
-          # Aqui o Codemagic usa o xcodebuild para gerar o .ipa
-          xcode-project build-ipa \
-            --workspace ios/App/App.xcworkspace \
-            --scheme App
+        scripts:
+          - name: Build iOS Native
+            script: |
+              xcode-project build-ipa \
+                --workspace ios/App/App.xcodeproj/project.xcworkspace \
+                --scheme App
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
