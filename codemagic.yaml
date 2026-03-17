@@ -6,8 +6,6 @@ workflows:
     environment:
       vars:
         BUNDLE_ID: "br.org.sestsenat.sisprec"
-        # Definimos o nome do certificado para que o Codemagic o identifique
-        CERTIFICATE_NAME: "getec_sisprec"
     scripts:
       - name: Install Dependencies
         script: npm install --legacy-peer-deps
@@ -17,13 +15,24 @@ workflows:
         script: npx cap sync ios
       - name: Set up Code Signing
         script: |
-          # Inicializa o keychain na máquina virtual
+          # 1. Inicializa o chaveiro
           keychain initialize
-          # Busca e instala o certificado específico 'getec_sisprec' que você subiu
-          keychain add-certificates
+          
+          # 2. Decodifica o certificado que você subiu no painel
+          # O Codemagic injeta automaticamente CM_CERTIFICATE e CM_CERTIFICATE_PASSWORD
+          echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
+          
+          # 3. Decodifica o Provisioning Profile
+          echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
+          
+          # 4. Instala o certificado no chaveiro
+          keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
+          
+          # 5. Move o profile para a pasta correta que o Xcode exige
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
       - name: Build iOS Native
         script: |
-          # O build-ipa agora usará o certificado getec_sisprec instalado acima
           xcode-project build-ipa \
             --workspace ios/App/App.xcodeproj/project.xcworkspace \
             --scheme App
