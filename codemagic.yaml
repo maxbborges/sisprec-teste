@@ -3,11 +3,11 @@ workflows:
     name: iOS Build (Capacitor)
     max_build_duration: 60
     instance_type: mac_mini_m1
-    integrations:
-      app_store_connect: Code-magic
     environment:
       vars:
         BUNDLE_ID: "br.org.sestsenat.sisprec"
+        # Definimos o nome do certificado para que o Codemagic o identifique
+        CERTIFICATE_NAME: "getec_sisprec"
     scripts:
       - name: Install Dependencies
         script: npm install --legacy-peer-deps
@@ -17,22 +17,16 @@ workflows:
         script: npx cap sync ios
       - name: Set up Code Signing
         script: |
+          # Inicializa o keychain na máquina virtual
           keychain initialize
-          
-          # Tenta baixar o que existe. Se falhar por falta de chave privada, 
-          # o comando abaixo ajuda a limpar o ambiente local antes de tentar o build.
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_DEVELOPMENT \
-            --create
-            
+          # Busca e instala o certificado específico 'getec_sisprec' que você subiu
           keychain add-certificates
       - name: Build iOS Native
         script: |
-          # O --allow-provisioning-updates tentará resolver o problema durante o archive
+          # O build-ipa agora usará o certificado getec_sisprec instalado acima
           xcode-project build-ipa \
             --workspace ios/App/App.xcodeproj/project.xcworkspace \
-            --scheme App \
-            --allow-provisioning-updates
+            --scheme App
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
