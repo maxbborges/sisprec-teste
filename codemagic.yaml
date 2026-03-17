@@ -21,17 +21,26 @@ workflows:
           echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
           echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
           
-          # Instala o certificado (Certifique-se que a variável CM_CERTIFICATE_PASSWORD existe no painel)
+          # Instala o certificado no chaveiro
           keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password "$CM_CERTIFICATE_PASSWORD"
           
-          # Registra o profile no sistema e GERA o ExportOptions.plist automaticamente
+          # Instala o profile no local correto do macOS
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # Gera o ExportOptions.plist necessário para o archive
           xcode-project use-profiles
       - name: Build iOS Native
         script: |
-          # O build-ipa agora encontrará o ExportOptions.plist gerado pelo comando anterior
+          # Extraímos o UUID do perfil para passar direto para o xcodebuild
+          PROVISIONING_PROFILE_UUID=$(mobile-static --profile /tmp/profile.mobileprovision --query uuid)
+          
+          # O build-ipa agora recebe explicitamente o mapeamento do perfil
           xcode-project build-ipa \
             --workspace ios/App/App.xcodeproj/project.xcworkspace \
-            --scheme App
+            --scheme App \
+            --bundle-id "$BUNDLE_ID" \
+            --provisioning-profile "$PROVISIONING_PROFILE_UUID"
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
