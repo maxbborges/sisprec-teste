@@ -1,11 +1,14 @@
 workflows:
   ios-capacitor-workflow:
-    name: iOS Build (Capacitor)
+    name: iOS Build (Capacitor - App Store)
     max_build_duration: 60
     instance_type: mac_mini_m1
+    integrations:
+      app_store_connect: Code-magic # Nome da sua integração no painel
     environment:
       vars:
         BUNDLE_ID: "br.org.sestsenat.sisprec"
+        APP_ID: "123456789" # <--- SUBSTITUA PELO SEU APPLE APP ID (número que fica no App Store Connect)
     scripts:
       - name: Install Dependencies
         script: npm install --legacy-peer-deps
@@ -17,33 +20,28 @@ workflows:
         script: |
           keychain initialize
           
-          # Decodifica o certificado e o profile que você subiu no painel
+          # Use certificados de DISTRIBUIÇÃO e perfis de APP_STORE no painel do Codemagic
           echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
           echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
           
-          # Instala o certificado no chaveiro
           keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password "$CM_CERTIFICATE_PASSWORD"
           
-          # Instala o profile no local correto do macOS
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-          
-          # Gera o ExportOptions.plist necessário para o archive
+          # Garante que o perfil seja instalado e o ExportOptions.plist gerado para App Store
           xcode-project use-profiles
       - name: Build iOS Native
         script: |
-          # Extraímos o UUID do perfil para passar direto para o xcodebuild
-          PROVISIONING_PROFILE_UUID=$(mobile-static --profile /tmp/profile.mobileprovision --query uuid)
-          
-          # O build-ipa agora recebe explicitamente o mapeamento do perfil
+          # Adicionamos o bundle-id para garantir o mapeamento correto na hora da publicação
           xcode-project build-ipa \
             --workspace ios/App/App.xcodeproj/project.xcworkspace \
             --scheme App \
-            --bundle-id "$BUNDLE_ID" \
-            --provisioning-profile "$PROVISIONING_PROFILE_UUID"
+            --bundle-id "$BUNDLE_ID"
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true # Envia direto para o TestFlight
+        beta_build_submissions_feedback_email: maxwellbezerra@sestsenat.org.br
       email:
         recipients:
           - maxwellbezerra@sestsenat.org.br
