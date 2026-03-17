@@ -1,0 +1,24 @@
+workflows:
+  ios-capacitor-workflow:
+    name: iOS Build (Capacitor)
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    scripts:
+      - name: Install Dependencies
+        script: npm install
+      - name: Build Web App (Angular)
+        script: npm run build -- --configuration=production
+      - name: Sync Capacitor
+        script: npx cap sync ios
+      - name: Build iOS Native
+        script: |
+          # Aqui o Codemagic usa o xcodebuild para gerar o .ipa
+          xcode-project build-ipa \
+            --workspace ios/App/App.xcworkspace \
+            --scheme App
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      email:
+        recipients:
+          - maxwellbezerra@sestsenat.org.br
