@@ -3,6 +3,11 @@ workflows:
     name: iOS Build (Capacitor)
     max_build_duration: 60
     instance_type: mac_mini_m1
+    integrations:
+      app_store_connect: Codemagic # Certifique-se de que este nome bate com a integração no painel
+    environment:
+      vars:
+        BUNDLE_ID: "br.org.sestsenat.sisprec" # <--- COLOQUE O SEU BUNDLE ID AQUI
     scripts:
       - name: Install Dependencies
         script: npm install --legacy-peer-deps
@@ -10,12 +15,18 @@ workflows:
         script: npm run build:hom
       - name: Sync Capacitor
         script: npx cap sync ios
+      - name: Set up Code Signing
+        script: |
+          # Inicializa o chaveiro e busca os certificados automaticamente
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" -S_A-type IOPP_DEVELOPMENT --create
+          keychain add-certificates
       - name: Build iOS Native
         script: |
-          # Aqui o Codemagic usa o xcodebuild para gerar o .ipa
-            xcode-project build-ipa \
-                    --workspace ios/App/App.xcodeproj/project.xcworkspace \
-                    --scheme App
+          # O Codemagic agora usará os certificados baixados acima para assinar o .ipa
+          xcode-project build-ipa \
+            --workspace ios/App/App.xcodeproj/project.xcworkspace \
+            --scheme App
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
