@@ -4,11 +4,10 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m1
     integrations:
-      app_store_connect: Code-magic # Nome da sua integração no painel
+      app_store_connect: Code-magic # Confirme este nome no painel (Integrations)
     environment:
       vars:
         BUNDLE_ID: "br.org.sestsenat.sisprec"
-        APP_ID: "123456789" # <--- SUBSTITUA PELO SEU APPLE APP ID (número que fica no App Store Connect)
     scripts:
       - name: Install Dependencies
         script: npm install --legacy-peer-deps
@@ -20,17 +19,18 @@ workflows:
         script: |
           keychain initialize
           
-          # Use certificados de DISTRIBUIÇÃO e perfis de APP_STORE no painel do Codemagic
+          # Decodifica o certificado (DISTRIBUIÇÃO) e o profile (APP STORE)
           echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
           echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
           
+          # Instala o certificado no keychain
           keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password "$CM_CERTIFICATE_PASSWORD"
           
-          # Garante que o perfil seja instalado e o ExportOptions.plist gerado para App Store
+          # Registra o profile e gera o ExportOptions.plist para a App Store
           xcode-project use-profiles
       - name: Build iOS Native
         script: |
-          # Adicionamos o bundle-id para garantir o mapeamento correto na hora da publicação
+          # Gera o .ipa final para distribuição
           xcode-project build-ipa \
             --workspace ios/App/App.xcodeproj/project.xcworkspace \
             --scheme App \
@@ -40,8 +40,7 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-        submit_to_testflight: true # Envia direto para o TestFlight
-        beta_build_submissions_feedback_email: maxwellbezerra@sestsenat.org.br
+        submit_to_testflight: true
       email:
         recipients:
           - maxwellbezerra@sestsenat.org.br
