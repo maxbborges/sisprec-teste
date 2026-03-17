@@ -5,9 +5,9 @@ workflows:
     instance_type: mac_mini_m1
     scripts:
       - name: Install Dependencies
-        script: npm install
+        script: npm install --legacy-peer-deps
       - name: Build Web App (Angular)
-        script: npm run build -- --configuration=production
+        script: npm run build:hom
       - name: Sync Capacitor
         script: npx cap sync ios
       - name: Build iOS Native
