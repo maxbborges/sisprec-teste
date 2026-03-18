@@ -6,6 +6,8 @@ workflows:
     integrations:
       app_store_connect: Code-magic
     environment:
+      groups: 
+        - chaves
       vars:
         BUNDLE_ID: "br.org.sestsenat.sisprec"
         APP_STORE_APPLE_ID: "6760365847"
@@ -20,6 +22,7 @@ workflows:
       - name: Set up Code Signing
         script: |
           keychain initialize
+          keychain add-certificates --p12 "$CM_CERTIFICATE" --p12-password "getec_sisprec"
           app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
           keychain add-certificates
           xcode-project use-profiles
