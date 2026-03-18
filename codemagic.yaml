@@ -23,6 +23,8 @@ workflows:
         script: |
           keychain initialize
           keychain add-certificates
+          ls -la keys/getec_sisprec.p12
+          cp "keys/getec_sisprec.p12" "/Users/builder/Library/MobileDevice/Certificates/getec_sisprec.p12"
           app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
           xcode-project use-profiles
       - name: Increment Build Number
