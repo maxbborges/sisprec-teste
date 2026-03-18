@@ -26,11 +26,12 @@ workflows:
           # Instala o certificado no keychain
           keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password "$CM_CERTIFICATE_PASSWORD"
           
-          # O "Pulo do Gato": Força o Xcode a usar o profile pelo Bundle ID
-          xcode-project use-profiles --bundle-id "$BUNDLE_ID"
+          # O comando abaixo vincula o perfil ao projeto e gera o ExportOptions.plist
+          xcode-project use-profiles
       - name: Build iOS Native
         script: |
-          # Agora o archive deve encontrar o perfil vinculado pelo passo anterior
+          # Comando simplificado: ele usará o workspace e scheme para gerar o .ipa
+          # usando o ExportOptions.plist que o 'use-profiles' criou no passo anterior.
           xcode-project build-ipa \
             --workspace ios/App/App.xcodeproj/project.xcworkspace \
             --scheme App
