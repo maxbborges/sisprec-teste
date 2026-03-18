@@ -22,7 +22,7 @@ workflows:
       - name: Set up Code Signing
         script: |
           keychain initialize
-          echo "$CM_CERTIFICATE" | base64 --decode > /tmp/certificate.p12
+          echo "$CM_CERTIFICATE" | base64 --decode > /Users/builder/Library/MobileDevice/Certificates/certificado.p12
 
           keychain add-certificates
           app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
