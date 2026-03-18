@@ -24,7 +24,7 @@ workflows:
           keychain initialize
           echo "$CM_CERTIFICATE" | base64 --decode > /tmp/certificate.p12
 
-          keychain add-certificates --p12 /tmp/certificate.p12 --p12-password "getec_sisprec"
+          keychain add-certificates
           app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
           keychain add-certificates
           xcode-project use-profiles
