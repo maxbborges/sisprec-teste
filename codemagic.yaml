@@ -21,8 +21,6 @@ workflows:
       #  script: npx cap sync ios
       - name: Set up Code Signing
         script: |
-          echo "$CM_CERTIFICATE" | base64 --decode > /Users/builder/Library/Developer/Xcode/UserData/Certificates/certificado.p12
-          ls -la /Users/builder/Library/Developer/Xcode/UserData/Certificates/
           keychain initialize
           keychain add-certificates
           app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
